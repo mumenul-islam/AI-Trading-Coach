@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.7.0</title>
+  <title>2026 Trade Command Center & Roadmap v1.7.1</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -90,7 +90,7 @@
     .card.card-lagging { border: 2px solid var(--accent-yellow) !important; background: rgba(245, 192, 0, 0.05); box-shadow: 0 0 14px rgba(245, 192, 0, 0.18); }
     .card.card-danger { border: 2px solid var(--accent-red) !important; background: rgba(242, 54, 69, 0.06); animation: pulseRed 2s infinite; }
     .card.card-paused { border: 1px solid var(--border-color); opacity: 0.45; filter: grayscale(40%); }
-    .card.card-trading-active { border: 2px solid var(--accent-blue) !important; background: rgba(41, 98, 255, 0.08); box-shadow: 0 0 16px rgba(41, 98, 255, 0.25); }
+    .card-trading-active { border: 2px solid var(--accent-blue) !important; background: rgba(41, 98, 255, 0.08); box-shadow: 0 0 16px rgba(41, 98, 255, 0.25); }
 
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .card-title-wrap { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
@@ -137,21 +137,81 @@
     .chart-box-container { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 25px; }
     .chart-box-title { font-size: 12px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
 
-    /* High-Level Strategy Cards */
-    .strategy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; margin-bottom: 25px; }
-    .strategy-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 18px; }
-    .strategy-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
-    .strategy-title { font-size: 14px; font-weight: 700; color: #fff; }
+    /* High-Level Strategy CHEVRON Flow Layout */
+    .strategy-block-wrapper { display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px; }
+    .strategy-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 20px; }
+    .strategy-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
+    .strategy-title { font-size: 15px; font-weight: 700; color: #fff; }
 
-    .strategy-steps { display: flex; flex-direction: column; gap: 10px; }
-    .strategy-step-item { background: rgba(19, 23, 34, 0.6); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s ease; }
-    .strategy-step-item.is-current-focus { border-color: var(--accent-blue); background: rgba(41, 98, 255, 0.12); box-shadow: 0 0 12px rgba(41, 98, 255, 0.25); }
-    .strategy-step-item.is-past-complete { border-color: rgba(8, 153, 129, 0.4); background: rgba(8, 153, 129, 0.08); }
-    .step-text { font-size: 12px; font-weight: 600; color: #fff; flex: 1; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .step-focus-badge { font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: var(--accent-blue); color: #fff; text-transform: uppercase; letter-spacing: 0.5px; }
-    .step-complete-badge { font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: rgba(8, 153, 129, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); text-transform: uppercase; letter-spacing: 0.5px; }
-    .btn-set-focus { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; }
-    .btn-set-focus:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+    .chevron-container { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .chevron-step {
+      flex: 1;
+      min-width: 200px;
+      position: relative;
+      background: var(--bg-header);
+      padding: 16px 20px 16px 28px;
+      margin-right: -4px;
+      clip-path: polygon(0% 0%, calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 0% 100%, 15px 50%);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid transparent;
+    }
+    .chevron-step:first-child {
+      clip-path: polygon(0% 0%, calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 0% 100%);
+      padding-left: 18px;
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
+    }
+    .chevron-step:last-child {
+      clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 15px 50%);
+      padding-right: 18px;
+      border-top-right-radius: 6px;
+      border-bottom-right-radius: 6px;
+    }
+
+    /* Chevron Color States */
+    .chevron-step.is-current-focus {
+      background: linear-gradient(135deg, rgba(41, 98, 255, 0.85) 0%, rgba(0, 188, 212, 0.85) 100%);
+      box-shadow: 0 4px 16px rgba(41, 98, 255, 0.4);
+    }
+    .chevron-step.is-past-complete {
+      background: linear-gradient(135deg, rgba(8, 153, 129, 0.8) 0%, rgba(8, 153, 129, 0.5) 100%);
+    }
+
+    .chevron-content { display: flex; flex-direction: column; gap: 6px; }
+    .chevron-num { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; }
+    .chevron-step.is-current-focus .chevron-num,
+    .chevron-step.is-past-complete .chevron-num { color: rgba(255, 255, 255, 0.8); }
+
+    .chevron-text { font-size: 12px; font-weight: 700; color: #fff; line-height: 1.35; }
+    .chevron-badge-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+    
+    .btn-set-chevron-focus {
+      background: rgba(19, 23, 34, 0.6);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      align-self: flex-start;
+    }
+    .btn-set-chevron-focus:hover {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+    }
+    .chevron-step.is-current-focus .btn-set-chevron-focus {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .step-focus-badge { font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 4px; background: #fff; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 0.5px; }
+    .step-complete-badge { font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 4px; background: rgba(255, 255, 255, 0.2); color: #fff; text-transform: uppercase; letter-spacing: 0.5px; }
 
     .encouragement-card { background: linear-gradient(135deg, rgba(171, 71, 188, 0.15) 0%, rgba(41, 98, 255, 0.1) 100%); border: 1px solid var(--accent-purple); border-radius: var(--card-radius); padding: 18px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; }
     .encouragement-quote { font-size: 14px; font-weight: 600; color: #fff; line-height: 1.4; }
@@ -214,8 +274,8 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.7.0</span>
-      <span class="build-timestamp">Updated: Sep 12, 2026 • 7:33 PM EST</span>
+      <span class="version-badge">v1.7.1</span>
+      <span class="build-timestamp">Updated: Sep 12, 2026 • 7:37 PM EST</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -554,97 +614,123 @@
       <span class="badge badge-purple">2026 MASTER PLAN</span>
     </div>
 
-    <div class="strategy-grid">
+    <div class="strategy-block-wrapper">
       
-      <!-- Topstep Live Strategy Card -->
+      <!-- Topstep Live Chevron Strategy Card -->
       <div class="strategy-card">
         <div class="strategy-header">
-          <span class="strategy-title">🚀 Topstep Live — Strategic Roadmap</span>
+          <span class="strategy-title">🚀 Topstep Live — Strategic Flow</span>
           <span class="badge badge-purple">PRIMARY LIVE</span>
         </div>
-        <div class="strategy-steps" id="strategy-steps-ts">
+        
+        <div class="chevron-container" id="strategy-steps-ts">
           
-          <div class="strategy-step-item" id="step-ts-1">
-            <div class="step-text">
-              <span>1. Grow account balance to $5,000</span>
+          <div class="chevron-step" id="step-ts-1">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 1</span>
+              <span class="chevron-text">Grow account balance to $5,000</span>
+            </div>
+            <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-ts-1" style="display:none;">📍 YOU ARE HERE</span>
               <span class="step-complete-badge" id="badge-complete-ts-1" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('ts', 1)">Set Focus</button>
             </div>
-            <button class="btn-set-focus" onclick="setStrategyFocus('ts', 1)">Set Focus</button>
           </div>
 
-          <div class="strategy-step-item" id="step-ts-2">
-            <div class="step-text">
-              <span>2. Deposit funds into Tradovate Live account</span>
+          <div class="chevron-step" id="step-ts-2">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 2</span>
+              <span class="chevron-text">Deposit funds into Tradovate Live</span>
+            </div>
+            <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-ts-2" style="display:none;">📍 YOU ARE HERE</span>
               <span class="step-complete-badge" id="badge-complete-ts-2" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('ts', 2)">Set Focus</button>
             </div>
-            <button class="btn-set-focus" onclick="setStrategyFocus('ts', 2)">Set Focus</button>
           </div>
 
-          <div class="strategy-step-item" id="step-ts-3">
-            <div class="step-text">
-              <span>3. Take regular withdrawals until reaching $25,000</span>
+          <div class="chevron-step" id="step-ts-3">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 3</span>
+              <span class="chevron-text">Take regular withdrawals until $25,000</span>
+            </div>
+            <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-ts-3" style="display:none;">📍 YOU ARE HERE</span>
               <span class="step-complete-badge" id="badge-complete-ts-3" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('ts', 3)">Set Focus</button>
             </div>
-            <button class="btn-set-focus" onclick="setStrategyFocus('ts', 3)">Set Focus</button>
           </div>
 
-          <div class="strategy-step-item" id="step-ts-4">
-            <div class="step-text">
-              <span>4. Establish as Primary Main Trading Account</span>
+          <div class="chevron-step" id="step-ts-4">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 4</span>
+              <span class="chevron-text">Establish as Primary Main Account</span>
+            </div>
+            <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-ts-4" style="display:none;">📍 YOU ARE HERE</span>
               <span class="step-complete-badge" id="badge-complete-ts-4" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('ts', 4)">Set Focus</button>
             </div>
-            <button class="btn-set-focus" onclick="setStrategyFocus('ts', 4)">Set Focus</button>
           </div>
 
         </div>
       </div>
 
-      <!-- Tradovate Live Strategy Card -->
+      <!-- Tradovate Live Chevron Strategy Card -->
       <div class="strategy-card">
         <div class="strategy-header">
-          <span class="strategy-title">🛡️ Tradovate Live — Strategic Roadmap</span>
+          <span class="strategy-title">🛡️ Tradovate Live — Strategic Flow</span>
           <span class="badge badge-cyan">SECONDARY LIVE</span>
         </div>
-        <div class="strategy-steps" id="strategy-steps-tr">
+        
+        <div class="chevron-container" id="strategy-steps-tr">
           
-          <div class="strategy-step-item" id="step-tr-1">
-            <div class="step-text">
-              <span>1. Fund account once Topstep Live reaches $5,000</span>
+          <div class="chevron-step" id="step-tr-1">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 1</span>
+              <span class="chevron-text">Fund once Topstep Live reaches $5,000</span>
+            </div>
+            <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-tr-1" style="display:none;">📍 YOU ARE HERE</span>
               <span class="step-complete-badge" id="badge-complete-tr-1" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('tr', 1)">Set Focus</button>
             </div>
-            <button class="btn-set-focus" onclick="setStrategyFocus('tr', 1)">Set Focus</button>
           </div>
 
-          <div class="strategy-step-item" id="step-tr-2">
-            <div class="step-text">
-              <span>2. Grow account balance to $5,000</span>
+          <div class="chevron-step" id="step-tr-2">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 2</span>
+              <span class="chevron-text">Grow account balance to $5,000</span>
+            </div>
+            <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-tr-2" style="display:none;">📍 YOU ARE HERE</span>
               <span class="step-complete-badge" id="badge-complete-tr-2" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('tr', 2)">Set Focus</button>
             </div>
-            <button class="btn-set-focus" onclick="setStrategyFocus('tr', 2)">Set Focus</button>
           </div>
 
-          <div class="strategy-step-item" id="step-tr-3">
-            <div class="step-text">
-              <span>3. Take regular withdrawals while growing to $25,000</span>
+          <div class="chevron-step" id="step-tr-3">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 3</span>
+              <span class="chevron-text">Take regular withdrawals while growing to $25k</span>
+            </div>
+            <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-tr-3" style="display:none;">📍 YOU ARE HERE</span>
               <span class="step-complete-badge" id="badge-complete-tr-3" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('tr', 3)">Set Focus</button>
             </div>
-            <button class="btn-set-focus" onclick="setStrategyFocus('tr', 3)">Set Focus</button>
           </div>
 
-          <div class="strategy-step-item" id="step-tr-4">
-            <div class="step-text">
-              <span>4. Establish as Secondary Trading Account</span>
+          <div class="chevron-step" id="step-tr-4">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 4</span>
+              <span class="chevron-text">Establish as Secondary Trading Account</span>
+            </div>
+            <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-tr-4" style="display:none;">📍 YOU ARE HERE</span>
               <span class="step-complete-badge" id="badge-complete-tr-4" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('tr', 4)">Set Focus</button>
             </div>
-            <button class="btn-set-focus" onclick="setStrategyFocus('tr', 4)">Set Focus</button>
           </div>
 
         </div>
@@ -1600,7 +1686,7 @@
               if (completed) { tsWdDone++; tsWdTrophyHTML += trophyNodeHTML; } else { tsWdActiveHTML += activeNodeHTML; }
             } else if (category === 'tr-withdrawal') {
               trWdTotal++;
-              if (completed) { trWdDone++; trWdTrophyHTML += trophyNodeHTML; } else { trWdActiveHTML += activeNodeHTML; }
+              if (completed) { trWdDone++; trWdTrophyHTML += trophyNodeHTML; } else { trActiveHTML += activeNodeHTML; }
             }
           });
         });
