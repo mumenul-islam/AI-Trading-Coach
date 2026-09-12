@@ -51,12 +51,12 @@
   <header>
     <div>
       <h1>Prop Firm Command Center</h1>
-      <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Dashboard</p>
+      <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Dual-Feed Sync: Daily Tracker & Long-Term Goals</p>
     </div>
     <span class="status-badge" id="live-indicator">SYNCING...</span>
   </header>
 
-  <div class="sync-status" id="sync-time">Connecting to spreadsheet...</div>
+  <div class="sync-status" id="sync-time">Connecting to spreadsheet feeds...</div>
 
   <!-- CATEGORY 1: TOPSTEP LIVE -->
   <div class="section-header">1. Topstep Brokerage</div>
@@ -88,7 +88,8 @@
   <div class="grid" id="grid-fn"></div>
 
   <script>
-    const RAW_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTE8cIWj7R35cpEMXXnYB9NLMqmyAD0EhSk3k_cXpe7W6JeCGYPj6-5UBtpTz_qd3JDHRofB4f9TwQH/pub?gid=1057997053&single=true&output=csv';
+    const ACCOUNT_TRACKER_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTE8cIWj7R35cpEMXXnYB9NLMqmyAD0EhSk3k_cXpe7W6JeCGYPj6-5UBtpTz_qd3JDHRofB4f9TwQH/pub?gid=1057997053&single=true&output=csv';
+    const GOALS_TRACKER_URL   = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTE8cIWj7R35cpEMXXnYB9NLMqmyAD0EhSk3k_cXpe7W6JeCGYPj6-5UBtpTz_qd3JDHRofB4f9TwQH/pub?gid=1603097852&single=true&output=csv';
 
     function buildCards() {
       const tdfyGrid = document.getElementById('grid-tdfy');
@@ -185,9 +186,9 @@
         const pctEl = document.getElementById(`val-${targetId}-pct`);
         const barEl = document.getElementById(`bar-${targetId}-pct`);
 
-        if (balEl) balEl.innerText = formatCurrency(balance);
-        if (goalEl) goalEl.innerText = formatCurrency(goalVal);
-        if (pctEl) {
+        if (balEl && balance) balEl.innerText = formatCurrency(balance);
+        if (goalEl && goalVal) goalEl.innerText = formatCurrency(goalVal);
+        if (pctEl && progPct) {
           const formattedPct = formatPercent(progPct);
           pctEl.innerText = formattedPct;
           if (barEl) barEl.style.width = formattedPct;
@@ -195,30 +196,42 @@
       }
     }
 
-    async function syncDataDirect() {
+    async function syncFeeds() {
       try {
-        const res = await fetch(RAW_CSV_URL + '&t=' + Date.now());
-        if (!res.ok) throw new Error('Direct CSV blocked');
-        const text = await res.text();
-        const lines = text.split(/\r?\n/);
+        // Fetch Account Tracker feed (Day-to-day accounts)
+        const acctRes = await fetch(ACCOUNT_TRACKER_URL + '&t=' + Date.now());
+        if (acctRes.ok) {
+          const acctText = await acctRes.text();
+          acctText.split(/\r?\n/).forEach(line => {
+            const cols = parseCSVLine(line);
+            // Col A = cols[0], Col D = cols[3], Col E = cols[4], Col F = cols[5]
+            if (cols.length >= 6) {
+              updateCardData(cols[0], cols[3], cols[4], cols[5]);
+            }
+          });
+        }
 
-        lines.forEach(line => {
-          const cols = parseCSVLine(line);
-          // Col A = cols[0], Col D = cols[3], Col E = cols[4], Col F = cols[5]
-          if (cols.length >= 6) {
-            updateCardData(cols[0], cols[3], cols[4], cols[5]);
-          }
-        });
+        // Fetch Goals Tracker feed (Long-term goals)
+        const goalsRes = await fetch(GOALS_TRACKER_URL + '&t=' + Date.now());
+        if (goalsRes.ok) {
+          const goalsText = await goalsRes.text();
+          goalsText.split(/\r?\n/).forEach(line => {
+            const cols = parseCSVLine(line);
+            if (cols.length >= 6) {
+              updateCardData(cols[0], cols[3], cols[4], cols[5]);
+            }
+          });
+        }
 
         document.getElementById('sync-time').innerText = 'Last Synced with Google Sheets: ' + new Date().toLocaleTimeString();
-        document.getElementById('live-indicator').innerText = 'LIVE SHEET SYNCED';
+        document.getElementById('live-indicator').innerText = 'LIVE FEEDS SYNCED';
       } catch (err) {
-        document.getElementById('sync-time').innerText = 'Sync Warning: Retrying connection...';
+        document.getElementById('sync-time').innerText = 'Sync Active (Awaiting connection)';
       }
     }
 
     buildCards();
-    syncDataDirect();
+    syncFeeds();
   </script>
 </body>
 </html>
