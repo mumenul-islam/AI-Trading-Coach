@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.4.2</title>
+  <title>2026 Trade Command Center & Roadmap v1.4.3</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -162,7 +162,6 @@
     .trophy-item { font-size: 12px; padding: 8px 14px; background: var(--bg-card); border: 1px solid var(--accent-green); border-radius: 20px; color: #fff; font-weight: 600; display: flex; flex-direction: column; gap: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
     .trophy-time { font-size: 10px; color: var(--accent-green); font-weight: 600; }
 
-    /* Category Specific Embed Charts */
     .category-chart-wrap { background: rgba(30, 34, 45, 0.6); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 12px; margin-bottom: 15px; }
     .category-chart-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
 
@@ -199,8 +198,8 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.4.2</span>
-      <span class="build-timestamp">Updated: Sep 12, 2026 • 7:13 PM EST</span>
+      <span class="version-badge">v1.4.3</span>
+      <span class="build-timestamp">Updated: Sep 12, 2026 • 7:15 PM EST</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -1325,14 +1324,6 @@
             const completed = (isComplete === 'true' || isComplete === 'yes' || isComplete === '1' || isComplete === 'x');
             const mKey = `goal_${cleanName}_${goalTitle}_${idx}_${source}`;
 
-            let displayGoalTitle = goalTitle;
-            if (source === 'primary' && (cleanName.includes('topstep') || cleanName.includes('topsteplive'))) {
-              displayGoalTitle = "Get back to 5000 after depositing 1000 into tradovate live";
-            }
-
-            const tagInfo = getGoalTag(displayGoalTitle);
-            const tagHTML = `<span class="goal-tag ${tagInfo.class}">${tagInfo.text}</span>`;
-
             let category = 'topstep-live';
             const isWithdrawalRow = idx >= 25 || cleanName.includes('withdraw') || cleanName.includes('payout') || cleanName.includes('category2') || cleanName.includes('substack');
 
@@ -1355,6 +1346,14 @@
             } else if (cleanName.includes('topstep')) {
               category = 'topstep-live';
             }
+
+            let displayGoalTitle = goalTitle;
+            if (category === 'topstep-live' && goalTitle.toLowerCase().includes('topstep live milestone')) {
+              displayGoalTitle = "Get back to 5000 after depositing 1000 into tradovate live";
+            }
+
+            const tagInfo = getGoalTag(displayGoalTitle);
+            const tagHTML = `<span class="goal-tag ${tagInfo.class}">${tagInfo.text}</span>`;
 
             const formattedTarget = formatTargetValue(extraVal || dateVal, (category === 'ts-withdrawal' || category === 'tr-withdrawal'));
 
