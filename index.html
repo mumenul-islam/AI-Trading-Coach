@@ -88,22 +88,23 @@
   <div class="grid" id="grid-fn"></div>
 
   <script>
-    const DOC_KEY = '2PACX-1vTE8cIWj7R35cpEMXXnYB9NLMqmyAD0EhSk3k_cXpe7W6JeCGYPj6-5UBtpTz_qd3JDHRofB4f9TwQH';
-    const GID = '1057997053';
+    const RAW_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTE8cIWj7R35cpEMXXnYB9NLMqmyAD0EhSk3k_cXpe7W6JeCGYPj6-5UBtpTz_qd3JDHRofB4f9TwQH/pub?gid=1057997053&single=true&output=csv';
 
-    // Build template cards for all 14 accounts
     function buildCards() {
       const tdfyGrid = document.getElementById('grid-tdfy');
+      tdfyGrid.innerHTML = '';
       for (let i = 1; i <= 5; i++) {
         tdfyGrid.innerHTML += createCardHTML(`tdfy-${i}`, `TDFY Acct ${i}`, i === 2 ? 'PROTECTED' : 'ACTIVE');
       }
 
       const feGrid = document.getElementById('grid-fe');
+      feGrid.innerHTML = '';
       for (let i = 1; i <= 5; i++) {
         feGrid.innerHTML += createCardHTML(`fe-${i}`, `FE Acct ${i}`, 'RECOVERY');
       }
 
       const fnGrid = document.getElementById('grid-fn');
+      fnGrid.innerHTML = '';
       for (let i = 1; i <= 3; i++) {
         fnGrid.innerHTML += createCardHTML(`fn-${i}`, `FN Acct ${i}`, 'BUFFERING');
       }
@@ -128,6 +129,22 @@
         </div>`;
     }
 
+    function parseCSVLine(line) {
+      const result = [];
+      let cell = '';
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        let c = line[i];
+        if (c === '"') { inQuotes = !inQuotes; }
+        else if (c === ',' && !inQuotes) {
+          result.push(cell.trim().replace(/^"(.*)"$/, '$1'));
+          cell = '';
+        } else { cell += c; }
+      }
+      result.push(cell.trim().replace(/^"(.*)"$/, '$1'));
+      return result;
+    }
+
     function formatCurrency(val) {
       if (!val) return '$0.00';
       let num = parseFloat(val.toString().replace(/[\$,]/g, '').trim());
@@ -138,73 +155,70 @@
       if (!val) return '0%';
       let num = parseFloat(val.toString().replace(/[%]/g, '').trim());
       if (isNaN(num)) return val;
-      if (num > 0 && num <= 1) num = num * 100; // Handles decimal percentages (e.g., 0.75 -> 75%)
+      if (num > 0 && num <= 1) num = num * 100;
       return num.toFixed(1) + '%';
     }
 
-    window.handleSheetData = function(data) {
+    function updateCardData(acctName, progPct, balance, goalVal) {
+      if (!acctName) return;
+      const nameLower = acctName.toLowerCase().replace(/\s+/g, '');
+
+      let targetId = null;
+      if (nameLower.includes('topstep')) targetId = 'topstep-live';
+      else if (nameLower.includes('tdfy1') || nameLower.includes('tradeify1')) targetId = 'tdfy-1';
+      else if (nameLower.includes('tdfy2') || nameLower.includes('tradeify2')) targetId = 'tdfy-2';
+      else if (nameLower.includes('tdfy3') || nameLower.includes('tradeify3')) targetId = 'tdfy-3';
+      else if (nameLower.includes('tdfy4') || nameLower.includes('tradeify4')) targetId = 'tdfy-4';
+      else if (nameLower.includes('tdfy5') || nameLower.includes('tradeify5')) targetId = 'tdfy-5';
+      else if (nameLower.includes('fe1')) targetId = 'fe-1';
+      else if (nameLower.includes('fe2')) targetId = 'fe-2';
+      else if (nameLower.includes('fe3')) targetId = 'fe-3';
+      else if (nameLower.includes('fe4')) targetId = 'fe-4';
+      else if (nameLower.includes('fe5')) targetId = 'fe-5';
+      else if (nameLower.includes('fn1')) targetId = 'fn-1';
+      else if (nameLower.includes('fn2')) targetId = 'fn-2';
+      else if (nameLower.includes('fn3')) targetId = 'fn-3';
+
+      if (targetId) {
+        const balEl = document.getElementById(`val-${targetId}-bal`);
+        const goalEl = document.getElementById(`val-${targetId}-goal`);
+        const pctEl = document.getElementById(`val-${targetId}-pct`);
+        const barEl = document.getElementById(`bar-${targetId}-pct`);
+
+        if (balEl) balEl.innerText = formatCurrency(balance);
+        if (goalEl) goalEl.innerText = formatCurrency(goalVal);
+        if (pctEl) {
+          const formattedPct = formatPercent(progPct);
+          pctEl.innerText = formattedPct;
+          if (barEl) barEl.style.width = formattedPct;
+        }
+      }
+    }
+
+    async function syncDataDirect() {
       try {
-        const rows = data.table.rows;
-        rows.forEach(r => {
-          if (!r.c) return;
+        const res = await fetch(RAW_CSV_URL + '&t=' + Date.now());
+        if (!res.ok) throw new Error('Direct CSV blocked');
+        const text = await res.text();
+        const lines = text.split(/\r?\n/);
 
-          // Mapping: Col A = c[0], Col D = c[3], Col E = c[4], Col F = c[5]
-          const acctName = r.c[0] && r.c[0].v !== null ? r.c[0].v.toString().trim() : '';
-          const progPct  = r.c[3] && r.c[3].v !== null ? r.c[3].v.toString().trim() : '';
-          const balance  = r.c[4] && r.c[4].v !== null ? r.c[4].v.toString().trim() : '';
-          const goalVal  = r.c[5] && r.c[5].v !== null ? r.c[5].v.toString().trim() : '';
-
-          if (!acctName) return;
-          const nameLower = acctName.toLowerCase().replace(/\s+/g, '');
-
-          // Match Account Name in Column A to corresponding card
-          let targetId = null;
-          if (nameLower.includes('topstep')) targetId = 'topstep-live';
-          else if (nameLower.includes('tdfy1') || nameLower.includes('tradeify1')) targetId = 'tdfy-1';
-          else if (nameLower.includes('tdfy2') || nameLower.includes('tradeify2')) targetId = 'tdfy-2';
-          else if (nameLower.includes('tdfy3') || nameLower.includes('tradeify3')) targetId = 'tdfy-3';
-          else if (nameLower.includes('tdfy4') || nameLower.includes('tradeify4')) targetId = 'tdfy-4';
-          else if (nameLower.includes('tdfy5') || nameLower.includes('tradeify5')) targetId = 'tdfy-5';
-          else if (nameLower.includes('fe1')) targetId = 'fe-1';
-          else if (nameLower.includes('fe2')) targetId = 'fe-2';
-          else if (nameLower.includes('fe3')) targetId = 'fe-3';
-          else if (nameLower.includes('fe4')) targetId = 'fe-4';
-          else if (nameLower.includes('fe5')) targetId = 'fe-5';
-          else if (nameLower.includes('fn1')) targetId = 'fn-1';
-          else if (nameLower.includes('fn2')) targetId = 'fn-2';
-          else if (nameLower.includes('fn3')) targetId = 'fn-3';
-
-          if (targetId) {
-            const balEl = document.getElementById(`val-${targetId}-bal`);
-            const goalEl = document.getElementById(`val-${targetId}-goal`);
-            const pctEl = document.getElementById(`val-${targetId}-pct`);
-            const barEl = document.getElementById(`bar-${targetId}-pct`);
-
-            if (balEl) balEl.innerText = formatCurrency(balance);
-            if (goalEl) goalEl.innerText = formatCurrency(goalVal);
-            if (pctEl) {
-              const formattedPct = formatPercent(progPct);
-              pctEl.innerText = formattedPct;
-              if (barEl) barEl.style.width = formattedPct;
-            }
+        lines.forEach(line => {
+          const cols = parseCSVLine(line);
+          // Col A = cols[0], Col D = cols[3], Col E = cols[4], Col F = cols[5]
+          if (cols.length >= 6) {
+            updateCardData(cols[0], cols[3], cols[4], cols[5]);
           }
         });
 
         document.getElementById('sync-time').innerText = 'Last Synced with Google Sheets: ' + new Date().toLocaleTimeString();
         document.getElementById('live-indicator').innerText = 'LIVE SHEET SYNCED';
-      } catch (e) {
-        console.error(e);
+      } catch (err) {
+        document.getElementById('sync-time').innerText = 'Sync Warning: Retrying connection...';
       }
-    };
-
-    function loadData() {
-      buildCards();
-      const script = document.createElement('script');
-      script.src = `https://docs.google.com/spreadsheets/d/e/${DOC_KEY}/gviz/tq?gid=${GID}&tqx=responseHandler:handleSheetData&_=${Date.now()}`;
-      document.body.appendChild(script);
     }
 
-    loadData();
+    buildCards();
+    syncDataDirect();
   </script>
 </body>
 </html>
