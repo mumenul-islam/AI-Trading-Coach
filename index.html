@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.6.0</title>
+  <title>2026 Trade Command Center & Roadmap v1.7.0</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -146,8 +146,10 @@
     .strategy-steps { display: flex; flex-direction: column; gap: 10px; }
     .strategy-step-item { background: rgba(19, 23, 34, 0.6); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s ease; }
     .strategy-step-item.is-current-focus { border-color: var(--accent-blue); background: rgba(41, 98, 255, 0.12); box-shadow: 0 0 12px rgba(41, 98, 255, 0.25); }
-    .step-text { font-size: 12px; font-weight: 600; color: #fff; flex: 1; display: flex; align-items: center; gap: 8px; }
+    .strategy-step-item.is-past-complete { border-color: rgba(8, 153, 129, 0.4); background: rgba(8, 153, 129, 0.08); }
+    .step-text { font-size: 12px; font-weight: 600; color: #fff; flex: 1; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .step-focus-badge { font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: var(--accent-blue); color: #fff; text-transform: uppercase; letter-spacing: 0.5px; }
+    .step-complete-badge { font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: rgba(8, 153, 129, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); text-transform: uppercase; letter-spacing: 0.5px; }
     .btn-set-focus { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; }
     .btn-set-focus:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
 
@@ -212,8 +214,8 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.6.0</span>
-      <span class="build-timestamp">Updated: Sep 12, 2026 • 7:25 PM EST</span>
+      <span class="version-badge">v1.7.0</span>
+      <span class="build-timestamp">Updated: Sep 12, 2026 • 7:33 PM EST</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -566,6 +568,7 @@
             <div class="step-text">
               <span>1. Grow account balance to $5,000</span>
               <span class="step-focus-badge" id="badge-ts-1" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-ts-1" style="display:none;">✓ COMPLETE</span>
             </div>
             <button class="btn-set-focus" onclick="setStrategyFocus('ts', 1)">Set Focus</button>
           </div>
@@ -574,6 +577,7 @@
             <div class="step-text">
               <span>2. Deposit funds into Tradovate Live account</span>
               <span class="step-focus-badge" id="badge-ts-2" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-ts-2" style="display:none;">✓ COMPLETE</span>
             </div>
             <button class="btn-set-focus" onclick="setStrategyFocus('ts', 2)">Set Focus</button>
           </div>
@@ -582,6 +586,7 @@
             <div class="step-text">
               <span>3. Take regular withdrawals until reaching $25,000</span>
               <span class="step-focus-badge" id="badge-ts-3" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-ts-3" style="display:none;">✓ COMPLETE</span>
             </div>
             <button class="btn-set-focus" onclick="setStrategyFocus('ts', 3)">Set Focus</button>
           </div>
@@ -590,6 +595,7 @@
             <div class="step-text">
               <span>4. Establish as Primary Main Trading Account</span>
               <span class="step-focus-badge" id="badge-ts-4" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-ts-4" style="display:none;">✓ COMPLETE</span>
             </div>
             <button class="btn-set-focus" onclick="setStrategyFocus('ts', 4)">Set Focus</button>
           </div>
@@ -609,6 +615,7 @@
             <div class="step-text">
               <span>1. Fund account once Topstep Live reaches $5,000</span>
               <span class="step-focus-badge" id="badge-tr-1" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-tr-1" style="display:none;">✓ COMPLETE</span>
             </div>
             <button class="btn-set-focus" onclick="setStrategyFocus('tr', 1)">Set Focus</button>
           </div>
@@ -617,6 +624,7 @@
             <div class="step-text">
               <span>2. Grow account balance to $5,000</span>
               <span class="step-focus-badge" id="badge-tr-2" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-tr-2" style="display:none;">✓ COMPLETE</span>
             </div>
             <button class="btn-set-focus" onclick="setStrategyFocus('tr', 2)">Set Focus</button>
           </div>
@@ -625,6 +633,7 @@
             <div class="step-text">
               <span>3. Take regular withdrawals while growing to $25,000</span>
               <span class="step-focus-badge" id="badge-tr-3" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-tr-3" style="display:none;">✓ COMPLETE</span>
             </div>
             <button class="btn-set-focus" onclick="setStrategyFocus('tr', 3)">Set Focus</button>
           </div>
@@ -633,6 +642,7 @@
             <div class="step-text">
               <span>4. Establish as Secondary Trading Account</span>
               <span class="step-focus-badge" id="badge-tr-4" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-tr-4" style="display:none;">✓ COMPLETE</span>
             </div>
             <button class="btn-set-focus" onclick="setStrategyFocus('tr', 4)">Set Focus</button>
           </div>
@@ -746,8 +756,8 @@
     }
 
     function formatTargetValue(val, extraNote, isWithdrawal) {
-      let pctStr = '';
-      if (val) {
+      let pctStr = 'Progress: 0.0%';
+      if (val !== undefined && val !== null && val !== '') {
         let str = val.toString().trim();
         let num = parseFloat(str.replace(/[\$,%]/g, ''));
         if (!isNaN(num)) {
@@ -756,17 +766,20 @@
           } else {
             pctStr = `Progress: ${num.toFixed(1)}%`;
           }
+        } else if (str.length > 0) {
+          pctStr = `Progress: ${str}`;
         }
       }
 
       if (isWithdrawal) {
         let noteStr = extraNote ? ` • Condition: ${extraNote}` : '';
-        return `${pctStr || 'Milestone In Progress'}${noteStr}`;
+        return `${pctStr}${noteStr}`;
       }
 
-      return pctStr || (val ? `Target: ${val}` : 'Milestone In Progress');
+      return pctStr;
     }
 
+    /* HIGH-LEVEL STRATEGY FOCUS ENGINE */
     function setStrategyFocus(type, stepNum) {
       const key = `strategy_focus_${type}`;
       localStorage.setItem(key, stepNum.toString());
@@ -775,17 +788,27 @@
 
     function loadStrategyFocusUI() {
       ['ts', 'tr'].forEach(type => {
-        const activeStep = localStorage.getItem(`strategy_focus_${type}`) || '1';
+        const activeStepStr = localStorage.getItem(`strategy_focus_${type}`);
+        const activeStep = activeStepStr ? parseInt(activeStepStr, 10) : 0;
+
         for (let i = 1; i <= 4; i++) {
           const stepEl = document.getElementById(`step-${type}-${i}`);
           const badgeEl = document.getElementById(`badge-${type}-${i}`);
-          if (stepEl && badgeEl) {
-            if (i.toString() === activeStep) {
-              stepEl.classList.add('is-current-focus');
-              badgeEl.style.display = 'inline-block';
-            } else {
-              stepEl.classList.remove('is-current-focus');
-              badgeEl.style.display = 'none';
+          const badgeCompleteEl = document.getElementById(`badge-complete-${type}-${i}`);
+
+          if (stepEl) {
+            stepEl.classList.remove('is-current-focus', 'is-past-complete');
+            if (badgeEl) badgeEl.style.display = 'none';
+            if (badgeCompleteEl) badgeCompleteEl.style.display = 'none';
+
+            if (activeStep > 0) {
+              if (i === activeStep) {
+                stepEl.classList.add('is-current-focus');
+                if (badgeEl) badgeEl.style.display = 'inline-block';
+              } else if (i < activeStep) {
+                stepEl.classList.add('is-past-complete');
+                if (badgeCompleteEl) badgeCompleteEl.style.display = 'inline-block';
+              }
             }
           }
         }
@@ -1493,10 +1516,7 @@
               category = 'topstep-live';
             }
 
-            let displayGoalTitle = goalTitle;
-            if (category === 'topstep-live' && goalTitle.toLowerCase().includes('topstep live milestone')) {
-              displayGoalTitle = "Get back to 5000 after depositing 1000 into tradovate live";
-            }
+            const displayGoalTitle = goalTitle || (acctName + ' Milestone');
 
             const tagInfo = getGoalTag(displayGoalTitle);
             const tagHTML = `<span class="goal-tag ${tagInfo.class}">${tagInfo.text}</span>`;
@@ -1516,7 +1536,7 @@
             if (category === 'ts-withdrawal') chartKey = 'ts-wd';
             if (category === 'tr-withdrawal') chartKey = 'tr-wd';
             if (categoryItems[chartKey]) {
-              categoryItems[chartKey].push({ title: displayGoalTitle || acctName, pct: pctProgress });
+              categoryItems[chartKey].push({ title: displayGoalTitle, pct: pctProgress });
             }
 
             let acctPillHTML = '';
@@ -1529,7 +1549,7 @@
               totalMasterDone++;
               if (!seenMilestones.includes(mKey)) {
                 saveSeenCompletedMilestone(mKey);
-                triggerCelebrationModal(displayGoalTitle || `${acctName} Goal Completed!`);
+                triggerCelebrationModal(displayGoalTitle);
               }
             }
 
@@ -1544,8 +1564,8 @@
               <div class="timeline-node active">
                 <div class="milestone-card">
                   <div class="milestone-info">
-                    <div class="milestone-title">${acctPillHTML} ${displayGoalTitle || (acctName + ' Milestone')} ${tagHTML}</div>
-                    <div class="milestone-meta">🎯 ${formattedTarget || 'Milestone In Progress'}</div>
+                    <div class="milestone-title">${acctPillHTML} ${displayGoalTitle} ${tagHTML}</div>
+                    <div class="milestone-meta">🎯 ${formattedTarget}</div>
                   </div>
                   <span class="badge ${badgeColorClass}">IN PROGRESS</span>
                 </div>
@@ -1553,7 +1573,7 @@
 
             const trophyNodeHTML = `
               <div class="trophy-item">
-                <span>🏆 ${acctPillHTML ? acctPillHTML + ' ' : ''}${displayGoalTitle || (acctName + ' Milestone')}</span>
+                <span>🏆 ${acctPillHTML ? acctPillHTML + ' ' : ''}${displayGoalTitle}</span>
                 <span class="trophy-time">⏱️ ${formattedTarget || 'Completed'}</span>
               </div>`;
 
