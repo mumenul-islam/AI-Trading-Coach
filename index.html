@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.2.1</title>
+  <title>2026 Trade Command Center & Roadmap v1.2.2</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -177,7 +177,7 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.2.1</span>
+      <span class="version-badge">v1.2.2</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -921,7 +921,7 @@
       });
     }
 
-    /* DUAL PARSER ENGINE: Columns A-D (Live) & Columns G-I (Prop Accounts) */
+    /* GOALS TRACKER SHEET PARSER (GID 1603097852) */
     window.handleGoalsData = function(data) {
       try {
         const rows = data.table.rows;
@@ -952,28 +952,29 @@
         rows.forEach((r, idx) => {
           if (!r.c) return;
 
-          // Target dual feeds: Col A/B/C/D AND Col G/H/I
+          // Primary Live Feed (Col A, B, C, D)
           const colA_Name = r.c[0] && r.c[0].v !== null ? r.c[0].v.toString().trim() : '';
           const colB_Goal = r.c[1] && r.c[1].v !== null ? r.c[1].v.toString().trim() : '';
           const colC_Done = r.c[2] && r.c[2].v !== null ? r.c[2].v.toString().toLowerCase().trim() : '';
-          const colD_Meta = r.c[3] && r.c[3].v !== null ? r.c[3].v.toString().trim() : '';
+          const colD_Date = r.c[3] && r.c[3].v !== null ? r.c[3].v.toString().trim() : '';
 
+          // Prop Feed (Col G, H, I, J)
           const colG_Name = r.c[6] && r.c[6].v !== null ? r.c[6].v.toString().trim() : '';
           const colH_Goal = r.c[7] && r.c[7].v !== null ? r.c[7].v.toString().trim() : '';
           const colI_Done = r.c[8] && r.c[8].v !== null ? r.c[8].v.toString().toLowerCase().trim() : '';
+          const colJ_Date = r.c[9] && r.c[9].v !== null ? r.c[9].v.toString().trim() : '';
 
-          // Array of targets to evaluate
           const goalEntries = [];
 
           if (colA_Name || colB_Goal) {
-            goalEntries.push({ acctName: colA_Name, goalTitle: colB_Goal, isComplete: colC_Done, dateOrPct: colD_Meta, source: 'primary' });
+            goalEntries.push({ acctName: colA_Name, goalTitle: colB_Goal, isComplete: colC_Done, dateVal: colD_Date, source: 'primary' });
           }
           if (colG_Name || colH_Goal) {
-            goalEntries.push({ acctName: colG_Name, goalTitle: colH_Goal, isComplete: colI_Done, dateOrPct: '', source: 'prop' });
+            goalEntries.push({ acctName: colG_Name, goalTitle: colH_Goal, isComplete: colI_Done, dateVal: colJ_Date, source: 'prop' });
           }
 
           goalEntries.forEach(entry => {
-            const { acctName, goalTitle, isComplete, dateOrPct, source } = entry;
+            const { acctName, goalTitle, isComplete, dateVal, source } = entry;
             
             const cleanName = acctName.toLowerCase().replace(/[^a-z0-9]/g, '');
             const combinedText = (cleanName + ' ' + goalTitle.toLowerCase()).replace(/[^a-z0-9]/g, '');
@@ -1024,7 +1025,7 @@
                 <div class="milestone-card">
                   <div class="milestone-info">
                     <div class="milestone-title">${goalTitle || (acctName + ' Milestone')} ${tagHTML}</div>
-                    <div class="milestone-meta">🎯 Target Milestone ${dateOrPct ? '• ' + dateOrPct : ''}</div>
+                    <div class="milestone-meta">🎯 Target Milestone ${dateVal ? '• Target: ' + dateVal : ''}</div>
                   </div>
                   <span class="badge ${badgeColorClass}">IN PROGRESS</span>
                 </div>
@@ -1033,7 +1034,7 @@
             const trophyNodeHTML = `
               <div class="trophy-item">
                 <span>🏆 ${goalTitle || (acctName + ' Milestone')}</span>
-                ${dateOrPct ? `<span class="trophy-time">⏱️ Phase Time: ${dateOrPct}</span>` : ''}
+                <span class="trophy-time">⏱️ ${dateVal ? 'Unlocked: ' + dateVal : '✅ Completed'}</span>
               </div>`;
 
             if (category === 'topstep') {
