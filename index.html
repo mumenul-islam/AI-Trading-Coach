@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.8.0</title>
+  <title>2026 Trade Command Center & Roadmap v1.8.1</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -146,7 +146,7 @@
     .chevron-container { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
     .chevron-step {
       flex: 1;
-      min-width: 180px;
+      min-width: 170px;
       position: relative;
       background: var(--bg-header);
       padding: 16px 20px 16px 28px;
@@ -274,8 +274,8 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.8.0</span>
-      <span class="build-timestamp">Updated: Sep 12, 2026 • 7:41 PM EST</span>
+      <span class="version-badge">v1.8.1</span>
+      <span class="build-timestamp">Updated: Sep 12, 2026 • 7:45 PM EST</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -760,7 +760,7 @@
           <div class="chevron-step" id="step-tdfy-1">
             <div class="chevron-content">
               <span class="chevron-num">PHASE 1</span>
-              <span class="chevron-text">Rebuild buffer for Cluster 1 & build initial buffer for Cluster 2</span>
+              <span class="chevron-text">Take Payout 1 and start trading Accounts 3–5</span>
             </div>
             <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-tdfy-1" style="display:none;">📍 YOU ARE HERE</span>
@@ -772,7 +772,7 @@
           <div class="chevron-step" id="step-tdfy-2">
             <div class="chevron-content">
               <span class="chevron-num">PHASE 2</span>
-              <span class="chevron-text">Take Payout 2 for Cluster 1 & Payout 1 for Cluster 2</span>
+              <span class="chevron-text">Rebuild buffer for Cluster 1 and build initial buffer for Cluster 2</span>
             </div>
             <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-tdfy-2" style="display:none;">📍 YOU ARE HERE</span>
@@ -784,7 +784,7 @@
           <div class="chevron-step" id="step-tdfy-3">
             <div class="chevron-content">
               <span class="chevron-num">PHASE 3</span>
-              <span class="chevron-text">Keep taking payouts until progressing to Live Accounts</span>
+              <span class="chevron-text">Take Payout 2 for Cluster 1 and Payout 1 for Cluster 2</span>
             </div>
             <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-tdfy-3" style="display:none;">📍 YOU ARE HERE</span>
@@ -796,7 +796,7 @@
           <div class="chevron-step" id="step-tdfy-4">
             <div class="chevron-content">
               <span class="chevron-num">PHASE 4</span>
-              <span class="chevron-text">Build safety buffer across all Live Accounts</span>
+              <span class="chevron-text">Keep taking payouts until progressing to Live Accounts</span>
             </div>
             <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-tdfy-4" style="display:none;">📍 YOU ARE HERE</span>
@@ -808,12 +808,108 @@
           <div class="chevron-step" id="step-tdfy-5">
             <div class="chevron-content">
               <span class="chevron-num">PHASE 5</span>
-              <span class="chevron-text">Use Live Accounts as Daily ATM</span>
+              <span class="chevron-text">Build safety buffer across all Live Accounts</span>
             </div>
             <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-tdfy-5" style="display:none;">📍 YOU ARE HERE</span>
               <span class="step-complete-badge" id="badge-complete-tdfy-5" style="display:none;">✓ COMPLETE</span>
               <button class="btn-set-chevron-focus" onclick="setStrategyFocus('tdfy', 5)">Set Focus</button>
+            </div>
+          </div>
+
+          <div class="chevron-step" id="step-tdfy-6">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 6</span>
+              <span class="chevron-text">Use Live Accounts as Daily ATM</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-tdfy-6" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-tdfy-6" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('tdfy', 6)">Set Focus</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- FundedNext Chevron Strategy Card -->
+      <div class="strategy-card">
+        <div class="strategy-header">
+          <span class="strategy-title">🔷 FundedNext (FN) — Strategic Flow</span>
+          <span class="badge badge-blue">PROP CLUSTERS</span>
+        </div>
+        
+        <div class="chevron-container" id="strategy-steps-fn">
+          
+          <div class="chevron-step" id="step-fn-1">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 1</span>
+              <span class="chevron-text">Build account buffer</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-fn-1" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-fn-1" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('fn', 1)">Set Focus</button>
+            </div>
+          </div>
+
+          <div class="chevron-step" id="step-fn-2">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 2</span>
+              <span class="chevron-text">Take Payout 1</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-fn-2" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-fn-2" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('fn', 2)">Set Focus</button>
+            </div>
+          </div>
+
+          <div class="chevron-step" id="step-fn-3">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 3</span>
+              <span class="chevron-text">Take Payout 2</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-fn-3" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-fn-3" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('fn', 3)">Set Focus</button>
+            </div>
+          </div>
+
+          <div class="chevron-step" id="step-fn-4">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 4</span>
+              <span class="chevron-text">Take as many payouts until reaching Live Accounts</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-fn-4" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-fn-4" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('fn', 4)">Set Focus</button>
+            </div>
+          </div>
+
+          <div class="chevron-step" id="step-fn-5">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 5</span>
+              <span class="chevron-text">Build safety buffer in Live Accounts</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-fn-5" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-fn-5" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('fn', 5)">Set Focus</button>
+            </div>
+          </div>
+
+          <div class="chevron-step" id="step-fn-6">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 6</span>
+              <span class="chevron-text">Use Live Accounts as ATM machines</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-fn-6" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-fn-6" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('fn', 6)">Set Focus</button>
             </div>
           </div>
 
@@ -960,7 +1056,8 @@
       const configs = [
         { type: 'ts', maxSteps: 4 },
         { type: 'tr', maxSteps: 5 },
-        { type: 'tdfy', maxSteps: 5 }
+        { type: 'tdfy', maxSteps: 6 },
+        { type: 'fn', maxSteps: 6 }
       ];
 
       configs.forEach(cfg => {
