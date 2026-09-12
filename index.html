@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.3.5</title>
+  <title>2026 Trade Command Center & Roadmap v1.3.6</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -133,7 +133,8 @@
     .macro-progress-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 15px; }
     .macro-header { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-bottom: 10px; }
     
-    .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; margin-bottom: 25px; }
+    /* Stacked Charts Layout */
+    .stacked-charts-wrap { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
     .chart-box-container { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; }
     .chart-box-title { font-size: 12px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
 
@@ -195,7 +196,7 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.3.5</span>
+      <span class="version-badge">v1.3.6</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -378,8 +379,8 @@
       <div class="progress-bar-bg"><div class="progress-bar-fill" id="macro-pct-bar" style="background-color: var(--accent-green);"></div></div>
     </div>
 
-    <!-- VISUAL GRAPH DASHBOARD SECTION -->
-    <div class="charts-grid">
+    <!-- STACKED VISUAL GRAPH DASHBOARD SECTION -->
+    <div class="stacked-charts-wrap">
       <div class="chart-box-container">
         <div class="chart-box-title">📊 Category Completion Overview</div>
         <div style="height: 220px; position: relative;">
@@ -389,7 +390,7 @@
 
       <div class="chart-box-container">
         <div class="chart-box-title">📈 Milestone Unlock Timeline</div>
-        <div style="height: 220px; position: relative;">
+        <div style="height: 200px; position: relative;">
           <canvas id="timelineChart"></canvas>
         </div>
       </div>
@@ -1283,7 +1284,7 @@
             const mKey = `goal_${cleanName}_${goalTitle}_${idx}_${source}`;
 
             const tagInfo = getGoalTag(goalTitle);
-            const tagHTML = `<span class="goal-tag ${tagInfo.class}">${tagHTML_Text || tagInfo.text}</span>`;
+            const tagHTML = `<span class="goal-tag ${tagInfo.class}">${tagInfo.text}</span>`;
             const formattedTarget = formatTargetValue(dateVal);
             
             let acctPillHTML = '';
@@ -1332,8 +1333,6 @@
             if (category === 'tdfy') badgeColorClass = 'badge-yellow';
             if (category === 'fe') badgeColorClass = 'badge-red';
             if (category === 'ts-withdrawal') badgeColorClass = 'badge-green';
-
-            var tagHTML_Text = tagInfo.text;
 
             const activeNodeHTML = `
               <div class="timeline-node active">
