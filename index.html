@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.7.1</title>
+  <title>2026 Trade Command Center & Roadmap v1.8.0</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -146,7 +146,7 @@
     .chevron-container { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
     .chevron-step {
       flex: 1;
-      min-width: 200px;
+      min-width: 180px;
       position: relative;
       background: var(--bg-header);
       padding: 16px 20px 16px 28px;
@@ -274,8 +274,8 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.7.1</span>
-      <span class="build-timestamp">Updated: Sep 12, 2026 • 7:37 PM EST</span>
+      <span class="version-badge">v1.8.0</span>
+      <span class="build-timestamp">Updated: Sep 12, 2026 • 7:41 PM EST</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -736,6 +736,78 @@
         </div>
       </div>
 
+      <!-- Tradeify Chevron Strategy Card -->
+      <div class="strategy-card">
+        <div class="strategy-header">
+          <span class="strategy-title">⚡ Tradeify — Strategic Flow</span>
+          <span class="badge badge-yellow">PROP CLUSTERS</span>
+        </div>
+        
+        <div class="chevron-container" id="strategy-steps-tdfy">
+          
+          <div class="chevron-step" id="step-tdfy-1">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 1</span>
+              <span class="chevron-text">Rebuild buffer for Cluster 1 & build initial buffer for Cluster 2</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-tdfy-1" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-tdfy-1" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('tdfy', 1)">Set Focus</button>
+            </div>
+          </div>
+
+          <div class="chevron-step" id="step-tdfy-2">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 2</span>
+              <span class="chevron-text">Take Payout 2 for Cluster 1 & Payout 1 for Cluster 2</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-tdfy-2" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-tdfy-2" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('tdfy', 2)">Set Focus</button>
+            </div>
+          </div>
+
+          <div class="chevron-step" id="step-tdfy-3">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 3</span>
+              <span class="chevron-text">Keep taking payouts until progressing to Live Accounts</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-tdfy-3" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-tdfy-3" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('tdfy', 3)">Set Focus</button>
+            </div>
+          </div>
+
+          <div class="chevron-step" id="step-tdfy-4">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 4</span>
+              <span class="chevron-text">Build safety buffer across all Live Accounts</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-tdfy-4" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-tdfy-4" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('tdfy', 4)">Set Focus</button>
+            </div>
+          </div>
+
+          <div class="chevron-step" id="step-tdfy-5">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 5</span>
+              <span class="chevron-text">Use Live Accounts as Daily ATM</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-tdfy-5" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-tdfy-5" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('tdfy', 5)">Set Focus</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -865,7 +937,7 @@
       return pctStr;
     }
 
-    /* HIGH-LEVEL STRATEGY FOCUS ENGINE */
+    /* HIGH-LEVEL STRATEGY CHEVRON FOCUS ENGINE */
     function setStrategyFocus(type, stepNum) {
       const key = `strategy_focus_${type}`;
       localStorage.setItem(key, stepNum.toString());
@@ -873,14 +945,20 @@
     }
 
     function loadStrategyFocusUI() {
-      ['ts', 'tr'].forEach(type => {
-        const activeStepStr = localStorage.getItem(`strategy_focus_${type}`);
+      const configs = [
+        { type: 'ts', maxSteps: 4 },
+        { type: 'tr', maxSteps: 4 },
+        { type: 'tdfy', maxSteps: 5 }
+      ];
+
+      configs.forEach(cfg => {
+        const activeStepStr = localStorage.getItem(`strategy_focus_${cfg.type}`);
         const activeStep = activeStepStr ? parseInt(activeStepStr, 10) : 0;
 
-        for (let i = 1; i <= 4; i++) {
-          const stepEl = document.getElementById(`step-${type}-${i}`);
-          const badgeEl = document.getElementById(`badge-${type}-${i}`);
-          const badgeCompleteEl = document.getElementById(`badge-complete-${type}-${i}`);
+        for (let i = 1; i <= cfg.maxSteps; i++) {
+          const stepEl = document.getElementById(`step-${cfg.type}-${i}`);
+          const badgeEl = document.getElementById(`badge-${cfg.type}-${i}`);
+          const badgeCompleteEl = document.getElementById(`badge-complete-${cfg.type}-${i}`);
 
           if (stepEl) {
             stepEl.classList.remove('is-current-focus', 'is-past-complete');
@@ -1686,7 +1764,7 @@
               if (completed) { tsWdDone++; tsWdTrophyHTML += trophyNodeHTML; } else { tsWdActiveHTML += activeNodeHTML; }
             } else if (category === 'tr-withdrawal') {
               trWdTotal++;
-              if (completed) { trWdDone++; trWdTrophyHTML += trophyNodeHTML; } else { trActiveHTML += activeNodeHTML; }
+              if (completed) { trWdDone++; trWdTrophyHTML += trophyNodeHTML; } else { trWdActiveHTML += activeNodeHTML; }
             }
           });
         });
