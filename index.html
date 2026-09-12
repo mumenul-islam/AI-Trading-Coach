@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.1.4</title>
+  <title>2026 Trade Command Center & Roadmap v1.1.5</title>
   <style>
     :root {
       --bg-main: #131722;
@@ -53,6 +53,12 @@
     .nav-tab { background: transparent; border: none; color: var(--text-muted); font-size: 14px; font-weight: 700; padding: 8px 16px; cursor: pointer; border-radius: 6px; transition: all 0.2s ease; }
     .nav-tab.active { background: var(--bg-card); color: #fff; border: 1px solid var(--border-color); }
 
+    /* Filter Bar */
+    .filter-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .filter-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+    .filter-btn:hover { border-color: var(--accent-blue); }
+    .filter-btn.active { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+
     /* Section Headers */
     .section-header-wrap { display: flex; justify-content: space-between; align-items: center; margin: 25px 0 15px 0; }
     .section-header { font-size: 15px; font-weight: 700; color: #fff; border-left: 3px solid var(--accent-blue); padding-left: 10px; }
@@ -66,7 +72,6 @@
     .group-alert { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 12px; background: rgba(42, 46, 57, 0.6); border: 1px solid var(--border-color); color: var(--text-muted); }
     .group-alert.unsynced { background: rgba(245, 192, 0, 0.15); border-color: var(--accent-yellow); color: var(--accent-yellow); }
     .group-alert.synced { background: rgba(8, 153, 129, 0.15); border-color: var(--accent-green); color: var(--accent-green); }
-    .group-alert.danger { background: rgba(242, 54, 69, 0.15); border-color: var(--accent-red); color: var(--accent-red); }
 
     /* Cards & Grids */
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-bottom: 25px; }
@@ -105,10 +110,18 @@
     .balance-subdued { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border-color); display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); }
     .balance-subdued .stat-val { font-size: 12px; font-weight: 600; color: var(--text-main); }
 
-    /* Long-Term Goals Timeline Styles */
-    .macro-progress-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 20px; }
+    /* ==========================================================
+       LONG-TERM GOALS TIMELINE, VISUALS & TROPHY ROOM
+       ========================================================== */
+    .macro-progress-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 15px; }
     .macro-header { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-bottom: 10px; }
     
+    /* Visual Stats Grid for Roadmap */
+    .visual-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 25px; }
+    .visual-stat-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 14px; display: flex; flex-direction: column; gap: 8px; position: relative; overflow: hidden; }
+    .vs-header { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #fff; }
+    .vs-footer { font-size: 10px; color: var(--text-muted); text-align: right; font-weight: 600; margin-top: 2px; }
+
     .encouragement-card { background: linear-gradient(135deg, rgba(171, 71, 188, 0.15) 0%, rgba(41, 98, 255, 0.1) 100%); border: 1px solid var(--accent-purple); border-radius: var(--card-radius); padding: 18px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; }
     .encouragement-quote { font-size: 14px; font-weight: 600; color: #fff; line-height: 1.4; }
     .encouragement-sub { font-size: 11px; color: var(--accent-purple); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; }
@@ -170,7 +183,7 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.1.4</span>
+      <span class="version-badge">v1.1.5</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -189,8 +202,11 @@
     <button class="nav-tab" onclick="switchMainView('roadmap', this)">🎯 Long-Term Goal Roadmap</button>
   </div>
 
-  <!-- MAIN VIEW 1: DAILY COMMAND CENTER -->
+  <!-- ==========================================
+       MAIN VIEW 1: DAILY COMMAND CENTER 
+       ========================================== -->
   <div id="view-daily">
+    
     <div class="action-command-banner">
       <div class="action-icon">🎯</div>
       <div>
@@ -212,6 +228,15 @@
         <div class="summary-title">Paused Accounts</div>
         <div class="summary-value" id="summary-paused-count" style="color: var(--accent-red);">0 Paused</div>
       </div>
+    </div>
+
+    <!-- DAILY FILTER TABS -->
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterDailyCategory('all', this)">All Accounts (14)</button>
+      <button class="filter-btn" onclick="filterDailyCategory('topstep', this)">Topstep (1)</button>
+      <button class="filter-btn" onclick="filterDailyCategory('tdfy', this)">Tradeify (5)</button>
+      <button class="filter-btn" onclick="filterDailyCategory('fe', this)">Futures Elite (5)</button>
+      <button class="filter-btn" onclick="filterDailyCategory('fn', this)">FundedNext (3)</button>
     </div>
 
     <div class="category-block" id="block-topstep">
@@ -269,15 +294,62 @@
     </div>
   </div>
 
-  <!-- MAIN VIEW 2: LONG-TERM GOAL ROADMAP -->
+  <!-- ==========================================
+       MAIN VIEW 2: LONG-TERM GOAL ROADMAP 
+       ========================================== -->
   <div id="view-roadmap" style="display: none;">
     
     <div class="macro-progress-box">
       <div class="macro-header">
-        <span style="color: #fff;">2026 Master Progression</span>
+        <span style="color: #fff;">2026 Master Roadmap Progression</span>
         <span id="macro-pct-val" style="color: var(--accent-green);">0%</span>
       </div>
       <div class="progress-bar-bg"><div class="progress-bar-fill" id="macro-pct-bar" style="background-color: var(--accent-green);"></div></div>
+    </div>
+
+    <!-- ROADMAP VISUAL STATS DASHBOARD -->
+    <div class="visual-stats-grid">
+      <div class="visual-stat-card" style="border-top: 3px solid var(--accent-purple);">
+        <div class="vs-header"><span>Topstep Live</span><span id="vis-pct-ts">0%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="vis-bar-ts" style="background: var(--accent-purple); width: 0%;"></div></div>
+        <div class="vs-footer" id="vis-txt-ts">0/0 Unlocked</div>
+      </div>
+      <div class="visual-stat-card" style="border-top: 3px solid var(--accent-cyan);">
+        <div class="vs-header"><span>Tradovate Live</span><span id="vis-pct-tr">0%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="vis-bar-tr" style="background: var(--accent-cyan); width: 0%;"></div></div>
+        <div class="vs-footer" id="vis-txt-tr">0/0 Unlocked</div>
+      </div>
+      <div class="visual-stat-card" style="border-top: 3px solid var(--accent-yellow);">
+        <div class="vs-header"><span>Tradeify</span><span id="vis-pct-tdfy">0%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="vis-bar-tdfy" style="background: var(--accent-yellow); width: 0%;"></div></div>
+        <div class="vs-footer" id="vis-txt-tdfy">0/0 Unlocked</div>
+      </div>
+      <div class="visual-stat-card" style="border-top: 3px solid var(--accent-red);">
+        <div class="vs-header"><span>Futures Elite</span><span id="vis-pct-fe">0%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="vis-bar-fe" style="background: var(--accent-red); width: 0%;"></div></div>
+        <div class="vs-footer" id="vis-txt-fe">0/0 Unlocked</div>
+      </div>
+      <div class="visual-stat-card" style="border-top: 3px solid var(--accent-blue);">
+        <div class="vs-header"><span>FundedNext</span><span id="vis-pct-fn">0%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="vis-bar-fn" style="background: var(--accent-blue); width: 0%;"></div></div>
+        <div class="vs-footer" id="vis-txt-fn">0/0 Unlocked</div>
+      </div>
+      <div class="visual-stat-card" style="border-top: 3px solid var(--accent-green);">
+        <div class="vs-header"><span>Withdrawals</span><span id="vis-pct-wd">0%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="vis-bar-wd" style="background: var(--accent-green); width: 0%;"></div></div>
+        <div class="vs-footer" id="vis-txt-wd">0/0 Unlocked</div>
+      </div>
+    </div>
+
+    <!-- ROADMAP FILTER TABS -->
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterRoadmapCategory('all', this)">All Goals</button>
+      <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-topstep', this)">Topstep</button>
+      <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-tradovate', this)">Tradovate</button>
+      <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-tdfy', this)">Tradeify</button>
+      <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-fe', this)">Futures Elite</button>
+      <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-fn', this)">FundedNext</button>
+      <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-withdrawal', this)">Withdrawals</button>
     </div>
 
     <div class="encouragement-card">
@@ -289,55 +361,68 @@
     </div>
 
     <!-- SECTION 1: TOPSTEP LIVE MILESTONES -->
-    <div class="section-header-wrap">
-      <div>
-        <span class="section-header purple">1. Topstep Live — Account Milestones</span>
-        <button class="test-popup-btn" onclick="testCelebrationModal()">Test Popup 🔔</button>
+    <div class="roadmap-category-block" id="roadmap-topstep">
+      <div class="section-header-wrap">
+        <div>
+          <span class="section-header purple">1. Topstep Live — Account Milestones</span>
+          <button class="test-popup-btn" onclick="testCelebrationModal()">Test Popup 🔔</button>
+        </div>
+        <span class="badge badge-blue" id="topstep-completed-badge">0 / 0 Unlocked</span>
       </div>
-      <span class="badge badge-blue" id="topstep-completed-badge">0 / 0 Unlocked</span>
+      <div class="timeline-container" id="topstep-goals-timeline"></div>
+      <div class="trophy-cabinet" id="topstep-trophy-room"></div>
     </div>
-    <div class="timeline-container" id="topstep-goals-timeline"></div>
-    <div class="trophy-cabinet" id="topstep-trophy-room"></div>
 
     <!-- SECTION 2: TRADOVATE LIVE MILESTONES -->
-    <div class="section-header-wrap">
-      <span class="section-header cyan">2. Tradovate Live — Account Milestones</span>
-      <span class="badge badge-cyan" id="tradovate-completed-badge">0 / 0 Unlocked</span>
+    <div class="roadmap-category-block" id="roadmap-tradovate">
+      <div class="section-header-wrap">
+        <span class="section-header cyan">2. Tradovate Live — Account Milestones</span>
+        <span class="badge badge-cyan" id="tradovate-completed-badge">0 / 0 Unlocked</span>
+      </div>
+      <div class="timeline-container" id="tradovate-goals-timeline"></div>
+      <div class="trophy-cabinet" id="tradovate-trophy-room"></div>
     </div>
-    <div class="timeline-container" id="tradovate-goals-timeline"></div>
-    <div class="trophy-cabinet" id="tradovate-trophy-room"></div>
 
     <!-- SECTION 3: TRADEIFY MILESTONES -->
-    <div class="section-header-wrap">
-      <span class="section-header yellow">3. Tradeify Accounts (TDFY) — Milestones</span>
-      <span class="badge badge-yellow" id="tdfy-completed-badge">0 / 0 Unlocked</span>
+    <div class="roadmap-category-block" id="roadmap-tdfy">
+      <div class="section-header-wrap">
+        <span class="section-header yellow">3. Tradeify Accounts (TDFY) — Milestones</span>
+        <span class="badge badge-yellow" id="tdfy-completed-badge">0 / 0 Unlocked</span>
+      </div>
+      <div class="timeline-container" id="tdfy-goals-timeline"></div>
+      <div class="trophy-cabinet" id="tdfy-trophy-room"></div>
     </div>
-    <div class="timeline-container" id="tdfy-goals-timeline"></div>
-    <div class="trophy-cabinet" id="tdfy-trophy-room"></div>
 
     <!-- SECTION 4: FUTURES ELITE MILESTONES -->
-    <div class="section-header-wrap">
-      <span class="section-header red">4. Futures Elite Accounts (FE) — Milestones</span>
-      <span class="badge badge-red" id="fe-completed-badge">0 / 0 Unlocked</span>
+    <div class="roadmap-category-block" id="roadmap-fe">
+      <div class="section-header-wrap">
+        <span class="section-header red">4. Futures Elite Accounts (FE) — Milestones</span>
+        <span class="badge badge-red" id="fe-completed-badge">0 / 0 Unlocked</span>
+      </div>
+      <div class="timeline-container" id="fe-goals-timeline"></div>
+      <div class="trophy-cabinet" id="fe-trophy-room"></div>
     </div>
-    <div class="timeline-container" id="fe-goals-timeline"></div>
-    <div class="trophy-cabinet" id="fe-trophy-room"></div>
 
     <!-- SECTION 5: FUNDEDNEXT MILESTONES -->
-    <div class="section-header-wrap">
-      <span class="section-header blue">5. FundedNext Accounts (FN) — Milestones</span>
-      <span class="badge badge-blue" id="fn-completed-badge">0 / 0 Unlocked</span>
+    <div class="roadmap-category-block" id="roadmap-fn">
+      <div class="section-header-wrap">
+        <span class="section-header blue">5. FundedNext Accounts (FN) — Milestones</span>
+        <span class="badge badge-blue" id="fn-completed-badge">0 / 0 Unlocked</span>
+      </div>
+      <div class="timeline-container" id="fn-goals-timeline"></div>
+      <div class="trophy-cabinet" id="fn-trophy-room"></div>
     </div>
-    <div class="timeline-container" id="fn-goals-timeline"></div>
-    <div class="trophy-cabinet" id="fn-trophy-room"></div>
 
     <!-- SECTION 6: CATEGORY 2 (WITHDRAWAL MILESTONES) -->
-    <div class="section-header-wrap">
-      <span class="section-header green">6. Category 2 — Payout & Withdrawal Milestones</span>
-      <span class="badge badge-green" id="withdrawal-completed-badge">0 / 0 Unlocked</span>
+    <div class="roadmap-category-block" id="roadmap-withdrawal">
+      <div class="section-header-wrap">
+        <span class="section-header green">6. Category 2 — Payout & Withdrawal Milestones</span>
+        <span class="badge badge-green" id="withdrawal-completed-badge">0 / 0 Unlocked</span>
+      </div>
+      <div class="timeline-container" id="withdrawal-goals-timeline"></div>
+      <div class="trophy-cabinet" id="withdrawal-trophy-room"></div>
     </div>
-    <div class="timeline-container" id="withdrawal-goals-timeline"></div>
-    <div class="trophy-cabinet" id="withdrawal-trophy-room"></div>
+
   </div>
 
   <script>
@@ -446,6 +531,40 @@
     function rotateEncouragement() {
       const idx = Math.floor(Math.random() * encouragementQuotes.length);
       document.getElementById('encouragement-msg').innerText = `"${encouragementQuotes[idx]}"`;
+    }
+
+    function filterDailyCategory(cat, btn) {
+      document.querySelectorAll('#view-daily .filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const blocks = {
+        'topstep': document.getElementById('block-topstep'),
+        'tdfy': document.getElementById('block-tdfy'),
+        'fe': document.getElementById('block-fe'),
+        'fn': document.getElementById('block-fn')
+      };
+
+      if (cat === 'all') {
+        Object.values(blocks).forEach(b => b.style.display = 'block');
+      } else {
+        Object.keys(blocks).forEach(k => {
+          blocks[k].style.display = (k === cat) ? 'block' : 'none';
+        });
+      }
+    }
+
+    function filterRoadmapCategory(cat, btn) {
+      document.querySelectorAll('#view-roadmap .filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const blocks = document.querySelectorAll('.roadmap-category-block');
+      if (cat === 'all') {
+        blocks.forEach(b => b.style.display = 'block');
+      } else {
+        blocks.forEach(b => {
+          b.style.display = (b.id === cat) ? 'block' : 'none';
+        });
+      }
     }
 
     function getSeenCompletedMilestones() {
@@ -565,7 +684,7 @@
     }
 
     function evaluateTradeifyAndGroupRules() {
-      document.querySelectorAll('.card').forEach(c => {
+      document.querySelectorAll('#view-daily .card').forEach(c => {
         c.classList.remove('card-lagging', 'card-paused', 'card-danger');
       });
 
@@ -718,6 +837,14 @@
       }
     }
 
+    // Visual Chart Update function
+    function updateVisualChart(prefix, done, total) {
+      const pct = total > 0 ? (done/total)*100 : 0;
+      document.getElementById(`vis-pct-${prefix}`).innerText = pct.toFixed(0) + '%';
+      document.getElementById(`vis-bar-${prefix}`).style.width = pct + '%';
+      document.getElementById(`vis-txt-${prefix}`).innerText = `${done} / ${total} Unlocked`;
+    }
+
     /* GOALS TRACKER SHEET PARSER (GID 1603097852) */
     window.handleGoalsData = function(data) {
       try {
@@ -782,7 +909,6 @@
             }
           }
 
-          // Determine badge color based on category
           let badgeColorClass = 'badge-blue';
           if (category === 'tradovate') badgeColorClass = 'badge-cyan';
           if (category === 'tdfy') badgeColorClass = 'badge-yellow';
@@ -849,6 +975,14 @@
         document.getElementById('fe-completed-badge').innerText = `${feDone} / ${feTotal} Unlocked`;
         document.getElementById('fn-completed-badge').innerText = `${fnDone} / ${fnTotal} Unlocked`;
         document.getElementById('withdrawal-completed-badge').innerText = `${wdDone} / ${wdTotal} Unlocked`;
+
+        // Update Visual Graphs Dashboard
+        updateVisualChart('ts', tsDone, tsTotal);
+        updateVisualChart('tr', trDone, trTotal);
+        updateVisualChart('tdfy', tdfyDone, tdfyTotal);
+        updateVisualChart('fe', feDone, feTotal);
+        updateVisualChart('fn', fnDone, fnTotal);
+        updateVisualChart('wd', wdDone, wdTotal);
 
         // Update Macro Master Progression Bar
         if (totalMasterGoals > 0) {
