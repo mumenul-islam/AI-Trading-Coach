@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.3.4</title>
+  <title>2026 Trade Command Center & Roadmap v1.3.5</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -195,7 +195,7 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.3.4</span>
+      <span class="version-badge">v1.3.5</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -603,6 +603,21 @@
       if (isNaN(num)) return 0;
       if (num > -1 && num < 1 && num !== 0) num = num * 100;
       return num;
+    }
+
+    function formatTargetValue(val) {
+      if (!val) return '';
+      let str = val.toString().trim();
+      let num = parseFloat(str.replace(/[%]/g, ''));
+      
+      if (!isNaN(num)) {
+        if (num > -1 && num < 1 && num !== 0) {
+          return `Progress: ${(num * 100).toFixed(1)}%`;
+        } else if (str.includes('%')) {
+          return `Progress: ${num.toFixed(1)}%`;
+        }
+      }
+      return `Target: ${str}`;
     }
 
     function getESTDateString() {
@@ -1268,7 +1283,8 @@
             const mKey = `goal_${cleanName}_${goalTitle}_${idx}_${source}`;
 
             const tagInfo = getGoalTag(goalTitle);
-            const tagHTML = `<span class="goal-tag ${tagInfo.class}">${tagInfo.text}</span>`;
+            const tagHTML = `<span class="goal-tag ${tagInfo.class}">${tagHTML_Text || tagInfo.text}</span>`;
+            const formattedTarget = formatTargetValue(dateVal);
             
             let acctPillHTML = '';
             if (cleanName.includes('tdfy') || cleanName.includes('tradeify')) {
@@ -1301,7 +1317,7 @@
             totalMasterGoals++;
             if (completed) {
               totalMasterDone++;
-              if (dateVal) {
+              if (dateVal && !dateVal.includes('.')) {
                 datedEvents.push({ title: goalTitle || acctName, date: dateVal });
               }
               if (!seenMilestones.includes(mKey)) {
@@ -1317,12 +1333,14 @@
             if (category === 'fe') badgeColorClass = 'badge-red';
             if (category === 'ts-withdrawal') badgeColorClass = 'badge-green';
 
+            var tagHTML_Text = tagInfo.text;
+
             const activeNodeHTML = `
               <div class="timeline-node active">
                 <div class="milestone-card">
                   <div class="milestone-info">
                     <div class="milestone-title">${acctPillHTML} ${goalTitle || (acctName + ' Milestone')} ${tagHTML}</div>
-                    <div class="milestone-meta">🎯 Target Milestone ${dateVal ? '• Target: ' + dateVal : ''}</div>
+                    <div class="milestone-meta">🎯 ${formattedTarget || 'Milestone In Progress'}</div>
                   </div>
                   <span class="badge ${badgeColorClass}">IN PROGRESS</span>
                 </div>
@@ -1331,7 +1349,7 @@
             const trophyNodeHTML = `
               <div class="trophy-item">
                 <span>🏆 ${acctPillHTML ? acctPillHTML + ' ' : ''}${goalTitle || (acctName + ' Milestone')}</span>
-                <span class="trophy-time">⏱️ ${dateVal ? 'Unlocked: ' + dateVal : '✅ Completed'}</span>
+                <span class="trophy-time">⏱️ ${formattedTarget || 'Completed'}</span>
               </div>`;
 
             if (category === 'topstep-live') {
@@ -1417,7 +1435,6 @@
 
           updateCardData(acctName, progPct, balance, goalVal, drawVal);
 
-          // Explicit Row 17 parser for Topstep 50k Eval
           if (index === 16) { 
             const evalName = acctName || 'Topstep 50k Eval';
             updateCardData(evalName, progPct, balance, goalVal, drawVal);
