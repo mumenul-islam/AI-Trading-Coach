@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.3.0</title>
+  <title>2026 Trade Command Center & Roadmap v1.4.0</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -39,13 +39,14 @@
     .btn-sync-now:hover { opacity: 0.85; }
 
     /* Executive Summary Panel */
-    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px; }
     .summary-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 14px; text-align: center; }
     .summary-title { font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px; }
     .summary-value { font-size: 22px; font-weight: 700; color: #fff; margin-top: 4px; }
 
     /* Action Command Banner */
-    .action-command-banner { background: rgba(41, 98, 255, 0.1); border: 1px solid var(--accent-blue); border-radius: var(--card-radius); padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+    .action-command-banner { background: rgba(41, 98, 255, 0.1); border: 1px solid var(--accent-blue); border-radius: var(--card-radius); padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .action-info { display: flex; align-items: center; gap: 12px; }
     .action-icon { font-size: 20px; }
     .action-text-title { font-size: 11px; text-transform: uppercase; color: var(--accent-blue); font-weight: 700; letter-spacing: 0.5px; }
     .action-text-body { font-size: 13px; font-weight: 600; color: #fff; margin-top: 2px; }
@@ -56,10 +57,13 @@
     .nav-tab.active { background: var(--bg-card); color: #fff; border: 1px solid var(--border-color); }
 
     /* Filter Bar */
-    .filter-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .filter-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+    .filter-group { display: flex; gap: 8px; flex-wrap: wrap; }
     .filter-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
     .filter-btn:hover { border-color: var(--accent-blue); }
     .filter-btn.active { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+    .toggle-completed-btn { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); font-size: 11px; padding: 6px 12px; border-radius: 16px; cursor: pointer; font-weight: 600; }
+    .toggle-completed-btn.active { border-color: var(--accent-green); color: var(--accent-green); background: rgba(8, 153, 129, 0.1); }
 
     /* Section Headers */
     .section-header-wrap { display: flex; justify-content: space-between; align-items: center; margin: 25px 0 15px 0; }
@@ -78,16 +82,26 @@
     /* Cards & Grids */
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-bottom: 25px; }
     .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; transition: all 0.3s ease; position: relative; }
+    .card.hidden-completed { display: none !important; }
     
     @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(242, 54, 69, 0.3); } 70% { box-shadow: 0 0 0 8px rgba(242, 54, 69, 0); } 100% { box-shadow: 0 0 0 0 rgba(242, 54, 69, 0); } }
     
     .card.card-lagging { border: 2px solid var(--accent-yellow) !important; background: rgba(245, 192, 0, 0.05); box-shadow: 0 0 14px rgba(245, 192, 0, 0.18); }
     .card.card-danger { border: 2px solid var(--accent-red) !important; background: rgba(242, 54, 69, 0.06); animation: pulseRed 2s infinite; }
     .card.card-paused { border: 1px solid var(--border-color); opacity: 0.45; filter: grayscale(40%); }
+    .card.card-trading-active { border: 2px solid var(--accent-blue) !important; background: rgba(41, 98, 255, 0.08); box-shadow: 0 0 16px rgba(41, 98, 255, 0.25); }
 
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .card-title { font-size: 14px; font-weight: 700; color: #fff; }
     
+    /* Execution Status Selector */
+    .exec-status-bar { display: flex; gap: 4px; margin-bottom: 12px; background: rgba(19, 23, 34, 0.6); padding: 3px; border-radius: 6px; border: 1px solid var(--border-color); }
+    .exec-btn { flex: 1; background: transparent; border: none; color: var(--text-muted); font-size: 10px; font-weight: 700; padding: 5px 0; border-radius: 4px; cursor: pointer; transition: all 0.2s ease; text-transform: uppercase; }
+    .exec-btn:hover { color: #fff; }
+    .exec-btn.state-not-started.active { background: var(--bg-header); color: #fff; }
+    .exec-btn.state-in-progress.active { background: var(--accent-blue); color: #fff; }
+    .exec-btn.state-complete.active { background: var(--accent-green); color: #fff; }
+
     /* Badges */
     .badge { font-size: 10px; padding: 3px 8px; border-radius: 12px; font-weight: 700; text-transform: uppercase; background: var(--bg-header); color: var(--text-muted); }
     .badge-green { background: rgba(8, 153, 129, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
@@ -116,7 +130,6 @@
     .macro-progress-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 15px; }
     .macro-header { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-bottom: 10px; }
     
-    /* Visual Chart Container */
     .chart-box-container { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 25px; }
     .chart-box-title { font-size: 12px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
 
@@ -177,7 +190,7 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.3.0</span>
+      <span class="version-badge">v1.4.0</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -200,21 +213,30 @@
   <div id="view-daily">
     
     <div class="action-command-banner">
-      <div class="action-icon">🎯</div>
-      <div>
-        <div class="action-text-title">Today's Trading Plan & Account Focus</div>
-        <div class="action-text-body" id="action-plan-summary">Evaluating account balances and group rules...</div>
+      <div class="action-info">
+        <div class="action-icon">🎯</div>
+        <div>
+          <div class="action-text-title">Today's Trading Plan & Account Focus</div>
+          <div class="action-text-body" id="action-plan-summary">Evaluating account balances and group rules...</div>
+        </div>
+      </div>
+      <div style="text-align: right; font-size: 11px; color: var(--text-muted);">
+        Session Close: <span style="color: var(--accent-yellow); font-weight: 700;">6:00 PM EST</span>
       </div>
     </div>
 
     <div class="summary-grid">
       <div class="summary-card">
-        <div class="summary-title">Active Accounts</div>
+        <div class="summary-title">Total Portfolio</div>
         <div class="summary-value" id="summary-active-count">15 / 15</div>
       </div>
       <div class="summary-card">
-        <div class="summary-title">On-Track Tier (>50%)</div>
-        <div class="summary-value" id="summary-ontrack-count" style="color: var(--accent-green);">0</div>
+        <div class="summary-title">Today's Focus</div>
+        <div class="summary-value" id="summary-focus-count" style="color: var(--accent-blue);">0 Active</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-title">Completed Today</div>
+        <div class="summary-value" id="summary-completed-today-count" style="color: var(--accent-green);">0 Done</div>
       </div>
       <div class="summary-card">
         <div class="summary-title">Paused Accounts</div>
@@ -224,12 +246,17 @@
 
     <!-- DAILY FILTER TABS -->
     <div class="filter-bar">
-      <button class="filter-btn active" onclick="filterDailyCategory('all', this)">All Accounts (15)</button>
-      <button class="filter-btn" onclick="filterDailyCategory('topstep', this)">Topstep Live (1)</button>
-      <button class="filter-btn" onclick="filterDailyCategory('tdfy', this)">Tradeify (5)</button>
-      <button class="filter-btn" onclick="filterDailyCategory('fe', this)">Futures Elite (5)</button>
-      <button class="filter-btn" onclick="filterDailyCategory('fn', this)">FundedNext (3)</button>
-      <button class="filter-btn" onclick="filterDailyCategory('ts-eval', this)">Topstep Evals (1)</button>
+      <div class="filter-group">
+        <button class="filter-btn active" onclick="filterDailyCategory('all', this)">All Accounts (15)</button>
+        <button class="filter-btn" onclick="filterDailyCategory('topstep', this)">Topstep Live (1)</button>
+        <button class="filter-btn" onclick="filterDailyCategory('tdfy', this)">Tradeify (5)</button>
+        <button class="filter-btn" onclick="filterDailyCategory('fe', this)">Futures Elite (5)</button>
+        <button class="filter-btn" onclick="filterDailyCategory('fn', this)">FundedNext (3)</button>
+        <button class="filter-btn" onclick="filterDailyCategory('ts-eval', this)">Topstep Evals (1)</button>
+      </div>
+      <button class="toggle-completed-btn" id="toggle-completed-view-btn" onclick="toggleCompletedCardsVisibility()">
+        👁️ Show Completed (<span id="hidden-completed-counter">0</span>)
+      </button>
     </div>
 
     <div class="category-block" id="block-topstep">
@@ -241,6 +268,11 @@
           <div class="card-header">
             <span class="card-title">Topstep Live</span>
             <span class="badge badge-blue" id="badge-topstep-live">PRIMARY</span>
+          </div>
+          <div class="exec-status-bar" id="exec-bar-topstep-live">
+            <button class="exec-btn state-not-started active" onclick="setAccountExecStatus('topstep-live', 'not-started')">Not Started</button>
+            <button class="exec-btn state-in-progress" onclick="setAccountExecStatus('topstep-live', 'in-progress')">In Progress</button>
+            <button class="exec-btn state-complete" onclick="setAccountExecStatus('topstep-live', 'complete')">Done ✓</button>
           </div>
           <div class="goal-hero-box" id="hero-box-topstep-live">
             <div class="hero-label" id="label-topstep-live">Short-Term Goal</div>
@@ -297,6 +329,11 @@
             <span class="card-title" id="title-topstep-50k-eval">Topstep 50k Eval</span>
             <span class="badge badge-purple" id="badge-topstep-50k-eval">EVALUATION</span>
           </div>
+          <div class="exec-status-bar" id="exec-bar-topstep-50k-eval">
+            <button class="exec-btn state-not-started active" onclick="setAccountExecStatus('topstep-50k-eval', 'not-started')">Not Started</button>
+            <button class="exec-btn state-in-progress" onclick="setAccountExecStatus('topstep-50k-eval', 'in-progress')">In Progress</button>
+            <button class="exec-btn state-complete" onclick="setAccountExecStatus('topstep-50k-eval', 'complete')">Done ✓</button>
+          </div>
           <div class="goal-hero-box" id="hero-box-topstep-50k-eval">
             <div class="hero-label" id="label-topstep-50k-eval">Short-Term Goal</div>
             <div class="hero-val" id="val-topstep-50k-eval-goal">$0.00</div>
@@ -340,14 +377,16 @@
 
     <!-- ROADMAP FILTER TABS -->
     <div class="filter-bar">
-      <button class="filter-btn active" onclick="filterRoadmapCategory('all', this)">All Goals</button>
-      <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-topstep-live', this)">Topstep Live</button>
-      <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-tradovate-live', this)">Tradovate Live</button>
-      <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-topstep-prop', this)">Topstep Prop Accounts</button>
-      <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-tdfy', this)">Tradeify</button>
-      <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-fe', this)">Futures Elite</button>
-      <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-fn', this)">FundedNext</button>
-      <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-withdrawals', this)">Withdrawals</button>
+      <div class="filter-group">
+        <button class="filter-btn active" onclick="filterRoadmapCategory('all', this)">All Goals</button>
+        <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-topstep-live', this)">Topstep Live</button>
+        <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-tradovate-live', this)">Tradovate Live</button>
+        <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-topstep-prop', this)">Topstep Prop Accounts</button>
+        <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-tdfy', this)">Tradeify</button>
+        <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-fe', this)">Futures Elite</button>
+        <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-fn', this)">FundedNext</button>
+        <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-withdrawals', this)">Withdrawals</button>
+      </div>
     </div>
 
     <div class="encouragement-card">
@@ -444,6 +483,7 @@
     let countdownVal = 30;
     let countdownInterval = null;
     let chartInstance = null;
+    let forceShowCompleted = false;
 
     const parsedProgressMap = {};
     const parsedBalanceMap = {};
@@ -485,6 +525,11 @@
             <span class="card-title">${title}</span>
             <span class="badge" id="badge-${id}">${defaultBadge}</span>
           </div>
+          <div class="exec-status-bar" id="exec-bar-${id}">
+            <button class="exec-btn state-not-started active" onclick="setAccountExecStatus('${id}', 'not-started')">Not Started</button>
+            <button class="exec-btn state-in-progress" onclick="setAccountExecStatus('${id}', 'in-progress')">In Progress</button>
+            <button class="exec-btn state-complete" onclick="setAccountExecStatus('${id}', 'complete')">Done ✓</button>
+          </div>
           <div class="goal-hero-box" id="hero-box-${id}">
             <div class="hero-label" id="label-${id}">Short-Term Goal</div>
             <div class="hero-val" id="val-${id}-goal">$0.00</div>
@@ -523,6 +568,103 @@
       if (isNaN(num)) return 0;
       if (num > -1 && num < 1 && num !== 0) num = num * 100;
       return num;
+    }
+
+    /* DAILY EXECUTION TRACKER & 6:00 PM EST AUTO-RESET ENGINE */
+    function getESTDateString() {
+      const now = new Date();
+      // Format to EST/EDT date string YYYY-MM-DD
+      const estString = new Date(now.toLocaleString("en-US", {timeZone: "America/New_York"}));
+      
+      // If past 6:00 PM EST (18:00), treat as next trading session
+      if (estString.getHours() >= 18) {
+        estString.setDate(estString.getDate() + 1);
+      }
+      return estString.toISOString().split('T')[0];
+    }
+
+    function getStoredExecStatuses() {
+      const sessionKey = `trade_exec_status_${getESTDateString()}`;
+      try { return JSON.parse(localStorage.getItem(sessionKey) || '{}'); } catch(e) { return {}; }
+    }
+
+    function setAccountExecStatus(acctId, status) {
+      const sessionKey = `trade_exec_status_${getESTDateString()}`;
+      const stored = getStoredExecStatuses();
+      stored[acctId] = status;
+      localStorage.setItem(sessionKey, JSON.stringify(stored));
+      applyExecStatusUI(acctId, status);
+      updateDailySummaryCounters();
+    }
+
+    function applyExecStatusUI(acctId, status) {
+      const cardEl = document.getElementById(`card-${acctId}`);
+      const barEl = document.getElementById(`exec-bar-${acctId}`);
+      if (!cardEl || !barEl) return;
+
+      const btns = barEl.querySelectorAll('.exec-btn');
+      btns.forEach(b => b.classList.remove('active'));
+
+      cardEl.classList.remove('card-trading-active');
+
+      if (status === 'complete') {
+        barEl.querySelector('.state-complete').classList.add('active');
+        if (!forceShowCompleted) {
+          cardEl.classList.add('hidden-completed');
+        } else {
+          cardEl.classList.remove('hidden-completed');
+        }
+      } else if (status === 'in-progress') {
+        barEl.querySelector('.state-in-progress').classList.add('active');
+        cardEl.classList.remove('hidden-completed');
+        cardEl.classList.add('card-trading-active');
+      } else {
+        barEl.querySelector('.state-not-started').classList.add('active');
+        cardEl.classList.remove('hidden-completed');
+      }
+    }
+
+    function loadAllExecStatuses() {
+      const stored = getStoredExecStatuses();
+      const allCards = document.querySelectorAll('#view-daily .card');
+      allCards.forEach(card => {
+        const id = card.id.replace('card-', '');
+        const status = stored[id] || 'not-started';
+        applyExecStatusUI(id, status);
+      });
+      updateDailySummaryCounters();
+    }
+
+    function toggleCompletedCardsVisibility() {
+      forceShowCompleted = !forceShowCompleted;
+      const toggleBtn = document.getElementById('toggle-completed-view-btn');
+      if (toggleBtn) {
+        if (forceShowCompleted) {
+          toggleBtn.classList.add('active');
+          toggleBtn.innerHTML = '👁️ Showing All (Completed Visible)';
+        } else {
+          toggleBtn.classList.remove('active');
+          toggleBtn.innerHTML = `👁️ Show Completed (<span id="hidden-completed-counter">0</span>)`;
+        }
+      }
+      loadAllExecStatuses();
+    }
+
+    function updateDailySummaryCounters() {
+      const stored = getStoredExecStatuses();
+      let activeCount = 0;
+      let completedCount = 0;
+
+      Object.values(stored).forEach(st => {
+        if (st === 'in-progress') activeCount++;
+        if (st === 'complete') completedCount++;
+      });
+
+      document.getElementById('summary-focus-count').innerText = `${activeCount} Active`;
+      document.getElementById('summary-completed-today-count').innerText = `${completedCount} Done`;
+      
+      const counterEl = document.getElementById('hidden-completed-counter');
+      if (counterEl) counterEl.innerText = completedCount;
     }
 
     function switchMainView(viewName, btn) {
@@ -990,13 +1132,11 @@
         rows.forEach((r, idx) => {
           if (!r.c) return;
 
-          // Primary Live Feed (Col A, B, C, D)
           const colA_Name = r.c[0] && r.c[0].v !== null ? r.c[0].v.toString().trim() : '';
           const colB_Goal = r.c[1] && r.c[1].v !== null ? r.c[1].v.toString().trim() : '';
           const colC_Done = r.c[2] && r.c[2].v !== null ? r.c[2].v.toString().toLowerCase().trim() : '';
           const colD_Date = r.c[3] && r.c[3].v !== null ? r.c[3].v.toString().trim() : '';
 
-          // Prop Feed (Col G, H, I, J)
           const colG_Name = r.c[6] && r.c[6].v !== null ? r.c[6].v.toString().trim() : '';
           const colH_Goal = r.c[7] && r.c[7].v !== null ? r.c[7].v.toString().trim() : '';
           const colI_Done = r.c[8] && r.c[8].v !== null ? r.c[8].v.toString().toLowerCase().trim() : '';
@@ -1150,13 +1290,13 @@
 
           updateCardData(acctName, progPct, balance, goalVal, drawVal);
 
-          // Dedicated parser for Row 17 (Topstep 50k Eval)
           if (index === 16) { 
             updateCardData('topstep-50k-eval', progPct, balance, goalVal, drawVal);
           }
         });
 
         evaluateTradeifyAndGroupRules();
+        loadAllExecStatuses();
 
         document.getElementById('sync-time').innerText = 'Last Synced with 2026 Tracker: ' + new Date().toLocaleTimeString();
         document.getElementById('live-indicator').innerText = 'LIVE FEEDS SYNCED';
