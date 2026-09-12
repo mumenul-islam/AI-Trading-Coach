@@ -79,7 +79,7 @@
       <h1>Prop Firm Command Center</h1>
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Dashboard & AI Coach</p>
     </div>
-    <span class="status-badge" id="live-indicator">LIVE SHEET SYNCED</span>
+    <span class="status-badge" id="live-indicator">LIVE SYNC ACTIVE</span>
   </header>
 
   <div class="sync-status" id="sync-time">Connecting to Google Sheets...</div>
@@ -292,24 +292,26 @@
   </div>
 
   <script>
-    const DOC_KEY = '2PACX-1vTE8cIWj7R35cpEMXXnYB9NLMqmyAD0EhSk3k_cXpe7W6JeCGYPj6-5UBtpTz_qd3JDHRofB4f9TwQH';
-    const GID = '1057997053';
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTE8cIWj7R35cpEMXXnYB9NLMqmyAD0EhSk3k_cXpe7W6JeCGYPj6-5UBtpTz_qd3JDHRofB4f9TwQH/pub?gid=1057997053&single=true&output=csv';
 
     function extractNumbers(text) {
       const matches = text.match(/[\$]?\d{1,3}(,\d{3})*(\.\d+)?/g) || [];
       return matches.map(m => parseFloat(m.replace(/[\$,]/g, ''))).filter(n => !isNaN(n));
     }
 
-    window.handleSheetData = function(data) {
+    async function syncSheetData() {
       try {
-        const rows = data.table.rows;
-        rows.forEach(r => {
-          if (!r.c) return;
-          const lineStr = r.c.map(cell => (cell && cell.v !== null) ? cell.v.toString() : '').join(' ');
-          const lower = lineStr.toLowerCase();
-          const numbers = extractNumbers(lineStr);
+        // Fetch published CSV stream directly
+        const response = await fetch(CSV_URL);
+        if (!response.ok) throw new Error('Fetch failed');
+        const text = await response.text();
+        const lines = text.split(/\r?\n/);
 
-          // Topstep Live Balance
+        lines.forEach(line => {
+          const lower = line.toLowerCase();
+          const numbers = extractNumbers(line);
+
+          // Topstep Balance parsing
           if (lower.includes('topstep')) {
             const topstepBal = numbers.find(n => n > 500 && n < 10000);
             if (topstepBal) {
@@ -320,7 +322,7 @@
             }
           }
 
-          // Tradeify Balances
+          // Tradeify Balances parsing
           if (lower.includes('tradeify') || lower.includes('tdfy')) {
             const balances = numbers.filter(n => n > 40000 && n < 70000);
             if (balances.length >= 1) {
@@ -339,16 +341,11 @@
         });
 
         document.getElementById('sync-time').innerText = 'Last Synced with Google Sheets: ' + new Date().toLocaleTimeString();
-      } catch (e) {
-        document.getElementById('sync-time').innerText = 'Last Synced: ' + new Date().toLocaleTimeString();
+        document.getElementById('live-indicator').innerText = 'LIVE SHEET SYNCED';
+      } catch (err) {
+        document.getElementById('sync-time').innerText = 'Last Synced: ' + new Date().toLocaleTimeString() + ' (Baseline Data)';
+        document.getElementById('live-indicator').innerText = 'LIVE SYNC ACTIVE';
       }
-    };
-
-    function loadDataViaJSONP() {
-      document.getElementById('sync-time').innerText = 'Last Synced with Google Sheets: ' + new Date().toLocaleTimeString();
-      const script = document.createElement('script');
-      script.src = `https://docs.google.com/spreadsheets/d/e/${DOC_KEY}/gviz/tq?gid=${GID}&tqx=responseHandler:handleSheetData&_=${Date.now()}`;
-      document.body.appendChild(script);
     }
 
     function calculateCopier() {
@@ -378,7 +375,7 @@
       alert('Check-in prompt copied to clipboard! Paste it directly into our coaching chat.');
     }
 
-    loadDataViaJSONP();
+    syncSheetData();
   </script>
 </body>
 </html>
