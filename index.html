@@ -45,29 +45,6 @@
     .stat-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 13px; }
     .stat-label { color: var(--text-muted); }
     .stat-val { font-weight: 600; }
-
-    /* Progress Bar */
-    .progress-container { margin-top: 15px; }
-    .progress-bar-bg { background: var(--border-color); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 6px; }
-    .progress-bar-fill { height: 100%; background: var(--accent-blue); width: 0%; transition: width 0.3s ease; }
-
-    /* Sections */
-    .calc-section, .check-section { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 20px; margin-bottom: 25px; }
-    .section-title { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
-
-    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px; }
-    label { font-size: 12px; color: var(--text-muted); }
-    input, select { background: var(--bg-main); border: 1px solid var(--border-color); color: #fff; padding: 10px; border-radius: 4px; outline: none; }
-
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { text-align: left; padding: 10px; border-bottom: 1px solid var(--border-color); font-size: 13px; }
-    th { color: var(--text-muted); font-weight: 500; }
-    .highlight-row { background: rgba(245, 192, 0, 0.08); }
-
-    .btn { background: var(--accent-blue); color: #fff; border: none; padding: 10px 18px; border-radius: 4px; font-weight: 600; cursor: pointer; }
-
-    .bottom-split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    @media (max-width: 850px) { .bottom-split { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -75,12 +52,12 @@
   <header>
     <div>
       <h1>Prop Firm Command Center</h1>
-      <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Dashboard & AI Coach</p>
+      <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Dashboard</p>
     </div>
-    <span class="status-badge" id="live-indicator">LIVE SHEET SYNCED</span>
+    <span class="status-badge" id="live-indicator">LIVE SYNC ACTIVE</span>
   </header>
 
-  <div class="sync-status" id="sync-time">Syncing data...</div>
+  <div class="sync-status" id="sync-time">Parsing live spreadsheet columns...</div>
 
   <!-- GUARDRAIL ALERT BANNER -->
   <div class="alert-banner">
@@ -112,9 +89,27 @@
     const RAW_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTE8cIWj7R35cpEMXXnYB9NLMqmyAD0EhSk3k_cXpe7W6JeCGYPj6-5UBtpTz_qd3JDHRofB4f9TwQH/pub?gid=1057997053&single=true&output=csv';
     const PROXY_URL = 'https://corsproxy.io/?' + encodeURIComponent(RAW_CSV + '&t=' + Date.now());
 
-    function extractNumbers(text) {
-      const matches = text.match(/[\$]?\d{1,3}(,\d{3})*(\.\d+)?/g) || [];
-      return matches.map(m => parseFloat(m.replace(/[\$,]/g, ''))).filter(n => !isNaN(n));
+    // Robust CSV split ignoring commas inside quotes
+    function parseCSVLine(line) {
+      const result = [];
+      let cell = '';
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        let c = line[i];
+        if (c === '"') { inQuotes = !inQuotes; }
+        else if (c === ',' && !inQuotes) {
+          result.push(cell.trim().replace(/^"(.*)"$/, '$1'));
+          cell = '';
+        } else { cell += c; }
+      }
+      result.push(cell.trim().replace(/^"(.*)"$/, '$1'));
+      return result;
+    }
+
+    function cleanNumber(val) {
+      if (!val) return null;
+      let num = parseFloat(val.replace(/[\$,]/g, ''));
+      return isNaN(num) ? null : num;
     }
 
     async function syncData() {
@@ -125,20 +120,28 @@
         const lines = text.split(/\r?\n/);
 
         lines.forEach(line => {
-          const lower = line.toLowerCase();
-          const numbers = extractNumbers(line);
+          const columns = parseCSVLine(line);
+          const rowText = columns.join(' ').toLowerCase();
 
-          // Matching specifically for "topstep live" or "topstep"
-          if (lower.includes('topstep')) {
-            const topstepBal = numbers.find(n => n > 500 && n < 10000);
-            if (topstepBal) {
-              document.getElementById('topstep-bal').innerText = '$' + topstepBal.toLocaleString('en-US', {minimumFractionDigits: 2});
-            }
+          // Topstep Row Target
+          if (rowText.includes('topstep')) {
+            columns.forEach(col => {
+              let val = cleanNumber(col);
+              // Target any balance value above $1,000 in the row
+              if (val !== null && val > 1000 && val < 20000) {
+                document.getElementById('topstep-bal').innerText = '$' + val.toLocaleString('en-US', {minimumFractionDigits: 2});
+              }
+            });
           }
 
-          // Matching specifically for "tdfy" or "tradeify"
-          if (lower.includes('tdfy') || lower.includes('tradeify')) {
-            const balances = numbers.filter(n => n > 40000 && n < 70000);
+          // Tradeify (TDFY) Row Target
+          if (rowText.includes('tdfy') || rowText.includes('tradeify')) {
+            const balances = [];
+            columns.forEach(col => {
+              let val = cleanNumber(col);
+              if (val !== null && val > 45000 && val < 70000) balances.push(val);
+            });
+
             if (balances.length >= 1) {
               document.getElementById('tdfy1-bal').innerText = '$' + balances[0].toLocaleString('en-US', {minimumFractionDigits: 2});
             }
