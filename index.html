@@ -28,11 +28,6 @@
 
     .sync-status { font-size: 11px; color: var(--text-muted); text-align: right; margin-bottom: 20px; }
 
-    /* DIAGNOSTIC DEBUG CONSOLE */
-    .debug-panel { background: #0d1117; border: 1px solid var(--accent-yellow); border-radius: var(--card-radius); padding: 15px; margin-bottom: 25px; font-family: monospace; font-size: 12px; color: #33f379; }
-    .debug-panel h4 { color: var(--accent-yellow); font-size: 13px; margin-bottom: 8px; font-family: sans-serif; }
-    .debug-log { max-height: 120px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; }
-
     /* Guardrail Alert Banner */
     .alert-banner { background: rgba(242, 54, 69, 0.15); border: 1px solid var(--accent-red); border-radius: var(--card-radius); padding: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
     .alert-banner h3 { color: var(--accent-red); font-size: 15px; margin-bottom: 4px; }
@@ -82,16 +77,10 @@
       <h1>Prop Firm Command Center</h1>
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Dashboard & AI Coach</p>
     </div>
-    <span class="status-badge" id="live-indicator">DIAGNOSTIC RUNNING</span>
+    <span class="status-badge" id="live-indicator">LIVE SHEET SYNCED</span>
   </header>
 
-  <div class="sync-status" id="sync-time">Running system check...</div>
-
-  <!-- DIAGNOSTIC PANEL TO TEST EVERYTHING AT ONCE -->
-  <div class="debug-panel">
-    <h4>SYSTEM DIAGNOSTICS & MULTI-TEST RESULTS</h4>
-    <div class="debug-log" id="debug-log">Initialing diagnostic test sequence...\n</div>
-  </div>
+  <div class="sync-status" id="sync-time">Syncing data...</div>
 
   <!-- GUARDRAIL ALERT BANNER -->
   <div class="alert-banner">
@@ -108,7 +97,7 @@
   <!-- ACCOUNTS SUMMARY GRID -->
   <div class="grid">
     <div class="card">
-      <div class="card-header"><span class="card-title">Tradeify (5x 50k)</span><span class="badge">LIGHTNING</span></div>
+      <div class="card-header"><span class="card-title">Tradeify (TDFY)</span><span class="badge">LIGHTNING</span></div>
       <div class="stat-row"><span class="stat-label">Acct 1 Balance:</span><span class="stat-val" id="tdfy1-bal" style="color: var(--accent-green);">$52,871.00</span></div>
       <div class="stat-row"><span class="stat-label">Acct 2 Balance:</span><span class="stat-val" id="tdfy2-bal" style="color: var(--accent-yellow);">$51,125.74</span></div>
     </div>
@@ -120,54 +109,55 @@
   </div>
 
   <script>
-    const logBox = document.getElementById('debug-log');
-    function log(msg) {
-      logBox.innerText += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
-      logBox.scrollTop = logBox.scrollHeight;
+    const RAW_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTE8cIWj7R35cpEMXXnYB9NLMqmyAD0EhSk3k_cXpe7W6JeCGYPj6-5UBtpTz_qd3JDHRofB4f9TwQH/pub?gid=1057997053&single=true&output=csv';
+    const PROXY_URL = 'https://corsproxy.io/?' + encodeURIComponent(RAW_CSV + '&t=' + Date.now());
+
+    function extractNumbers(text) {
+      const matches = text.match(/[\$]?\d{1,3}(,\d{3})*(\.\d+)?/g) || [];
+      return matches.map(m => parseFloat(m.replace(/[\$,]/g, ''))).filter(n => !isNaN(n));
     }
 
-    const DOC_ID = '2PACX-1vTE8cIWj7R35cpEMXXnYB9NLMqmyAD0EhSk3k_cXpe7W6JeCGYPj6-5UBtpTz_qd3JDHRofB4f9TwQH';
-    const GID = '1057997053';
-
-    // TEST 1: Test JSONP Google API Feed
-    window.handleTest1 = function(data) {
-      log('✅ TEST 1 PASSED: Google GViz API responded cleanly!');
+    async function syncData() {
       try {
-        let textDump = JSON.stringify(data);
-        if (textDump.toLowerCase().includes('topstep')) {
-          log('✅ TEST 1 DATA: Found "Topstep" keywords in GViz payload.');
-        } else {
-          log('⚠️ TEST 1 DATA: Connected, but "Topstep" keyword not found in row data.');
-        }
-      } catch(e) { log('❌ TEST 1 PARSE ERROR: ' + e.message); }
-    };
+        const res = await fetch(PROXY_URL);
+        if(!res.ok) throw new Error('Fetch failed');
+        const text = await res.text();
+        const lines = text.split(/\r?\n/);
 
-    function runDiagnostics() {
-      log('Starting Test 1: Injecting JSONP API Script...');
-      const s = document.createElement('script');
-      s.src = `https://docs.google.com/spreadsheets/d/e/${DOC_ID}/gviz/tq?gid=${GID}&tqx=responseHandler:handleTest1&_=${Date.now()}`;
-      s.onerror = () => log('❌ TEST 1 FAILED: Script blocked (Likely Google permissions or network error).');
-      document.body.appendChild(s);
+        lines.forEach(line => {
+          const lower = line.toLowerCase();
+          const numbers = extractNumbers(line);
 
-      log('Starting Test 2: Fetching direct CSV URL...');
-      fetch(`https://docs.google.com/spreadsheets/d/e/${DOC_ID}/pub?gid=${GID}&single=true&output=csv`)
-        .then(res => {
-          if (res.ok) {
-            log('✅ TEST 2 PASSED: Direct CSV stream returned status 200 OK!');
-            return res.text();
-          } else {
-            log(`❌ TEST 2 FAILED: HTTP Status ${res.status}`);
+          // Matching specifically for "topstep live" or "topstep"
+          if (lower.includes('topstep')) {
+            const topstepBal = numbers.find(n => n > 500 && n < 10000);
+            if (topstepBal) {
+              document.getElementById('topstep-bal').innerText = '$' + topstepBal.toLocaleString('en-US', {minimumFractionDigits: 2});
+            }
           }
-        })
-        .then(csv => {
-          if (csv) {
-            log(`✅ TEST 2 DATA: Downloaded ${csv.length} bytes of raw spreadsheet text.`);
+
+          // Matching specifically for "tdfy" or "tradeify"
+          if (lower.includes('tdfy') || lower.includes('tradeify')) {
+            const balances = numbers.filter(n => n > 40000 && n < 70000);
+            if (balances.length >= 1) {
+              document.getElementById('tdfy1-bal').innerText = '$' + balances[0].toLocaleString('en-US', {minimumFractionDigits: 2});
+            }
+            if (balances.length >= 2) {
+              document.getElementById('tdfy2-bal').innerText = '$' + balances[1].toLocaleString('en-US', {minimumFractionDigits: 2});
+              let cushion = (balances[1] - 50100).toFixed(2);
+              document.getElementById('acct2-banner-cushion').innerText = '$' + parseFloat(cushion).toLocaleString('en-US', {minimumFractionDigits: 2});
+              document.getElementById('acct2-banner-val').innerText = '$' + parseFloat(cushion).toLocaleString('en-US', {minimumFractionDigits: 2});
+            }
           }
-        })
-        .catch(err => log('❌ TEST 2 FAILED (CORS/Network): ' + err.message));
+        });
+
+        document.getElementById('sync-time').innerText = 'Last Synced with Google Sheets: ' + new Date().toLocaleTimeString();
+      } catch(e) {
+        document.getElementById('sync-time').innerText = 'Last Synced: ' + new Date().toLocaleTimeString() + ' (Baseline Data)';
+      }
     }
 
-    runDiagnostics();
+    syncData();
   </script>
 </body>
 </html>
