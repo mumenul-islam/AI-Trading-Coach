@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.4.1</title>
+  <title>2026 Trade Command Center & Roadmap v1.4.2</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -162,6 +162,7 @@
     .trophy-item { font-size: 12px; padding: 8px 14px; background: var(--bg-card); border: 1px solid var(--accent-green); border-radius: 20px; color: #fff; font-weight: 600; display: flex; flex-direction: column; gap: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
     .trophy-time { font-size: 10px; color: var(--accent-green); font-weight: 600; }
 
+    /* Category Specific Embed Charts */
     .category-chart-wrap { background: rgba(30, 34, 45, 0.6); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 12px; margin-bottom: 15px; }
     .category-chart-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
 
@@ -198,8 +199,8 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.4.1</span>
-      <span class="build-timestamp">Updated: Sep 12, 2026 • 7:11 PM EST</span>
+      <span class="version-badge">v1.4.2</span>
+      <span class="build-timestamp">Updated: Sep 12, 2026 • 7:13 PM EST</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -423,8 +424,8 @@
         <span class="badge badge-blue" id="topstep-completed-badge">0 / 0 Unlocked</span>
       </div>
       <div class="category-chart-wrap">
-        <div class="category-chart-title">📈 Topstep Live Progress Trajectory</div>
-        <div style="height: 140px;"><canvas id="chart-topstep-live"></canvas></div>
+        <div class="category-chart-title">📈 Topstep Live — % Progress Toward Milestones</div>
+        <div style="height: 150px;"><canvas id="chart-topstep-live"></canvas></div>
       </div>
       <div class="timeline-container" id="topstep-goals-timeline"></div>
       <div class="trophy-cabinet" id="topstep-trophy-room"></div>
@@ -437,8 +438,8 @@
         <span class="badge badge-cyan" id="tradovate-completed-badge">0 / 0 Unlocked</span>
       </div>
       <div class="category-chart-wrap">
-        <div class="category-chart-title">📈 Tradovate Live Progress Trajectory</div>
-        <div style="height: 140px;"><canvas id="chart-tradovate-live"></canvas></div>
+        <div class="category-chart-title">📈 Tradovate Live — % Progress Toward Milestones</div>
+        <div style="height: 150px;"><canvas id="chart-tradovate-live"></canvas></div>
       </div>
       <div class="timeline-container" id="tradovate-goals-timeline"></div>
       <div class="trophy-cabinet" id="tradovate-trophy-room"></div>
@@ -451,8 +452,8 @@
         <span class="badge badge-purple" id="topstep-prop-completed-badge">0 / 0 Unlocked</span>
       </div>
       <div class="category-chart-wrap">
-        <div class="category-chart-title">📈 Topstep Prop Progress Trajectory</div>
-        <div style="height: 140px;"><canvas id="chart-topstep-prop"></canvas></div>
+        <div class="category-chart-title">📈 Topstep Prop — % Progress Toward Milestones</div>
+        <div style="height: 150px;"><canvas id="chart-topstep-prop"></canvas></div>
       </div>
       <div class="timeline-container" id="topstep-prop-goals-timeline"></div>
       <div class="trophy-cabinet" id="topstep-prop-trophy-room"></div>
@@ -465,8 +466,8 @@
         <span class="badge badge-yellow" id="tdfy-completed-badge">0 / 0 Unlocked</span>
       </div>
       <div class="category-chart-wrap">
-        <div class="category-chart-title">📈 Tradeify Progress Trajectory</div>
-        <div style="height: 140px;"><canvas id="chart-tdfy"></canvas></div>
+        <div class="category-chart-title">📈 Tradeify — % Progress Toward Milestones</div>
+        <div style="height: 150px;"><canvas id="chart-tdfy"></canvas></div>
       </div>
       <div class="timeline-container" id="tdfy-goals-timeline"></div>
       <div class="trophy-cabinet" id="tdfy-trophy-room"></div>
@@ -479,8 +480,8 @@
         <span class="badge badge-red" id="fe-completed-badge">0 / 0 Unlocked</span>
       </div>
       <div class="category-chart-wrap">
-        <div class="category-chart-title">📈 Futures Elite Progress Trajectory</div>
-        <div style="height: 140px;"><canvas id="chart-fe"></canvas></div>
+        <div class="category-chart-title">📈 Futures Elite — % Progress Toward Milestones</div>
+        <div style="height: 150px;"><canvas id="chart-fe"></canvas></div>
       </div>
       <div class="timeline-container" id="fe-goals-timeline"></div>
       <div class="trophy-cabinet" id="fe-trophy-room"></div>
@@ -493,8 +494,8 @@
         <span class="badge badge-blue" id="fn-completed-badge">0 / 0 Unlocked</span>
       </div>
       <div class="category-chart-wrap">
-        <div class="category-chart-title">📈 FundedNext Progress Trajectory</div>
-        <div style="height: 140px;"><canvas id="chart-fn"></canvas></div>
+        <div class="category-chart-title">📈 FundedNext — % Progress Toward Milestones</div>
+        <div style="height: 150px;"><canvas id="chart-fn"></canvas></div>
       </div>
       <div class="timeline-container" id="fn-goals-timeline"></div>
       <div class="trophy-cabinet" id="fn-trophy-room"></div>
@@ -507,8 +508,8 @@
         <span class="badge badge-green" id="ts-wd-completed-badge">0 / 0 Unlocked</span>
       </div>
       <div class="category-chart-wrap">
-        <div class="category-chart-title">📈 Topstep Withdrawals Progress Trajectory</div>
-        <div style="height: 140px;"><canvas id="chart-ts-wd"></canvas></div>
+        <div class="category-chart-title">📈 Topstep Withdrawals — % Progress Toward Targets</div>
+        <div style="height: 150px;"><canvas id="chart-ts-wd"></canvas></div>
       </div>
       <div class="timeline-container" id="ts-wd-goals-timeline"></div>
       <div class="trophy-cabinet" id="ts-wd-trophy-room"></div>
@@ -521,8 +522,8 @@
         <span class="badge badge-green" id="tr-wd-completed-badge">0 / 0 Unlocked</span>
       </div>
       <div class="category-chart-wrap">
-        <div class="category-chart-title">📈 Tradovate Withdrawals Progress Trajectory</div>
-        <div style="height: 140px;"><canvas id="chart-tr-wd"></canvas></div>
+        <div class="category-chart-title">📈 Tradovate Withdrawals — % Progress Toward Targets</div>
+        <div style="height: 150px;"><canvas id="chart-tr-wd"></canvas></div>
       </div>
       <div class="timeline-container" id="tr-wd-goals-timeline"></div>
       <div class="trophy-cabinet" id="tr-wd-trophy-room"></div>
@@ -1183,22 +1184,19 @@
       });
     }
 
-    function renderCategoryEmbedChart(canvasId, categoryEvents, lineColor) {
+    function renderCategoryEmbedChart(canvasId, items, lineColor) {
       const ctx = document.getElementById(canvasId);
       if (!ctx) return;
 
-      categoryEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-      let runningTotal = 0;
       const labels = [];
-      const dataPoints = [];
-      const goalTitles = [];
+      const pctData = [];
+      const fullTitles = [];
 
-      categoryEvents.forEach(ev => {
-        runningTotal++;
-        labels.push(ev.date);
-        dataPoints.push(runningTotal);
-        goalTitles.push(ev.title);
+      items.forEach((item, index) => {
+        let shortName = item.title.length > 18 ? item.title.substring(0, 15) + '...' : item.title;
+        labels.push(shortName);
+        pctData.push(item.pct);
+        fullTitles.push(item.title);
       });
 
       if (categoryChartInstances[canvasId]) {
@@ -1208,17 +1206,17 @@
       categoryChartInstances[canvasId] = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: labels.length > 0 ? labels : ['Pending Unlocks'],
+          labels: labels.length > 0 ? labels : ['No Milestones Listed'],
           datasets: [{
-            label: 'Milestones Unlocked',
-            data: dataPoints.length > 0 ? dataPoints : [0],
+            label: '% Progress Toward Target',
+            data: pctData.length > 0 ? pctData : [0],
             borderColor: lineColor || '#2962ff',
-            backgroundColor: 'rgba(41, 98, 255, 0.1)',
+            backgroundColor: 'rgba(41, 98, 255, 0.12)',
             fill: true,
-            tension: 0.3,
+            tension: 0.35,
             pointBackgroundColor: lineColor || '#2962ff',
-            pointRadius: 4,
-            pointHoverRadius: 6
+            pointRadius: 5,
+            pointHoverRadius: 7
           }]
         },
         options: {
@@ -1229,11 +1227,10 @@
             tooltip: {
               callbacks: {
                 title: function(items) {
-                  return `Unlocked on ${items[0].label}`;
+                  return fullTitles[items[0].dataIndex] || items[0].label;
                 },
                 label: function(item) {
-                  const title = goalTitles[item.dataIndex] || 'Milestone';
-                  return `🏆 ${title} (#${item.raw})`;
+                  return `Progress: ${item.raw.toFixed(1)}%`;
                 }
               }
             }
@@ -1244,9 +1241,13 @@
               ticks: { color: '#787b86', font: { size: 9 } }
             },
             y: {
-              beginAtZero: true,
+              min: 0,
+              max: 100,
               grid: { color: 'rgba(54, 58, 69, 0.4)' },
-              ticks: { color: '#d1d4dc', stepSize: 1 }
+              ticks: { 
+                color: '#d1d4dc',
+                callback: function(value) { return value + '%'; }
+              }
             }
           }
         }
@@ -1259,7 +1260,7 @@
         const rows = data.table.rows;
         const seenMilestones = getSeenCompletedMilestones();
         
-        const categoryEvents = {
+        const categoryItems = {
           'topstep-live': [],
           'tradovate-live': [],
           'topstep-prop': [],
@@ -1357,6 +1358,22 @@
 
             const formattedTarget = formatTargetValue(extraVal || dateVal, (category === 'ts-withdrawal' || category === 'tr-withdrawal'));
 
+            // Percentage Progress Parsing for Line Chart
+            let pctProgress = completed ? 100 : 0;
+            if (!completed && dateVal) {
+              let parsedVal = parseFloat(dateVal.toString().replace(/[%]/g, '').trim());
+              if (!isNaN(parsedVal)) {
+                pctProgress = (parsedVal > -1 && parsedVal < 1 && parsedVal !== 0) ? parsedVal * 100 : parsedVal;
+              }
+            }
+
+            let chartKey = category;
+            if (category === 'ts-withdrawal') chartKey = 'ts-wd';
+            if (category === 'tr-withdrawal') chartKey = 'tr-wd';
+            if (categoryItems[chartKey]) {
+              categoryItems[chartKey].push({ title: displayGoalTitle || acctName, pct: pctProgress });
+            }
+
             let acctPillHTML = '';
             if (acctName) {
               acctPillHTML = `<span class="goal-tag tag-acct">${acctName}</span>`;
@@ -1365,14 +1382,6 @@
             totalMasterGoals++;
             if (completed) {
               totalMasterDone++;
-              if (dateVal && !dateVal.includes('.')) {
-                let chartKey = category;
-                if (category === 'ts-withdrawal') chartKey = 'ts-wd';
-                if (category === 'tr-withdrawal') chartKey = 'tr-wd';
-                if (categoryEvents[chartKey]) {
-                  categoryEvents[chartKey].push({ title: displayGoalTitle || acctName, date: dateVal });
-                }
-              }
               if (!seenMilestones.includes(mKey)) {
                 saveSeenCompletedMilestone(mKey);
                 triggerCelebrationModal(displayGoalTitle || `${acctName} Goal Completed!`);
@@ -1460,15 +1469,15 @@
 
         renderChart({ tsDone, tsTotal, trDone, trTotal, tsPropDone, tsPropTotal, tdfyDone, tdfyTotal, feDone, feTotal, fnDone, fnTotal, tsWdDone, tsWdTotal, trWdDone, trWdTotal });
         
-        // Render Embedded Category Graphs
-        renderCategoryEmbedChart('chart-topstep-live', categoryEvents['topstep-live'], '#ab47bc');
-        renderCategoryEmbedChart('chart-tradovate-live', categoryEvents['tradovate-live'], '#00bcd4');
-        renderCategoryEmbedChart('chart-topstep-prop', categoryEvents['topstep-prop'], '#ab47bc');
-        renderCategoryEmbedChart('chart-tdfy', categoryEvents['tdfy'], '#f5c000');
-        renderCategoryEmbedChart('chart-fe', categoryEvents['fe'], '#f23645');
-        renderCategoryEmbedChart('chart-fn', categoryEvents['fn'], '#2962ff');
-        renderCategoryEmbedChart('chart-ts-wd', categoryEvents['ts-wd'], '#089981');
-        renderCategoryEmbedChart('chart-tr-wd', categoryEvents['tr-wd'], '#089981');
+        // Render Embedded Category % Progress Line Charts
+        renderCategoryEmbedChart('chart-topstep-live', categoryItems['topstep-live'], '#ab47bc');
+        renderCategoryEmbedChart('chart-tradovate-live', categoryItems['tradovate-live'], '#00bcd4');
+        renderCategoryEmbedChart('chart-topstep-prop', categoryItems['topstep-prop'], '#ab47bc');
+        renderCategoryEmbedChart('chart-tdfy', categoryItems['tdfy'], '#f5c000');
+        renderCategoryEmbedChart('chart-fe', categoryItems['fe'], '#f23645');
+        renderCategoryEmbedChart('chart-fn', categoryItems['fn'], '#2962ff');
+        renderCategoryEmbedChart('chart-ts-wd', categoryItems['ts-wd'], '#089981');
+        renderCategoryEmbedChart('chart-tr-wd', categoryItems['tr-wd'], '#089981');
 
         if (totalMasterGoals > 0) {
           const macroPct = (totalMasterDone / totalMasterGoals) * 100;
