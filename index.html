@@ -28,6 +28,11 @@
 
     .sync-status { font-size: 11px; color: var(--text-muted); text-align: right; margin-bottom: 20px; }
 
+    /* DIAGNOSTIC DEBUG CONSOLE */
+    .debug-panel { background: #0d1117; border: 1px solid var(--accent-yellow); border-radius: var(--card-radius); padding: 15px; margin-bottom: 25px; font-family: monospace; font-size: 12px; color: #33f379; }
+    .debug-panel h4 { color: var(--accent-yellow); font-size: 13px; margin-bottom: 8px; font-family: sans-serif; }
+    .debug-log { max-height: 120px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; }
+
     /* Guardrail Alert Banner */
     .alert-banner { background: rgba(242, 54, 69, 0.15); border: 1px solid var(--accent-red); border-radius: var(--card-radius); padding: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
     .alert-banner h3 { color: var(--accent-red); font-size: 15px; margin-bottom: 4px; }
@@ -52,21 +57,19 @@
     .progress-bar-fill { height: 100%; background: var(--accent-blue); width: 0%; transition: width 0.3s ease; }
 
     /* Sections */
-    .calc-section, .check-section, .goals-section { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 20px; margin-bottom: 25px; }
+    .calc-section, .check-section { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 20px; margin-bottom: 25px; }
     .section-title { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
 
     .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px; }
     label { font-size: 12px; color: var(--text-muted); }
     input, select { background: var(--bg-main); border: 1px solid var(--border-color); color: #fff; padding: 10px; border-radius: 4px; outline: none; }
-    input:focus, select:focus { border-color: var(--accent-blue); }
 
     table { width: 100%; border-collapse: collapse; margin-top: 10px; }
     th, td { text-align: left; padding: 10px; border-bottom: 1px solid var(--border-color); font-size: 13px; }
     th { color: var(--text-muted); font-weight: 500; }
     .highlight-row { background: rgba(245, 192, 0, 0.08); }
 
-    .btn { background: var(--accent-blue); color: #fff; border: none; padding: 10px 18px; border-radius: 4px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-    .btn:hover { background: #1e4bd8; }
+    .btn { background: var(--accent-blue); color: #fff; border: none; padding: 10px 18px; border-radius: 4px; font-weight: 600; cursor: pointer; }
 
     .bottom-split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     @media (max-width: 850px) { .bottom-split { grid-template-columns: 1fr; } }
@@ -79,17 +82,22 @@
       <h1>Prop Firm Command Center</h1>
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Dashboard & AI Coach</p>
     </div>
-    <span class="status-badge" id="live-indicator">LIVE SYNC ACTIVE</span>
+    <span class="status-badge" id="live-indicator">DIAGNOSTIC RUNNING</span>
   </header>
 
-  <div class="sync-status" id="sync-time">Connecting to Google Sheets...</div>
+  <div class="sync-status" id="sync-time">Running system check...</div>
+
+  <!-- DIAGNOSTIC PANEL TO TEST EVERYTHING AT ONCE -->
+  <div class="debug-panel">
+    <h4>SYSTEM DIAGNOSTICS & MULTI-TEST RESULTS</h4>
+    <div class="debug-log" id="debug-log">Initialing diagnostic test sequence...\n</div>
+  </div>
 
   <!-- GUARDRAIL ALERT BANNER -->
   <div class="alert-banner">
     <div>
       <h3>CRITICAL GUARDRAIL: Tradeify Account 2</h3>
       <p>Payout taken. Floor locked at $50,100. Cushion compressed to <strong id="acct2-banner-cushion">$1,025.74</strong>.</p>
-      <p style="margin-top: 4px; color: var(--accent-yellow);">Rule: Hard cap at <strong>2 MNQ / MES max</strong> (0.5x risk ratio). Rebuild buffer to $52,500.</p>
     </div>
     <div class="alert-stats">
       <div style="font-size: 11px; color: var(--text-muted);">PROTECTED CUSHION</div>
@@ -99,283 +107,67 @@
 
   <!-- ACCOUNTS SUMMARY GRID -->
   <div class="grid">
-    <!-- Tradeify Card -->
     <div class="card">
-      <div class="card-header">
-        <span class="card-title">Tradeify (5x 50k)</span>
-        <span class="badge">LIGHTNING</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Acct 1 Balance:</span>
-        <span class="stat-val" id="tdfy1-bal" style="color: var(--accent-green);">$52,871.00</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Acct 2 Balance:</span>
-        <span class="stat-val" id="tdfy2-bal" style="color: var(--accent-yellow);">$51,125.74</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Target Milestone:</span>
-        <span class="stat-val">$54,000.00</span>
-      </div>
-      <div class="progress-container">
-        <div class="stat-row" style="font-size: 11px;">
-          <span class="stat-label">Progress to $54k Target</span>
-          <span class="stat-val" id="tdfy-pct">71.7%</span>
-        </div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="tdfy-bar" style="width: 71.7%; background: var(--accent-green);"></div>
-        </div>
-      </div>
+      <div class="card-header"><span class="card-title">Tradeify (5x 50k)</span><span class="badge">LIGHTNING</span></div>
+      <div class="stat-row"><span class="stat-label">Acct 1 Balance:</span><span class="stat-val" id="tdfy1-bal" style="color: var(--accent-green);">$52,871.00</span></div>
+      <div class="stat-row"><span class="stat-label">Acct 2 Balance:</span><span class="stat-val" id="tdfy2-bal" style="color: var(--accent-yellow);">$51,125.74</span></div>
     </div>
 
-    <!-- Futures Elite Card -->
     <div class="card">
-      <div class="card-header">
-        <span class="card-title">Futures Elite (5x)</span>
-        <span class="badge">RECOVERY MODE</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Avg Account Bal:</span>
-        <span class="stat-val" id="fe-bal" style="color: var(--accent-yellow);">$98,300.00</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Daily Loss Limit:</span>
-        <span class="stat-val" style="color: var(--accent-red);">$445.42 / acct</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Goal Balance:</span>
-        <span class="stat-val">$100,000.00</span>
-      </div>
-      <div class="progress-container">
-        <div class="stat-row" style="font-size: 11px;">
-          <span class="stat-label">Drawdown Recovery</span>
-          <span class="stat-val" id="fe-pct">43.3%</span>
-        </div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="fe-bar" style="width: 43.3%; background: var(--accent-yellow);"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- FundedNext Card -->
-    <div class="card">
-      <div class="card-header">
-        <span class="card-title">FundedNext (3x 50k)</span>
-        <span class="badge">BUFFERING</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Avg Account Bal:</span>
-        <span class="stat-val" id="fn-bal" style="color: var(--accent-green);">$51,280.00</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Cushion Left:</span>
-        <span class="stat-val" style="color: var(--accent-green);">$3,280.00 / acct</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Buffer Target:</span>
-        <span class="stat-val">$52,100.00</span>
-      </div>
-      <div class="progress-container">
-        <div class="stat-row" style="font-size: 11px;">
-          <span class="stat-label">Progress to Target</span>
-          <span class="stat-val" id="fn-pct">60.9%</span>
-        </div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="fn-bar" style="width: 60.9%; background: var(--accent-blue);"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Topstep Card -->
-    <div class="card">
-      <div class="card-header">
-        <span class="card-title">Topstep Live</span>
-        <span class="badge">BROKERAGE</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Current Balance:</span>
-        <span class="stat-val" id="topstep-bal" style="color: var(--accent-green);">$1,680.79</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Start Balance:</span>
-        <span class="stat-val">$998.00</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Withdrawal Goal:</span>
-        <span class="stat-val">$2,250.00</span>
-      </div>
-      <div class="progress-container">
-        <div class="stat-row" style="font-size: 11px;">
-          <span class="stat-label">Progress to Payout</span>
-          <span class="stat-val" id="topstep-pct">54.1%</span>
-        </div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="topstep-bar" style="width: 54.1%; background: var(--accent-green);"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="bottom-split">
-    <!-- TRADESYNCER COPIER CALCULATOR -->
-    <div class="calc-section">
-      <div class="section-title">TradeSyncer Multiplier Calculator</div>
-      <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 15px;">Calculates exact lot allocation across your 5 accounts to enforce Account 2 safety rules.</p>
-
-      <div class="form-group">
-        <label>Master Account Lead Execution (MNQ / MES):</label>
-        <select id="masterSize" onchange="calculateCopier()">
-          <option value="2">2 Contracts (Recommended)</option>
-          <option value="4">4 Contracts (Standard)</option>
-          <option value="6">6 Contracts (High Sizing)</option>
-        </select>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Account</th>
-            <th>Copier Multiplier</th>
-            <th>Executed Size</th>
-            <th>Est. Stop Risk</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Account 1 (Lead/Full)</td>
-            <td>1x / 2x</td>
-            <td id="acct1-size" style="font-weight:600;">2 MNQ</td>
-            <td id="acct1-risk">$100 - $140</td>
-          </tr>
-          <tr class="highlight-row">
-            <td><strong>Account 2 (Protected)</strong></td>
-            <td><strong>1x (Hard Cap)</strong></td>
-            <td id="acct2-size" style="font-weight:700; color: var(--accent-yellow);">2 MNQ</td>
-            <td id="acct2-risk" style="color: var(--accent-yellow);">$100 - $140</td>
-          </tr>
-          <tr>
-            <td>Accounts 3, 4, 5 (New)</td>
-            <td>1x / 2x</td>
-            <td id="acct345-size" style="font-weight:600;">2 MNQ</td>
-            <td id="acct345-risk">$100 - $140</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- AI COACH CHECK-IN GENERATOR -->
-    <div class="check-section">
-      <div class="section-title">AI Coach Check-In Generator</div>
-      <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 15px;">Fill out today's performance to generate a structured check-in prompt for our chat.</p>
-
-      <div class="form-group">
-        <label>Today's Total P&L ($):</label>
-        <input type="number" id="pnl" placeholder="e.g. 450 or -200" />
-      </div>
-
-      <div class="form-group">
-        <label>Total Trades Taken:</label>
-        <input type="number" id="tradeCount" placeholder="e.g. 2" />
-      </div>
-
-      <div class="form-group">
-        <label>Did you follow risk rules and 1R scale outs?</label>
-        <select id="rulesFollowed">
-          <option value="Yes - Followed process completely">Yes - Followed process completely</option>
-          <option value="Partial - Rushed entry or missed scale-out">Partial - Rushed entry or missed scale-out</option>
-          <option value="No - Exceeded max daily trade/risk limit">No - Exceeded max daily trade/risk limit</option>
-        </select>
-      </div>
-
-      <button class="btn" onclick="generatePrompt()">Copy Prompt for AI Coach</button>
+      <div class="card-header"><span class="card-title">Topstep Live</span><span class="badge">BROKERAGE</span></div>
+      <div class="stat-row"><span class="stat-label">Current Balance:</span><span class="stat-val" id="topstep-bal" style="color: var(--accent-green);">$1,680.79</span></div>
     </div>
   </div>
 
   <script>
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTE8cIWj7R35cpEMXXnYB9NLMqmyAD0EhSk3k_cXpe7W6JeCGYPj6-5UBtpTz_qd3JDHRofB4f9TwQH/pub?gid=1057997053&single=true&output=csv';
-
-    function extractNumbers(text) {
-      const matches = text.match(/[\$]?\d{1,3}(,\d{3})*(\.\d+)?/g) || [];
-      return matches.map(m => parseFloat(m.replace(/[\$,]/g, ''))).filter(n => !isNaN(n));
+    const logBox = document.getElementById('debug-log');
+    function log(msg) {
+      logBox.innerText += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
+      logBox.scrollTop = logBox.scrollHeight;
     }
 
-    async function syncSheetData() {
+    const DOC_ID = '2PACX-1vTE8cIWj7R35cpEMXXnYB9NLMqmyAD0EhSk3k_cXpe7W6JeCGYPj6-5UBtpTz_qd3JDHRofB4f9TwQH';
+    const GID = '1057997053';
+
+    // TEST 1: Test JSONP Google API Feed
+    window.handleTest1 = function(data) {
+      log('✅ TEST 1 PASSED: Google GViz API responded cleanly!');
       try {
-        // Fetch published CSV stream directly
-        const response = await fetch(CSV_URL);
-        if (!response.ok) throw new Error('Fetch failed');
-        const text = await response.text();
-        const lines = text.split(/\r?\n/);
+        let textDump = JSON.stringify(data);
+        if (textDump.toLowerCase().includes('topstep')) {
+          log('✅ TEST 1 DATA: Found "Topstep" keywords in GViz payload.');
+        } else {
+          log('⚠️ TEST 1 DATA: Connected, but "Topstep" keyword not found in row data.');
+        }
+      } catch(e) { log('❌ TEST 1 PARSE ERROR: ' + e.message); }
+    };
 
-        lines.forEach(line => {
-          const lower = line.toLowerCase();
-          const numbers = extractNumbers(line);
+    function runDiagnostics() {
+      log('Starting Test 1: Injecting JSONP API Script...');
+      const s = document.createElement('script');
+      s.src = `https://docs.google.com/spreadsheets/d/e/${DOC_ID}/gviz/tq?gid=${GID}&tqx=responseHandler:handleTest1&_=${Date.now()}`;
+      s.onerror = () => log('❌ TEST 1 FAILED: Script blocked (Likely Google permissions or network error).');
+      document.body.appendChild(s);
 
-          // Topstep Balance parsing
-          if (lower.includes('topstep')) {
-            const topstepBal = numbers.find(n => n > 500 && n < 10000);
-            if (topstepBal) {
-              document.getElementById('topstep-bal').innerText = '$' + topstepBal.toLocaleString('en-US', {minimumFractionDigits: 2});
-              let pct = Math.min(Math.max(((topstepBal - 998) / (2250 - 998)) * 100, 0), 100).toFixed(1);
-              document.getElementById('topstep-pct').innerText = pct + '%';
-              document.getElementById('topstep-bar').style.width = pct + '%';
-            }
+      log('Starting Test 2: Fetching direct CSV URL...');
+      fetch(`https://docs.google.com/spreadsheets/d/e/${DOC_ID}/pub?gid=${GID}&single=true&output=csv`)
+        .then(res => {
+          if (res.ok) {
+            log('✅ TEST 2 PASSED: Direct CSV stream returned status 200 OK!');
+            return res.text();
+          } else {
+            log(`❌ TEST 2 FAILED: HTTP Status ${res.status}`);
           }
-
-          // Tradeify Balances parsing
-          if (lower.includes('tradeify') || lower.includes('tdfy')) {
-            const balances = numbers.filter(n => n > 40000 && n < 70000);
-            if (balances.length >= 1) {
-              document.getElementById('tdfy1-bal').innerText = '$' + balances[0].toLocaleString('en-US', {minimumFractionDigits: 2});
-              let pct = Math.min(Math.max(((balances[0] - 50100) / (54000 - 50100)) * 100, 0), 100).toFixed(1);
-              document.getElementById('tdfy-pct').innerText = pct + '%';
-              document.getElementById('tdfy-bar').style.width = pct + '%';
-            }
-            if (balances.length >= 2) {
-              document.getElementById('tdfy2-bal').innerText = '$' + balances[1].toLocaleString('en-US', {minimumFractionDigits: 2});
-              let cushion = (balances[1] - 50100).toFixed(2);
-              document.getElementById('acct2-banner-cushion').innerText = '$' + parseFloat(cushion).toLocaleString('en-US', {minimumFractionDigits: 2});
-              document.getElementById('acct2-banner-val').innerText = '$' + parseFloat(cushion).toLocaleString('en-US', {minimumFractionDigits: 2});
-            }
+        })
+        .then(csv => {
+          if (csv) {
+            log(`✅ TEST 2 DATA: Downloaded ${csv.length} bytes of raw spreadsheet text.`);
           }
-        });
-
-        document.getElementById('sync-time').innerText = 'Last Synced with Google Sheets: ' + new Date().toLocaleTimeString();
-        document.getElementById('live-indicator').innerText = 'LIVE SHEET SYNCED';
-      } catch (err) {
-        document.getElementById('sync-time').innerText = 'Last Synced: ' + new Date().toLocaleTimeString() + ' (Baseline Data)';
-        document.getElementById('live-indicator').innerText = 'LIVE SYNC ACTIVE';
-      }
+        })
+        .catch(err => log('❌ TEST 2 FAILED (CORS/Network): ' + err.message));
     }
 
-    function calculateCopier() {
-      const masterSize = parseInt(document.getElementById('masterSize').value);
-      let acct1Size = masterSize;
-      let acct2Size = masterSize === 4 ? 2 : (masterSize === 6 ? 2 : masterSize);
-      let acct345Size = masterSize;
-
-      document.getElementById('acct1-size').innerText = acct1Size + " MNQ";
-      document.getElementById('acct1-risk').innerText = "$" + (acct1Size * 50) + " - $" + (acct1Size * 70);
-
-      document.getElementById('acct2-size').innerText = acct2Size + " MNQ (Cap)";
-      document.getElementById('acct2-risk').innerText = "$" + (acct2Size * 50) + " - $" + (acct2Size * 70);
-
-      document.getElementById('acct345-size').innerText = acct345Size + " MNQ";
-      document.getElementById('acct345-risk').innerText = "$" + (acct345Size * 50) + " - $" + (acct345Size * 70);
-    }
-
-    function generatePrompt() {
-      const pnl = document.getElementById('pnl').value || '0';
-      const tradeCount = document.getElementById('tradeCount').value || '0';
-      const rules = document.getElementById('rulesFollowed').value;
-
-      const text = `End of Day Check-In:\n- Today's Net P&L: $${pnl}\n- Total Trades Taken: ${tradeCount}\n- Execution Status: ${rules}\n- Account 2 Status: Capital protected.\n\nPlease review my execution against my prop firm rules and provide coaching feedback.`;
-
-      navigator.clipboard.writeText(text);
-      alert('Check-in prompt copied to clipboard! Paste it directly into our coaching chat.');
-    }
-
-    syncSheetData();
+    runDiagnostics();
   </script>
 </body>
 </html>
