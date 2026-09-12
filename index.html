@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prop Firm Command Center & AI Coach</title>
+  <title>2026 Trade Account Tracker & Command Center</title>
   <style>
     :root {
       --bg-main: #131722;
@@ -50,13 +50,13 @@
 
   <header>
     <div>
-      <h1>Prop Firm Command Center</h1>
+      <h1>2026 Trade Account Tracker & Command Center</h1>
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Dashboard</p>
     </div>
     <span class="status-badge" id="live-indicator">SYNCING...</span>
   </header>
 
-  <div class="sync-status" id="sync-time">Connecting to spreadsheet...</div>
+  <div class="sync-status" id="sync-time">Connecting to spreadsheet feed...</div>
 
   <!-- CATEGORY 1: TOPSTEP LIVE -->
   <div class="section-header">1. Topstep Brokerage</div>
@@ -88,7 +88,7 @@
   <div class="grid" id="grid-fn"></div>
 
   <script>
-    const DOC_KEY = '2PACX-1vTE8cIWj7R35cpEMXXnYB9NLMqmyAD0EhSk3k_cXpe7W6JeCGYPj6-5UBtpTz_qd3JDHRofB4f9TwQH';
+    const REAL_DOC_ID = '1uJh2llsh5vQPF1Wx8NnKOECeqMfRS58S8DrEVdAWJv8';
     const GID = '1057997053';
 
     function buildCards() {
@@ -147,34 +147,23 @@
     function updateCardData(acctName, progPct, balance, goalVal) {
       if (!acctName) return;
 
-      // Removes line breaks (\n), spaces, and symbols to normalize text
       const cleanName = acctName.toLowerCase().replace(/[\r\n]+/g, '').replace(/[^a-z0-9]/g, '');
-
       let targetId = null;
 
-      // Topstep Live
       if (cleanName.includes('topstep')) targetId = 'topstep-live';
-
-      // Tradeify 1 to 5
       else if (cleanName.includes('tdfy') || cleanName.includes('tradeify')) {
         if (cleanName.includes('1')) targetId = 'tdfy-1';
         else if (cleanName.includes('2')) targetId = 'tdfy-2';
         else if (cleanName.includes('3')) targetId = 'tdfy-3';
         else if (cleanName.includes('4')) targetId = 'tdfy-4';
         else if (cleanName.includes('5')) targetId = 'tdfy-5';
-      }
-
-      // Futures Elite 1 to 5
-      else if (cleanName.includes('fe') || cleanName.includes('futureselite')) {
+      } else if (cleanName.includes('fe') || cleanName.includes('futureselite')) {
         if (cleanName.includes('1')) targetId = 'fe-1';
         else if (cleanName.includes('2')) targetId = 'fe-2';
         else if (cleanName.includes('3')) targetId = 'fe-3';
         else if (cleanName.includes('4')) targetId = 'fe-4';
         else if (cleanName.includes('5')) targetId = 'fe-5';
-      }
-
-      // FundedNext 1 to 3
-      else if (cleanName.includes('fn') || cleanName.includes('fundednext')) {
+      } else if (cleanName.includes('fn') || cleanName.includes('fundednext')) {
         if (cleanName.includes('1')) targetId = 'fn-1';
         else if (cleanName.includes('2')) targetId = 'fn-2';
         else if (cleanName.includes('3')) targetId = 'fn-3';
@@ -202,8 +191,8 @@
         rows.forEach(r => {
           if (!r.c) return;
 
-          // Direct Google Visualization API column extraction:
-          // Column A = c[0], Column D = c[3], Column E = c[4], Column F = c[5]
+          // Google Viz API array indexes:
+          // Col A = c[0], Col D = c[3], Col E = c[4], Col F = c[5]
           const acctName = r.c[0] && r.c[0].v !== null ? r.c[0].v.toString() : '';
           const progPct  = r.c[3] && r.c[3].v !== null ? r.c[3].v.toString() : '';
           const balance  = r.c[4] && r.c[4].v !== null ? r.c[4].v.toString() : '';
@@ -212,7 +201,7 @@
           updateCardData(acctName, progPct, balance, goalVal);
         });
 
-        document.getElementById('sync-time').innerText = 'Last Synced with Google Sheets: ' + new Date().toLocaleTimeString();
+        document.getElementById('sync-time').innerText = 'Last Synced with 2026 Tracker: ' + new Date().toLocaleTimeString();
         document.getElementById('live-indicator').innerText = 'LIVE SHEET SYNCED';
       } catch (e) {
         console.error(e);
@@ -222,7 +211,7 @@
     function loadData() {
       buildCards();
       const script = document.createElement('script');
-      script.src = `https://docs.google.com/spreadsheets/d/e/${DOC_KEY}/gviz/tq?gid=${GID}&tqx=responseHandler:handleSheetData&_=${Date.now()}`;
+      script.src = `https://docs.google.com/spreadsheets/d/${REAL_DOC_ID}/gviz/tq?gid=${GID}&tqx=responseHandler:handleSheetData&_=${Date.now()}`;
       document.body.appendChild(script);
     }
 
