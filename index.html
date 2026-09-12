@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Account Tracker & Command Center v1.0.4</title>
+  <title>2026 Trade Account Tracker & Command Center v1.0.5</title>
   <style>
     :root {
       --bg-main: #131722;
@@ -30,12 +30,21 @@
     .status-badge { background: rgba(8, 153, 129, 0.2); color: var(--accent-green); padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 12px; border: 1px solid var(--accent-green); }
 
     .sync-bar { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-muted); margin-bottom: 20px; background: rgba(42, 46, 57, 0.4); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); }
-    
-    /* Executive Summary Panel (3 Cards) */
-    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 25px; }
+    .sync-controls { display: flex; align-items: center; gap: 12px; }
+    .btn-sync-now { background: var(--accent-blue); color: #fff; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+    .btn-sync-now:hover { opacity: 0.85; }
+
+    /* Executive Summary Panel */
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 20px; }
     .summary-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 14px; text-align: center; }
     .summary-title { font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px; }
     .summary-value { font-size: 22px; font-weight: 700; color: #fff; margin-top: 4px; }
+
+    /* Trade Action Command Banner */
+    .action-command-banner { background: rgba(41, 98, 255, 0.1); border: 1px solid var(--accent-blue); border-radius: var(--card-radius); padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+    .action-icon { font-size: 20px; }
+    .action-text-title { font-size: 11px; text-transform: uppercase; color: var(--accent-blue); font-weight: 700; letter-spacing: 0.5px; }
+    .action-text-body { font-size: 13px; font-weight: 600; color: #fff; margin-top: 2px; }
 
     /* Provider Filter Tabs */
     .filter-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
@@ -46,7 +55,7 @@
     .section-header-wrap { display: flex; justify-content: space-between; align-items: center; margin: 25px 0 15px 0; }
     .section-header { font-size: 15px; font-weight: 700; color: #fff; border-left: 3px solid var(--accent-blue); padding-left: 10px; }
     
-    /* Group Sync Alerts */
+    /* Group Alerts */
     .group-alert { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 12px; background: rgba(42, 46, 57, 0.6); border: 1px solid var(--border-color); color: var(--text-muted); }
     .group-alert.unsynced { background: rgba(245, 192, 0, 0.15); border-color: var(--accent-yellow); color: var(--accent-yellow); }
     .group-alert.synced { background: rgba(8, 153, 129, 0.15); border-color: var(--accent-green); color: var(--accent-green); }
@@ -55,8 +64,10 @@
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-bottom: 25px; }
     .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; transition: all 0.3s ease; position: relative; }
     
-    /* Lagging Focus Highlight */
-    .card.card-lagging { border: 2px solid var(--accent-yellow) !important; background: rgba(245, 192, 0, 0.04); box-shadow: 0 0 12px rgba(245, 192, 0, 0.15); }
+    /* Card States */
+    .card.card-lagging { border: 2px solid var(--accent-yellow) !important; background: rgba(245, 192, 0, 0.05); box-shadow: 0 0 14px rgba(245, 192, 0, 0.18); }
+    .card.card-paused { border: 1px solid var(--border-color); opacity: 0.45; filter: grayscale(40%); }
+    .card.card-paused:hover { opacity: 0.75; filter: grayscale(0%); }
 
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .card-title { font-size: 14px; font-weight: 700; color: #fff; }
@@ -65,13 +76,17 @@
     .badge { font-size: 10px; padding: 3px 8px; border-radius: 12px; font-weight: 700; text-transform: uppercase; background: var(--bg-header); color: var(--text-muted); }
     .badge-green { background: rgba(8, 153, 129, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
     .badge-yellow { background: rgba(245, 192, 0, 0.25); color: var(--accent-yellow); border: 1px solid var(--accent-yellow); }
-    .badge-red { background: rgba(242, 54, 69, 0.2); color: var(--accent-red); border: 1px solid var(--accent-red); }
+    .badge-red { background: rgba(242, 54, 69, 0.25); color: var(--accent-red); border: 1px solid var(--accent-red); }
     .badge-blue { background: rgba(41, 98, 255, 0.2); color: var(--accent-blue); border: 1px solid var(--accent-blue); }
+    .badge-paused { background: rgba(120, 123, 134, 0.25); color: var(--text-muted); border: 1px solid var(--text-muted); }
 
     /* Bolder Short-Term Goal Hero Display */
-    .goal-hero-box { background: rgba(41, 98, 255, 0.08); border: 1px solid rgba(41, 98, 255, 0.25); border-radius: 6px; padding: 12px; margin-bottom: 12px; text-align: center; }
+    .goal-hero-box { background: rgba(41, 98, 255, 0.08); border: 1px solid rgba(41, 98, 255, 0.25); border-radius: 6px; padding: 12px; margin-bottom: 10px; text-align: center; }
     .hero-label { font-size: 10px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
     .hero-val { font-size: 18px; color: #fff; font-weight: 800; margin-top: 2px; letter-spacing: -0.3px; }
+
+    /* Distance to Goal Sub-Hero Metric */
+    .distance-sub { font-size: 10px; color: var(--accent-blue); font-weight: 600; margin-top: 4px; }
 
     /* Progress Bar */
     .progress-container { margin-top: 10px; }
@@ -88,17 +103,29 @@
   <header>
     <div>
       <h1>2026 Trade Account Tracker & Command Center</h1>
-      <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Goal-Focused Live Dashboard & Group Alignment</p>
+      <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Goal-Focused Live Dashboard & Automated Rules Engine</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.0.4</span>
+      <span class="version-badge">v1.0.5</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
 
   <div class="sync-bar">
     <span id="sync-time">Connecting to spreadsheet feed...</span>
-    <span id="refresh-timer" style="font-weight: 600; color: var(--accent-blue);">Auto-Refresh: 30s</span>
+    <div class="sync-controls">
+      <button class="btn-sync-now" onclick="manualSync()">Sync Now</button>
+      <span id="refresh-timer" style="font-weight: 600; color: var(--accent-blue);">Auto-Refresh: 30s</span>
+    </div>
+  </div>
+
+  <!-- TODAY'S TRADING ACTION COMMAND BANNER -->
+  <div class="action-command-banner">
+    <div class="action-icon">🎯</div>
+    <div>
+      <div class="action-text-title">Today's Trading Plan & Account Focus</div>
+      <div class="action-text-body" id="action-plan-summary">Evaluating account balances and group rules...</div>
+    </div>
   </div>
 
   <!-- EXECUTIVE SUMMARY PANEL -->
@@ -112,8 +139,8 @@
       <div class="summary-value" id="summary-ontrack-count" style="color: var(--accent-green);">0</div>
     </div>
     <div class="summary-card">
-      <div class="summary-title">Group Alignment Focus</div>
-      <div class="summary-value" id="summary-lagging-count" style="color: var(--accent-yellow);">0 Lagging</div>
+      <div class="summary-title">Paused Accounts</div>
+      <div class="summary-value" id="summary-paused-count" style="color: var(--accent-red);">0 Paused</div>
     </div>
   </div>
 
@@ -140,6 +167,7 @@
         <div class="goal-hero-box">
           <div class="hero-label">Short-Term Goal</div>
           <div class="hero-val" id="val-topstep-live-goal">$0.00</div>
+          <div class="distance-sub" id="dist-topstep-live">Distance: $0.00</div>
         </div>
         <div class="progress-container">
           <div class="stat-row" style="display: flex; justify-content: space-between; font-size: 11px;">
@@ -160,7 +188,7 @@
   <div class="category-block" id="block-tdfy">
     <div class="section-header-wrap">
       <div class="section-header">2. Tradeify Accounts (TDFY 1 - 5)</div>
-      <span class="group-alert" id="alert-tdfy">Checking Balance Alignment...</span>
+      <span class="group-alert" id="alert-tdfy">Evaluating TDFY Alignment Rules...</span>
     </div>
     <div class="grid" id="grid-tdfy"></div>
   </div>
@@ -169,7 +197,7 @@
   <div class="category-block" id="block-fe">
     <div class="section-header-wrap">
       <div class="section-header">3. Futures Elite Accounts (FE 1 - 5)</div>
-      <span class="group-alert" id="alert-fe">Checking Balance Alignment...</span>
+      <span class="group-alert" id="alert-fe">Evaluating FE Alignment Rules...</span>
     </div>
     <div class="grid" id="grid-fe"></div>
   </div>
@@ -178,7 +206,7 @@
   <div class="category-block" id="block-fn">
     <div class="section-header-wrap">
       <div class="section-header">4. FundedNext Accounts (FN 1 - 3)</div>
-      <span class="group-alert" id="alert-fn">Checking Balance Alignment...</span>
+      <span class="group-alert" id="alert-fn">Evaluating FN Alignment Rules...</span>
     </div>
     <div class="grid" id="grid-fn"></div>
   </div>
@@ -187,13 +215,14 @@
     const REAL_DOC_ID = '1uJh2llsh5vQPF1Wx8NnKOECeqMfRS58S8DrEVdAWJv8';
     const GID = '1057997053';
 
-    // Allowable dollar variance within a group before triggering a "Lagging Account" focus alert
-    const GROUP_BALANCE_VARIANCE_THRESHOLD = 250; 
+    // Dollar tolerance before triggering alignment pause
+    const VARIANCE_TOLERANCE = 50; 
 
     let countdownVal = 30;
     let countdownInterval = null;
     const parsedProgressMap = {};
     const parsedBalanceMap = {};
+    const parsedGoalMap = {};
 
     function buildCards() {
       const tdfyGrid = document.getElementById('grid-tdfy');
@@ -225,6 +254,7 @@
           <div class="goal-hero-box">
             <div class="hero-label">Short-Term Goal</div>
             <div class="hero-val" id="val-${id}-goal">$0.00</div>
+            <div class="distance-sub" id="dist-${id}">Distance: $0.00</div>
           </div>
           <div class="progress-container">
             <div class="stat-row" style="display: flex; justify-content: space-between; font-size: 11px;">
@@ -291,12 +321,28 @@
         const goalEl = document.getElementById(`val-${targetId}-goal`);
         const pctEl = document.getElementById(`val-${targetId}-pct`);
         const barEl = document.getElementById(`bar-${targetId}-pct`);
+        const distEl = document.getElementById(`dist-${targetId}`);
+
+        const numBal = parseNumericValue(balance);
+        const numGoal = parseNumericValue(goalVal);
+
+        parsedBalanceMap[targetId] = numBal;
+        parsedGoalMap[targetId] = numGoal;
 
         if (balEl && balance) balEl.innerText = formatCurrency(balance);
         if (goalEl && goalVal) goalEl.innerText = formatCurrency(goalVal);
-        
-        parsedBalanceMap[targetId] = parseNumericValue(balance);
 
+        // Distance to Goal Calculation
+        if (distEl) {
+          if (numGoal > 0 && numBal > 0) {
+            const diff = numGoal - numBal;
+            distEl.innerText = diff > 0 ? `Needed: $${diff.toLocaleString('en-US', {minimumFractionDigits: 2})}` : 'Goal Met!';
+            distEl.style.color = diff > 0 ? 'var(--accent-blue)' : 'var(--accent-green)';
+          } else {
+            distEl.innerText = 'Target Pending';
+          }
+        }
+        
         if (progPct !== undefined && progPct !== null) {
           const rawPct = parseNumericPercent(progPct);
           parsedProgressMap[targetId] = rawPct;
@@ -315,78 +361,158 @@
       }
     }
 
-    function evaluateGroupAlignmentAndSummary() {
-      const groups = {
-        'tdfy': ['tdfy-1', 'tdfy-2', 'tdfy-3', 'tdfy-4', 'tdfy-5'],
-        'fe': ['fe-1', 'fe-2', 'fe-3', 'fe-4', 'fe-5'],
-        'fn': ['fn-1', 'fn-2', 'fn-3']
-      };
-
-      let totalLaggingAccounts = 0;
-      let onTrackCount = 0;
-
-      // Reset lagging card highlights
-      document.querySelectorAll('.card').forEach(c => c.classList.remove('card-lagging'));
-
-      Object.keys(groups).forEach(gKey => {
-        const ids = groups[gKey];
-        const balances = ids.map(id => parsedBalanceMap[id] || 0).filter(b => b > 0);
-        
-        if (balances.length > 0) {
-          const maxBal = Math.max(...balances);
-          let groupHasLagging = false;
-
-          ids.forEach(id => {
-            const currentBal = parsedBalanceMap[id] || 0;
-            const badgeEl = document.getElementById(`badge-${id}`);
-            const cardEl = document.getElementById(`card-${id}`);
-
-            if (currentBal > 0 && (maxBal - currentBal) >= GROUP_BALANCE_VARIANCE_THRESHOLD) {
-              groupHasLagging = true;
-              totalLaggingAccounts++;
-              
-              if (cardEl) cardEl.classList.add('card-lagging');
-              if (badgeEl) {
-                badgeEl.className = 'badge badge-yellow';
-                badgeEl.innerText = 'FOCUS: LAGGING';
-              }
-            } else if (badgeEl) {
-              const rawPct = parsedProgressMap[id] || 0;
-              if (rawPct >= 75) {
-                badgeEl.className = 'badge badge-green';
-                badgeEl.innerText = 'ON TRACK';
-              } else if (rawPct >= 30) {
-                badgeEl.className = 'badge badge-blue';
-                badgeEl.innerText = 'PROGRESSING';
-              } else {
-                badgeEl.className = 'badge';
-                badgeEl.innerText = 'ACTIVE';
-              }
-            }
-          });
-
-          const alertEl = document.getElementById(`alert-${gKey}`);
-          if (alertEl) {
-            if (groupHasLagging) {
-              alertEl.className = 'group-alert unsynced';
-              alertEl.innerText = '⚠️ Out of Sync: Trade Lagging Account Solo';
-            } else {
-              alertEl.className = 'group-alert synced';
-              alertEl.innerText = '✅ Balances Synced: Ready for Group Copy-Trade';
-            }
-          }
-        }
+    function evaluateTradeifyAndGroupRules() {
+      // Reset Card States
+      document.querySelectorAll('.card').forEach(c => {
+        c.classList.remove('card-lagging', 'card-paused');
       });
 
-      // Count On-Track (>50%)
+      let pausedCount = 0;
+      let activeTradeTargets = [];
+
+      // TRADEIFY CUSTOM RULES ENGINE:
+      // Group A: TDFY 1 & 2 (TDFY 1 paused if TDFY 2 lags)
+      const b1 = parsedBalanceMap['tdfy-1'] || 0;
+      const b2 = parsedBalanceMap['tdfy-2'] || 0;
+      
+      let tdfyPairState = 'synced';
+      if (b1 > 0 && b2 > 0) {
+        if (b2 < (b1 - VARIANCE_TOLERANCE)) {
+          // TDFY 2 is lagging behind TDFY 1
+          setCardState('tdfy-1', 'paused', 'PAUSED (WAITING FOR TDFY 2)');
+          setCardState('tdfy-2', 'lagging', 'FOCUS: LAGGING');
+          pausedCount++;
+          activeTradeTargets.push('TDFY 2');
+          tdfyPairState = 'unsynced';
+        } else {
+          setCardDefaultBadge('tdfy-1');
+          setCardDefaultBadge('tdfy-2');
+          activeTradeTargets.push('TDFY 1 & 2');
+        }
+      }
+
+      // Group B: TDFY 3, 4, 5 (TDFY 4 & 5 paused if TDFY 3 lags behind either)
+      const b3 = parsedBalanceMap['tdfy-3'] || 0;
+      const b4 = parsedBalanceMap['tdfy-4'] || 0;
+      const b5 = parsedBalanceMap['tdfy-5'] || 0;
+
+      let tdfyTrioState = 'synced';
+      if (b3 > 0 && (b4 > 0 || b5 > 0)) {
+        const targetHigh = Math.max(b4, b5);
+        if (b3 < (targetHigh - VARIANCE_TOLERANCE)) {
+          // TDFY 3 is lagging behind 4 or 5
+          setCardState('tdfy-3', 'lagging', 'FOCUS: LAGGING');
+          if (b4 > b3) { setCardState('tdfy-4', 'paused', 'PAUSED (WAITING FOR TDFY 3)'); pausedCount++; }
+          if (b5 > b3) { setCardState('tdfy-5', 'paused', 'PAUSED (WAITING FOR TDFY 3)'); pausedCount++; }
+          activeTradeTargets.push('TDFY 3');
+          tdfyTrioState = 'unsynced';
+        } else {
+          setCardDefaultBadge('tdfy-3');
+          setCardDefaultBadge('tdfy-4');
+          setCardDefaultBadge('tdfy-5');
+          activeTradeTargets.push('TDFY 3-5');
+        }
+      }
+
+      // Update TDFY Alert Header
+      const alertTdfy = document.getElementById('alert-tdfy');
+      if (alertTdfy) {
+        if (tdfyPairState === 'unsynced' || tdfyTrioState === 'unsynced') {
+          alertTdfy.className = 'group-alert unsynced';
+          alertTdfy.innerText = '⚠️ TDFY Alignment Active: Solo Trade Lagging Accounts Only';
+        } else {
+          alertTdfy.className = 'group-alert synced';
+          alertTdfy.innerText = '✅ Tradeify Synced: Copy-Trade All TDFY Accounts';
+        }
+      }
+
+      // Standard Alignment Checks for FE and FN
+      evaluateStandardGroup('fe', ['fe-1', 'fe-2', 'fe-3', 'fe-4', 'fe-5']);
+      evaluateStandardGroup('fn', ['fn-1', 'fn-2', 'fn-3']);
+
+      // Update Today's Trading Plan Banner
+      const planEl = document.getElementById('action-plan-summary');
+      if (planEl) {
+        if (activeTradeTargets.length > 0) {
+          planEl.innerHTML = `Active Execution Targets: <span style="color: var(--accent-yellow);">${activeTradeTargets.join(', ')}</span>. Paused accounts are dimmed below to prevent mis-execution.`;
+        } else {
+          planEl.innerText = 'All groups aligned. Ready for copy-trading across full portfolio.';
+        }
+      }
+
+      // Update Executive Summary Counts
+      let onTrackCount = 0;
       Object.keys(parsedProgressMap).forEach(k => {
         if (parsedProgressMap[k] >= 50) onTrackCount++;
       });
 
       document.getElementById('summary-ontrack-count').innerText = onTrackCount;
-      const laggingSummaryEl = document.getElementById('summary-lagging-count');
-      laggingSummaryEl.innerText = totalLaggingAccounts > 0 ? `${totalLaggingAccounts} Focus Needed` : 'All Synced';
-      laggingSummaryEl.style.color = totalLaggingAccounts > 0 ? 'var(--accent-yellow)' : 'var(--accent-green)';
+      const pausedSummaryEl = document.getElementById('summary-paused-count');
+      pausedSummaryEl.innerText = `${pausedCount} Paused`;
+      pausedSummaryEl.style.color = pausedCount > 0 ? 'var(--accent-red)' : 'var(--accent-green)';
+    }
+
+    function evaluateStandardGroup(groupKey, ids) {
+      const balances = ids.map(id => parsedBalanceMap[id] || 0).filter(b => b > 0);
+      if (balances.length === 0) return;
+
+      const maxBal = Math.max(...balances);
+      let hasLagging = false;
+
+      ids.forEach(id => {
+        const bal = parsedBalanceMap[id] || 0;
+        if (bal > 0 && (maxBal - bal) >= 250) {
+          hasLagging = true;
+          setCardState(id, 'lagging', 'FOCUS: LAGGING');
+        } else {
+          setCardDefaultBadge(id);
+        }
+      });
+
+      const alertEl = document.getElementById(`alert-${groupKey}`);
+      if (alertEl) {
+        if (hasLagging) {
+          alertEl.className = 'group-alert unsynced';
+          alertEl.innerText = `⚠️ ${groupKey.toUpperCase()} Out of Sync: Trade Lagging Account`;
+        } else {
+          alertEl.className = 'group-alert synced';
+          alertEl.innerText = `✅ ${groupKey.toUpperCase()} Synced: Ready for Group Copy-Trade`;
+        }
+      }
+    }
+
+    function setCardState(id, state, badgeText) {
+      const cardEl = document.getElementById(`card-${id}`);
+      const badgeEl = document.getElementById(`badge-${id}`);
+
+      if (cardEl) {
+        cardEl.classList.remove('card-lagging', 'card-paused');
+        if (state === 'lagging') cardEl.classList.add('card-lagging');
+        if (state === 'paused') cardEl.classList.add('card-paused');
+      }
+
+      if (badgeEl) {
+        if (state === 'lagging') badgeEl.className = 'badge badge-yellow';
+        else if (state === 'paused') badgeEl.className = 'badge badge-paused';
+        badgeEl.innerText = badgeText;
+      }
+    }
+
+    function setCardDefaultBadge(id) {
+      const badgeEl = document.getElementById(`badge-${id}`);
+      if (!badgeEl || id === 'topstep-live') return;
+
+      const rawPct = parsedProgressMap[id] || 0;
+      if (rawPct >= 75) {
+        badgeEl.className = 'badge badge-green';
+        badgeEl.innerText = 'ON TRACK';
+      } else if (rawPct >= 30) {
+        badgeEl.className = 'badge badge-blue';
+        badgeEl.innerText = 'PROGRESSING';
+      } else {
+        badgeEl.className = 'badge';
+        badgeEl.innerText = 'ACTIVE';
+      }
     }
 
     function filterCategory(cat, btn) {
@@ -409,6 +535,11 @@
       }
     }
 
+    function manualSync() {
+      document.getElementById('live-indicator').innerText = 'REFRESHING...';
+      loadData();
+    }
+
     window.handleSheetData = function(data) {
       try {
         const rows = data.table.rows;
@@ -423,7 +554,7 @@
           updateCardData(acctName, progPct, balance, goalVal);
         });
 
-        evaluateGroupAlignmentAndSummary();
+        evaluateTradeifyAndGroupRules();
 
         document.getElementById('sync-time').innerText = 'Last Synced with 2026 Tracker: ' + new Date().toLocaleTimeString();
         document.getElementById('live-indicator').innerText = 'LIVE SHEET SYNCED';
