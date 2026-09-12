@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.1.2</title>
+  <title>2026 Trade Command Center & Roadmap v1.1.4</title>
   <style>
     :root {
       --bg-main: #131722;
@@ -59,16 +59,23 @@
     .section-header.purple { border-left-color: var(--accent-purple); }
     .section-header.cyan { border-left-color: var(--accent-cyan); }
     .section-header.green { border-left-color: var(--accent-green); }
+    .section-header.yellow { border-left-color: var(--accent-yellow); }
+    .section-header.red { border-left-color: var(--accent-red); }
+    .section-header.blue { border-left-color: var(--accent-blue); }
     
     .group-alert { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 12px; background: rgba(42, 46, 57, 0.6); border: 1px solid var(--border-color); color: var(--text-muted); }
     .group-alert.unsynced { background: rgba(245, 192, 0, 0.15); border-color: var(--accent-yellow); color: var(--accent-yellow); }
     .group-alert.synced { background: rgba(8, 153, 129, 0.15); border-color: var(--accent-green); color: var(--accent-green); }
+    .group-alert.danger { background: rgba(242, 54, 69, 0.15); border-color: var(--accent-red); color: var(--accent-red); }
 
     /* Cards & Grids */
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-bottom: 25px; }
     .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; transition: all 0.3s ease; position: relative; }
     
+    @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(242, 54, 69, 0.3); } 70% { box-shadow: 0 0 0 8px rgba(242, 54, 69, 0); } 100% { box-shadow: 0 0 0 0 rgba(242, 54, 69, 0); } }
+    
     .card.card-lagging { border: 2px solid var(--accent-yellow) !important; background: rgba(245, 192, 0, 0.05); box-shadow: 0 0 14px rgba(245, 192, 0, 0.18); }
+    .card.card-danger { border: 2px solid var(--accent-red) !important; background: rgba(242, 54, 69, 0.06); animation: pulseRed 2s infinite; }
     .card.card-paused { border: 1px solid var(--border-color); opacity: 0.45; filter: grayscale(40%); }
 
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
@@ -88,6 +95,7 @@
     .hero-label { font-size: 10px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
     .hero-val { font-size: 18px; color: #fff; font-weight: 800; margin-top: 2px; letter-spacing: -0.3px; }
     .distance-sub { font-size: 10px; color: var(--accent-blue); font-weight: 600; margin-top: 4px; }
+    .distance-danger { color: var(--accent-red) !important; font-weight: 700; }
 
     /* Progress Bar */
     .progress-container { margin-top: 10px; }
@@ -98,23 +106,36 @@
     .balance-subdued .stat-val { font-size: 12px; font-weight: 600; color: var(--text-main); }
 
     /* Long-Term Goals Timeline Styles */
+    .macro-progress-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 20px; }
+    .macro-header { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-bottom: 10px; }
+    
     .encouragement-card { background: linear-gradient(135deg, rgba(171, 71, 188, 0.15) 0%, rgba(41, 98, 255, 0.1) 100%); border: 1px solid var(--accent-purple); border-radius: var(--card-radius); padding: 18px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; }
     .encouragement-quote { font-size: 14px; font-weight: 600; color: #fff; line-height: 1.4; }
     .encouragement-sub { font-size: 11px; color: var(--accent-purple); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; }
     
-    .timeline-container { position: relative; padding: 10px 0 20px 20px; border-left: 2px dashed var(--border-color); margin-left: 15px; margin-bottom: 30px; }
+    .timeline-container { position: relative; padding: 10px 0 20px 20px; border-left: 2px dashed var(--border-color); margin-left: 15px; margin-bottom: 15px; }
     .timeline-node { position: relative; margin-bottom: 20px; padding-left: 25px; }
     .timeline-node::before { content: ''; position: absolute; left: -27px; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: var(--bg-main); border: 3px solid var(--text-muted); transition: all 0.3s ease; }
-    .timeline-node.completed::before { border-color: var(--accent-green); background: var(--accent-green); box-shadow: 0 0 10px rgba(8, 153, 129, 0.5); }
     .timeline-node.active::before { border-color: var(--accent-purple); background: var(--accent-purple); box-shadow: 0 0 10px rgba(171, 71, 188, 0.6); }
 
     .milestone-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; display: flex; justify-content: space-between; align-items: center; }
-    .milestone-card.completed { border-color: rgba(8, 153, 129, 0.4); background: rgba(8, 153, 129, 0.03); }
     .milestone-info { flex: 1; }
-    .milestone-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .milestone-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .milestone-meta { font-size: 11px; color: var(--text-muted); }
 
-    /* Celebration Modal Popup */
+    /* Category Tags */
+    .goal-tag { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; }
+    .tag-green { background: rgba(8, 153, 129, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
+    .tag-purple { background: rgba(171, 71, 188, 0.15); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
+    .tag-blue { background: rgba(41, 98, 255, 0.15); color: var(--accent-blue); border: 1px solid var(--accent-blue); }
+
+    /* Trophy Room */
+    .trophy-cabinet { display: flex; flex-wrap: wrap; gap: 10px; padding: 15px; background: rgba(8, 153, 129, 0.05); border: 1px solid rgba(8, 153, 129, 0.2); border-radius: var(--card-radius); margin-bottom: 35px; }
+    .trophy-cabinet-title { width: 100%; font-size: 11px; font-weight: 700; color: var(--accent-green); text-transform: uppercase; margin-bottom: 5px; }
+    .trophy-item { font-size: 12px; padding: 8px 14px; background: var(--bg-card); border: 1px solid var(--accent-green); border-radius: 20px; color: #fff; font-weight: 600; display: flex; flex-direction: column; gap: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+    .trophy-time { font-size: 10px; color: var(--accent-green); font-weight: 600; }
+
+    /* Celebration Modal */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(10, 12, 18, 0.85); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(6px); }
     .modal-overlay.active { display: flex; }
     .modal-card { background: var(--bg-card); border: 2px solid var(--accent-green); border-radius: 12px; padding: 32px; max-width: 440px; width: 90%; text-align: center; box-shadow: 0 0 40px rgba(8, 153, 129, 0.35); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -149,7 +170,7 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.1.2</span>
+      <span class="version-badge">v1.1.4</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -250,6 +271,15 @@
 
   <!-- MAIN VIEW 2: LONG-TERM GOAL ROADMAP -->
   <div id="view-roadmap" style="display: none;">
+    
+    <div class="macro-progress-box">
+      <div class="macro-header">
+        <span style="color: #fff;">2026 Master Progression</span>
+        <span id="macro-pct-val" style="color: var(--accent-green);">0%</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="macro-pct-bar" style="background-color: var(--accent-green);"></div></div>
+    </div>
+
     <div class="encouragement-card">
       <div>
         <div class="encouragement-sub">🌟 Positive Reinforcement Engine</div>
@@ -266,27 +296,48 @@
       </div>
       <span class="badge badge-blue" id="topstep-completed-badge">0 / 0 Unlocked</span>
     </div>
-    <div class="timeline-container" id="topstep-goals-timeline">
-      <div style="color: var(--text-muted); font-size: 12px;">Loading Topstep milestones...</div>
-    </div>
+    <div class="timeline-container" id="topstep-goals-timeline"></div>
+    <div class="trophy-cabinet" id="topstep-trophy-room"></div>
 
     <!-- SECTION 2: TRADOVATE LIVE MILESTONES -->
     <div class="section-header-wrap">
       <span class="section-header cyan">2. Tradovate Live — Account Milestones</span>
       <span class="badge badge-cyan" id="tradovate-completed-badge">0 / 0 Unlocked</span>
     </div>
-    <div class="timeline-container" id="tradovate-goals-timeline">
-      <div style="color: var(--text-muted); font-size: 12px;">Loading Tradovate milestones...</div>
-    </div>
+    <div class="timeline-container" id="tradovate-goals-timeline"></div>
+    <div class="trophy-cabinet" id="tradovate-trophy-room"></div>
 
-    <!-- SECTION 3: CATEGORY 2 (WITHDRAWAL MILESTONES) -->
+    <!-- SECTION 3: TRADEIFY MILESTONES -->
     <div class="section-header-wrap">
-      <span class="section-header green">3. Category 2 — Payout & Withdrawal Milestones</span>
+      <span class="section-header yellow">3. Tradeify Accounts (TDFY) — Milestones</span>
+      <span class="badge badge-yellow" id="tdfy-completed-badge">0 / 0 Unlocked</span>
+    </div>
+    <div class="timeline-container" id="tdfy-goals-timeline"></div>
+    <div class="trophy-cabinet" id="tdfy-trophy-room"></div>
+
+    <!-- SECTION 4: FUTURES ELITE MILESTONES -->
+    <div class="section-header-wrap">
+      <span class="section-header red">4. Futures Elite Accounts (FE) — Milestones</span>
+      <span class="badge badge-red" id="fe-completed-badge">0 / 0 Unlocked</span>
+    </div>
+    <div class="timeline-container" id="fe-goals-timeline"></div>
+    <div class="trophy-cabinet" id="fe-trophy-room"></div>
+
+    <!-- SECTION 5: FUNDEDNEXT MILESTONES -->
+    <div class="section-header-wrap">
+      <span class="section-header blue">5. FundedNext Accounts (FN) — Milestones</span>
+      <span class="badge badge-blue" id="fn-completed-badge">0 / 0 Unlocked</span>
+    </div>
+    <div class="timeline-container" id="fn-goals-timeline"></div>
+    <div class="trophy-cabinet" id="fn-trophy-room"></div>
+
+    <!-- SECTION 6: CATEGORY 2 (WITHDRAWAL MILESTONES) -->
+    <div class="section-header-wrap">
+      <span class="section-header green">6. Category 2 — Payout & Withdrawal Milestones</span>
       <span class="badge badge-green" id="withdrawal-completed-badge">0 / 0 Unlocked</span>
     </div>
-    <div class="timeline-container" id="withdrawal-goals-timeline">
-      <div style="color: var(--text-muted); font-size: 12px;">Loading Withdrawal milestones...</div>
-    </div>
+    <div class="timeline-container" id="withdrawal-goals-timeline"></div>
+    <div class="trophy-cabinet" id="withdrawal-trophy-room"></div>
   </div>
 
   <script>
@@ -295,12 +346,14 @@
     const GOALS_GID     = '1603097852';
 
     const VARIANCE_TOLERANCE = 50; 
+    const DANGER_ZONE_THRESHOLD = 250; 
 
     let countdownVal = 30;
     let countdownInterval = null;
     const parsedProgressMap = {};
     const parsedBalanceMap = {};
     const parsedGoalMap = {};
+    const parsedDangerMap = {}; 
 
     const encouragementQuotes = [
       "Every single rule-following trade compounds into long-term wealth. You are building real discipline!",
@@ -420,7 +473,17 @@
       triggerCelebrationModal("Topstep Milestone: $5,000 Profit Target Unlocked!");
     }
 
-    function updateCardData(acctName, progPct, balance, goalVal) {
+    function getGoalTag(title) {
+      const t = title.toLowerCase();
+      if (t.includes('$') || t.includes('payout') || t.includes('profit') || t.includes('withdraw') || t.includes('balance')) {
+        return { text: 'PROFIT', class: 'tag-green' };
+      } else if (t.includes('day') || t.includes('tilt') || t.includes('eval') || t.includes('pass') || t.includes('rule') || t.includes('discipline')) {
+        return { text: 'PROCESS', class: 'tag-purple' };
+      }
+      return { text: 'MILESTONE', class: 'tag-blue' };
+    }
+
+    function updateCardData(acctName, progPct, balance, goalVal, drawdownVal) {
       if (!acctName) return;
 
       const cleanName = acctName.toLowerCase().replace(/[\r\n]+/g, '').replace(/[^a-z0-9]/g, '');
@@ -455,9 +518,19 @@
 
         const numBal = parseNumericValue(balance);
         const numGoal = parseNumericValue(goalVal);
+        const numDraw = parseNumericValue(drawdownVal);
 
         parsedBalanceMap[targetId] = numBal;
         parsedGoalMap[targetId] = numGoal;
+
+        let isDanger = false;
+        if (numBal > 0 && numDraw > 0) {
+          const cushion = numBal - numDraw;
+          if (cushion <= DANGER_ZONE_THRESHOLD) {
+            isDanger = true;
+          }
+        }
+        parsedDangerMap[targetId] = isDanger;
 
         if (balEl && balance) balEl.innerText = formatCurrency(balance);
         if (goalEl && goalVal) goalEl.innerText = formatCurrency(goalVal);
@@ -466,7 +539,8 @@
           if (numGoal > 0 && numBal > 0) {
             const diff = numGoal - numBal;
             distEl.innerText = diff > 0 ? `Needed: $${diff.toLocaleString('en-US', {minimumFractionDigits: 2})}` : 'Goal Met!';
-            distEl.style.color = diff > 0 ? 'var(--accent-blue)' : 'var(--accent-green)';
+            distEl.className = isDanger ? 'distance-sub distance-danger' : 'distance-sub';
+            if (!isDanger) distEl.style.color = diff > 0 ? 'var(--accent-blue)' : 'var(--accent-green)';
           } else {
             distEl.innerText = 'Target Pending';
           }
@@ -492,7 +566,7 @@
 
     function evaluateTradeifyAndGroupRules() {
       document.querySelectorAll('.card').forEach(c => {
-        c.classList.remove('card-lagging', 'card-paused');
+        c.classList.remove('card-lagging', 'card-paused', 'card-danger');
       });
 
       let pausedCount = 0;
@@ -549,6 +623,19 @@
       evaluateStandardGroup('fe', ['fe-1', 'fe-2', 'fe-3', 'fe-4', 'fe-5']);
       evaluateStandardGroup('fn', ['fn-1', 'fn-2', 'fn-3']);
 
+      Object.keys(parsedDangerMap).forEach(id => {
+        if (parsedDangerMap[id]) {
+          const cardEl = document.getElementById(`card-${id}`);
+          const badgeEl = document.getElementById(`badge-${id}`);
+          if (cardEl && badgeEl) {
+            cardEl.classList.remove('card-lagging', 'card-paused');
+            cardEl.classList.add('card-danger');
+            badgeEl.className = 'badge badge-red';
+            badgeEl.innerText = 'CRITICAL MARGIN';
+          }
+        }
+      });
+
       const planEl = document.getElementById('action-plan-summary');
       if (planEl) {
         if (activeTradeTargets.length > 0) {
@@ -603,11 +690,9 @@
       const badgeEl = document.getElementById(`badge-${id}`);
 
       if (cardEl) {
-        cardEl.classList.remove('card-lagging', 'card-paused');
         if (state === 'lagging') cardEl.classList.add('card-lagging');
         if (state === 'paused') cardEl.classList.add('card-paused');
       }
-
       if (badgeEl) {
         if (state === 'lagging') badgeEl.className = 'badge badge-yellow';
         else if (state === 'paused') badgeEl.className = 'badge badge-paused';
@@ -618,6 +703,7 @@
     function setCardDefaultBadge(id) {
       const badgeEl = document.getElementById(`badge-${id}`);
       if (!badgeEl || id === 'topstep-live') return;
+      if (parsedDangerMap[id]) return; 
 
       const rawPct = parsedProgressMap[id] || 0;
       if (rawPct >= 75) {
@@ -638,10 +724,22 @@
         const rows = data.table.rows;
         const seenMilestones = getSeenCompletedMilestones();
 
-        let tsHTML = '', trHTML = '', wdHTML = '';
+        let tsActiveHTML = '', trActiveHTML = '', wdActiveHTML = '';
+        let tsTrophyHTML = '', trTrophyHTML = '', wdTrophyHTML = '';
+        
+        let tdfyActiveHTML = '', feActiveHTML = '', fnActiveHTML = '';
+        let tdfyTrophyHTML = '', feTrophyHTML = '', fnTrophyHTML = '';
+        
         let tsTotal = 0, tsDone = 0;
         let trTotal = 0, trDone = 0;
         let wdTotal = 0, wdDone = 0;
+        
+        let tdfyTotal = 0, tdfyDone = 0;
+        let feTotal = 0, feDone = 0;
+        let fnTotal = 0, fnDone = 0;
+
+        let totalMasterGoals = 0;
+        let totalMasterDone = 0;
 
         rows.forEach((r, idx) => {
           if (!r.c) return;
@@ -657,55 +755,107 @@
           const completed = (isComplete === 'true' || isComplete === 'yes' || isComplete === '1' || isComplete === 'x');
           const mKey = `goal_${cleanName}_${idx}`;
 
-          // Category routing logic: Row 27+ or 'withdraw' keyword -> Category 2 (Withdrawals)
+          const tagInfo = getGoalTag(goalTitle);
+          const tagHTML = `<span class="goal-tag ${tagInfo.class}">${tagInfo.text}</span>`;
+
           let category = 'topstep';
           if (idx >= 25 || cleanName.includes('withdraw') || cleanName.includes('payout')) {
             category = 'withdrawal';
           } else if (cleanName.includes('tradovate')) {
             category = 'tradovate';
+          } else if (cleanName.includes('tdfy') || cleanName.includes('tradeify')) {
+            category = 'tdfy';
+          } else if (cleanName.includes('fe') || cleanName.includes('futureselite')) {
+            category = 'fe';
+          } else if (cleanName.includes('fn') || cleanName.includes('fundednext')) {
+            category = 'fn';
           } else if (cleanName.includes('topstep')) {
             category = 'topstep';
           }
 
-          // Trigger celebration popup for any newly completed milestone
-          if (completed && !seenMilestones.includes(mKey)) {
-            saveSeenCompletedMilestone(mKey);
-            triggerCelebrationModal(goalTitle || `${acctName} Goal Completed!`);
+          totalMasterGoals++;
+          if (completed) {
+            totalMasterDone++;
+            if (!seenMilestones.includes(mKey)) {
+              saveSeenCompletedMilestone(mKey);
+              triggerCelebrationModal(goalTitle || `${acctName} Goal Completed!`);
+            }
           }
 
-          const nodeHTML = `
-            <div class="timeline-node ${completed ? 'completed' : 'active'}">
-              <div class="milestone-card ${completed ? 'completed' : ''}">
+          // Determine badge color based on category
+          let badgeColorClass = 'badge-blue';
+          if (category === 'tradovate') badgeColorClass = 'badge-cyan';
+          if (category === 'tdfy') badgeColorClass = 'badge-yellow';
+          if (category === 'fe') badgeColorClass = 'badge-red';
+
+          const activeNodeHTML = `
+            <div class="timeline-node active">
+              <div class="milestone-card">
                 <div class="milestone-info">
-                  <div class="milestone-title">${goalTitle || (acctName + ' Milestone')}</div>
-                  <div class="milestone-meta">${completed ? '✅ Completed ' + (dateOrPct ? '• ' + dateOrPct : '') : '🎯 Target Milestone ' + (dateOrPct ? '• ' + dateOrPct : '')}</div>
+                  <div class="milestone-title">${goalTitle || (acctName + ' Milestone')} ${tagHTML}</div>
+                  <div class="milestone-meta">🎯 Target Milestone ${dateOrPct ? '• ' + dateOrPct : ''}</div>
                 </div>
-                <span class="badge ${completed ? 'badge-green' : (category === 'tradovate' ? 'badge-cyan' : 'badge-blue')}">${completed ? 'UNLOCKED' : 'IN PROGRESS'}</span>
+                <span class="badge ${badgeColorClass}">IN PROGRESS</span>
               </div>
+            </div>`;
+
+          const trophyNodeHTML = `
+            <div class="trophy-item">
+              <span>🏆 ${goalTitle || (acctName + ' Milestone')}</span>
+              ${dateOrPct ? `<span class="trophy-time">⏱️ Phase Time: ${dateOrPct}</span>` : ''}
             </div>`;
 
           if (category === 'topstep') {
             tsTotal++;
-            if (completed) tsDone++;
-            tsHTML += nodeHTML;
+            if (completed) { tsDone++; tsTrophyHTML += trophyNodeHTML; } else { tsActiveHTML += activeNodeHTML; }
           } else if (category === 'tradovate') {
             trTotal++;
-            if (completed) trDone++;
-            trHTML += nodeHTML;
+            if (completed) { trDone++; trTrophyHTML += trophyNodeHTML; } else { trActiveHTML += activeNodeHTML; }
+          } else if (category === 'tdfy') {
+            tdfyTotal++;
+            if (completed) { tdfyDone++; tdfyTrophyHTML += trophyNodeHTML; } else { tdfyActiveHTML += activeNodeHTML; }
+          } else if (category === 'fe') {
+            feTotal++;
+            if (completed) { feDone++; feTrophyHTML += trophyNodeHTML; } else { feActiveHTML += activeNodeHTML; }
+          } else if (category === 'fn') {
+            fnTotal++;
+            if (completed) { fnDone++; fnTrophyHTML += trophyNodeHTML; } else { fnActiveHTML += activeNodeHTML; }
           } else if (category === 'withdrawal') {
             wdTotal++;
-            if (completed) wdDone++;
-            wdHTML += nodeHTML;
+            if (completed) { wdDone++; wdTrophyHTML += trophyNodeHTML; } else { wdActiveHTML += activeNodeHTML; }
           }
         });
 
-        document.getElementById('topstep-goals-timeline').innerHTML = tsHTML || '<div style="color: var(--text-muted); font-size: 12px;">No Topstep milestones found.</div>';
-        document.getElementById('tradovate-goals-timeline').innerHTML = trHTML || '<div style="color: var(--text-muted); font-size: 12px;">No Tradovate milestones found.</div>';
-        document.getElementById('withdrawal-goals-timeline').innerHTML = wdHTML || '<div style="color: var(--text-muted); font-size: 12px;">No Withdrawal milestones found (Row 27+).</div>';
+        // Inject Active Timelines
+        document.getElementById('topstep-goals-timeline').innerHTML = tsActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Topstep milestones remaining.</div>';
+        document.getElementById('tradovate-goals-timeline').innerHTML = trActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Tradovate milestones remaining.</div>';
+        document.getElementById('tdfy-goals-timeline').innerHTML = tdfyActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Tradeify milestones remaining.</div>';
+        document.getElementById('fe-goals-timeline').innerHTML = feActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Futures Elite milestones remaining.</div>';
+        document.getElementById('fn-goals-timeline').innerHTML = fnActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active FundedNext milestones remaining.</div>';
+        document.getElementById('withdrawal-goals-timeline').innerHTML = wdActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Withdrawal milestones remaining.</div>';
 
+        // Inject Trophy Rooms
+        document.getElementById('topstep-trophy-room').innerHTML = tsTrophyHTML ? `<div class="trophy-cabinet-title">Topstep Trophy Cabinet</div>${tsTrophyHTML}` : '';
+        document.getElementById('tradovate-trophy-room').innerHTML = trTrophyHTML ? `<div class="trophy-cabinet-title">Tradovate Trophy Cabinet</div>${trTrophyHTML}` : '';
+        document.getElementById('tdfy-trophy-room').innerHTML = tdfyTrophyHTML ? `<div class="trophy-cabinet-title">Tradeify Trophy Cabinet</div>${tdfyTrophyHTML}` : '';
+        document.getElementById('fe-trophy-room').innerHTML = feTrophyHTML ? `<div class="trophy-cabinet-title">Futures Elite Trophy Cabinet</div>${feTrophyHTML}` : '';
+        document.getElementById('fn-trophy-room').innerHTML = fnTrophyHTML ? `<div class="trophy-cabinet-title">FundedNext Trophy Cabinet</div>${fnTrophyHTML}` : '';
+        document.getElementById('withdrawal-trophy-room').innerHTML = wdTrophyHTML ? `<div class="trophy-cabinet-title">Withdrawal Trophy Cabinet</div>${wdTrophyHTML}` : '';
+
+        // Header Badges
         document.getElementById('topstep-completed-badge').innerText = `${tsDone} / ${tsTotal} Unlocked`;
         document.getElementById('tradovate-completed-badge').innerText = `${trDone} / ${trTotal} Unlocked`;
+        document.getElementById('tdfy-completed-badge').innerText = `${tdfyDone} / ${tdfyTotal} Unlocked`;
+        document.getElementById('fe-completed-badge').innerText = `${feDone} / ${feTotal} Unlocked`;
+        document.getElementById('fn-completed-badge').innerText = `${fnDone} / ${fnTotal} Unlocked`;
         document.getElementById('withdrawal-completed-badge').innerText = `${wdDone} / ${wdTotal} Unlocked`;
+
+        // Update Macro Master Progression Bar
+        if (totalMasterGoals > 0) {
+          const macroPct = (totalMasterDone / totalMasterGoals) * 100;
+          document.getElementById('macro-pct-val').innerText = macroPct.toFixed(1) + '%';
+          document.getElementById('macro-pct-bar').style.width = macroPct + '%';
+        }
 
       } catch (e) {
         console.error("Error parsing Goal Tracker sheet:", e);
@@ -722,8 +872,9 @@
           const progPct  = r.c[3] && r.c[3].v !== null ? r.c[3].v.toString() : '';
           const balance  = r.c[4] && r.c[4].v !== null ? r.c[4].v.toString() : '';
           const goalVal  = r.c[5] && r.c[5].v !== null ? r.c[5].v.toString() : '';
+          const drawVal  = r.c[9] && r.c[9].v !== null ? r.c[9].v.toString() : ''; 
 
-          updateCardData(acctName, progPct, balance, goalVal);
+          updateCardData(acctName, progPct, balance, goalVal, drawVal);
         });
 
         evaluateTradeifyAndGroupRules();
