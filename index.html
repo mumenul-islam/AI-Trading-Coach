@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.3.1</title>
+  <title>2026 Trade Command Center & Roadmap v1.3.2</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -92,7 +92,9 @@
     .card.card-trading-active { border: 2px solid var(--accent-blue) !important; background: rgba(41, 98, 255, 0.08); box-shadow: 0 0 16px rgba(41, 98, 255, 0.25); }
 
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .card-title-wrap { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
     .card-title { font-size: 14px; font-weight: 700; color: #fff; }
+    .title-completed-tag { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 800; background: rgba(8, 153, 129, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); text-transform: uppercase; display: none; }
     
     /* Execution Status Selector */
     .exec-status-bar { display: flex; gap: 4px; margin-bottom: 12px; background: rgba(19, 23, 34, 0.6); padding: 3px; border-radius: 6px; border: 1px solid var(--border-color); }
@@ -147,7 +149,6 @@
     .milestone-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .milestone-meta { font-size: 11px; color: var(--text-muted); }
 
-    /* Category Tags & Sub-Account Pills */
     .goal-tag { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; }
     .tag-green { background: rgba(8, 153, 129, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
     .tag-purple { background: rgba(171, 71, 188, 0.15); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
@@ -192,7 +193,7 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.3.1</span>
+      <span class="version-badge">v1.3.2</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -268,7 +269,10 @@
       <div class="grid" id="grid-topstep">
         <div class="card" id="card-topstep-live">
           <div class="card-header">
-            <span class="card-title">Topstep Live</span>
+            <div class="card-title-wrap">
+              <span class="card-title" id="title-topstep-live">Topstep Live</span>
+              <span class="title-completed-tag" id="tag-completed-topstep-live">COMPLETED</span>
+            </div>
             <span class="badge badge-blue" id="badge-topstep-live">PRIMARY</span>
           </div>
           <div class="exec-status-bar" id="exec-bar-topstep-live">
@@ -328,7 +332,10 @@
       <div class="grid" id="grid-ts-eval">
         <div class="card" id="card-topstep-50k-eval">
           <div class="card-header">
-            <span class="card-title" id="title-topstep-50k-eval">Topstep 50k Eval</span>
+            <div class="card-title-wrap">
+              <span class="card-title" id="title-topstep-50k-eval">Topstep 50k Eval</span>
+              <span class="title-completed-tag" id="tag-completed-topstep-50k-eval">COMPLETED</span>
+            </div>
             <span class="badge badge-purple" id="badge-topstep-50k-eval">EVALUATION</span>
           </div>
           <div class="exec-status-bar" id="exec-bar-topstep-50k-eval">
@@ -524,7 +531,10 @@
       return `
         <div class="card" id="card-${id}">
           <div class="card-header">
-            <span class="card-title">${title}</span>
+            <div class="card-title-wrap">
+              <span class="card-title" id="title-${id}">${title}</span>
+              <span class="title-completed-tag" id="tag-completed-${id}">COMPLETED</span>
+            </div>
             <span class="badge" id="badge-${id}">${defaultBadge}</span>
           </div>
           <div class="exec-status-bar" id="exec-bar-${id}">
@@ -598,6 +608,7 @@
     function applyExecStatusUI(acctId, status) {
       const cardEl = document.getElementById(`card-${acctId}`);
       const barEl = document.getElementById(`exec-bar-${acctId}`);
+      const titleTagEl = document.getElementById(`tag-completed-${acctId}`);
       if (!cardEl || !barEl) return;
 
       const btns = barEl.querySelectorAll('.exec-btn');
@@ -607,6 +618,7 @@
 
       if (status === 'complete') {
         barEl.querySelector('.state-complete').classList.add('active');
+        if (titleTagEl) titleTagEl.style.display = 'inline-block';
         if (!forceShowCompleted) {
           cardEl.classList.add('hidden-completed');
         } else {
@@ -614,10 +626,12 @@
         }
       } else if (status === 'in-progress') {
         barEl.querySelector('.state-in-progress').classList.add('active');
+        if (titleTagEl) titleTagEl.style.display = 'none';
         cardEl.classList.remove('hidden-completed');
         cardEl.classList.add('card-trading-active');
       } else {
         barEl.querySelector('.state-not-started').classList.add('active');
+        if (titleTagEl) titleTagEl.style.display = 'none';
         cardEl.classList.remove('hidden-completed');
       }
     }
@@ -1160,7 +1174,6 @@
             const tagInfo = getGoalTag(goalTitle);
             const tagHTML = `<span class="goal-tag ${tagInfo.class}">${tagInfo.text}</span>`;
             
-            // Generate Sub-Account Tag specifically for Tradeify
             let acctPillHTML = '';
             if (cleanName.includes('tdfy') || cleanName.includes('tradeify')) {
               acctPillHTML = `<span class="goal-tag tag-acct">${acctName || 'TDFY'}</span>`;
