@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.1.6</title>
+  <title>2026 Trade Command Center & Roadmap v1.1.7</title>
   <style>
     :root {
       --bg-main: #131722;
@@ -114,7 +114,7 @@
     .macro-progress-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 15px; }
     .macro-header { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-bottom: 10px; }
     
-    .visual-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 25px; }
+    .visual-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 25px; }
     .visual-stat-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 14px; display: flex; flex-direction: column; gap: 8px; position: relative; overflow: hidden; }
     .vs-header { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #fff; }
     .vs-footer { font-size: 10px; color: var(--text-muted); text-align: right; font-weight: 600; margin-top: 2px; }
@@ -176,7 +176,7 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.1.6</span>
+      <span class="version-badge">v1.1.7</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -303,17 +303,17 @@
     <!-- ROADMAP VISUAL STATS DASHBOARD -->
     <div class="visual-stats-grid">
       <div class="visual-stat-card" style="border-top: 3px solid var(--accent-purple);">
-        <div class="vs-header"><span>Topstep Live</span><span id="vis-pct-ts">0%</span></div>
+        <div class="vs-header"><span>Topstep Goals</span><span id="vis-pct-ts">0%</span></div>
         <div class="progress-bar-bg"><div class="progress-bar-fill" id="vis-bar-ts" style="background: var(--accent-purple); width: 0%;"></div></div>
         <div class="vs-footer" id="vis-txt-ts">0/0 Unlocked</div>
       </div>
       <div class="visual-stat-card" style="border-top: 3px solid var(--accent-cyan);">
-        <div class="vs-header"><span>Tradovate Live</span><span id="vis-pct-tr">0%</span></div>
+        <div class="vs-header"><span>Tradovate Goals</span><span id="vis-pct-tr">0%</span></div>
         <div class="progress-bar-bg"><div class="progress-bar-fill" id="vis-bar-tr" style="background: var(--accent-cyan); width: 0%;"></div></div>
         <div class="vs-footer" id="vis-txt-tr">0/0 Unlocked</div>
       </div>
       <div class="visual-stat-card" style="border-top: 3px solid var(--accent-yellow);">
-        <div class="vs-header"><span>Tradeify</span><span id="vis-pct-tdfy">0%</span></div>
+        <div class="vs-header"><span>Tradeify Goals</span><span id="vis-pct-tdfy">0%</span></div>
         <div class="progress-bar-bg"><div class="progress-bar-fill" id="vis-bar-tdfy" style="background: var(--accent-yellow); width: 0%;"></div></div>
         <div class="vs-footer" id="vis-txt-tdfy">0/0 Unlocked</div>
       </div>
@@ -328,9 +328,14 @@
         <div class="vs-footer" id="vis-txt-fn">0/0 Unlocked</div>
       </div>
       <div class="visual-stat-card" style="border-top: 3px solid var(--accent-green);">
-        <div class="vs-header"><span>Withdrawals</span><span id="vis-pct-wd">0%</span></div>
-        <div class="progress-bar-bg"><div class="progress-bar-fill" id="vis-bar-wd" style="background: var(--accent-green); width: 0%;"></div></div>
-        <div class="vs-footer" id="vis-txt-wd">0/0 Unlocked</div>
+        <div class="vs-header"><span>Topstep Payouts</span><span id="vis-pct-tswd">0%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="vis-bar-tswd" style="background: var(--accent-green); width: 0%;"></div></div>
+        <div class="vs-footer" id="vis-txt-tswd">0/0 Unlocked</div>
+      </div>
+      <div class="visual-stat-card" style="border-top: 3px solid var(--accent-green);">
+        <div class="vs-header"><span>Tradovate Payouts</span><span id="vis-pct-trwd">0%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="vis-bar-trwd" style="background: var(--accent-green); width: 0%;"></div></div>
+        <div class="vs-footer" id="vis-txt-trwd">0/0 Unlocked</div>
       </div>
     </div>
 
@@ -342,7 +347,8 @@
       <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-tdfy', this)">Tradeify</button>
       <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-fe', this)">Futures Elite</button>
       <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-fn', this)">FundedNext</button>
-      <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-withdrawal', this)">Withdrawals</button>
+      <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-ts-wd', this)">TS Payouts</button>
+      <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-tr-wd', this)">TR Payouts</button>
     </div>
 
     <div class="encouragement-card">
@@ -406,14 +412,24 @@
       <div class="trophy-cabinet" id="fn-trophy-room"></div>
     </div>
 
-    <!-- SECTION 6: CATEGORY 2 (WITHDRAWAL MILESTONES) -->
-    <div class="roadmap-category-block" id="roadmap-withdrawal">
+    <!-- SECTION 6: TOPSTEP PAYOUTS -->
+    <div class="roadmap-category-block" id="roadmap-ts-wd">
       <div class="section-header-wrap">
-        <span class="section-header green">6. Category 2 — Payout & Withdrawal Milestones</span>
-        <span class="badge badge-green" id="withdrawal-completed-badge">0 / 0 Unlocked</span>
+        <span class="section-header green">6. Topstep Live — Payouts & Withdrawals</span>
+        <span class="badge badge-green" id="ts-wd-completed-badge">0 / 0 Unlocked</span>
       </div>
-      <div class="timeline-container" id="withdrawal-goals-timeline"></div>
-      <div class="trophy-cabinet" id="withdrawal-trophy-room"></div>
+      <div class="timeline-container" id="ts-wd-goals-timeline"></div>
+      <div class="trophy-cabinet" id="ts-wd-trophy-room"></div>
+    </div>
+
+    <!-- SECTION 7: TRADOVATE PAYOUTS -->
+    <div class="roadmap-category-block" id="roadmap-tr-wd">
+      <div class="section-header-wrap">
+        <span class="section-header green">7. Tradovate Live — Payouts & Withdrawals</span>
+        <span class="badge badge-green" id="tr-wd-completed-badge">0 / 0 Unlocked</span>
+      </div>
+      <div class="timeline-container" id="tr-wd-goals-timeline"></div>
+      <div class="trophy-cabinet" id="tr-wd-trophy-room"></div>
     </div>
 
   </div>
@@ -451,7 +467,7 @@
       const feGrid = document.getElementById('grid-fe');
       feGrid.innerHTML = '';
       for (let i = 1; i <= 5; i++) {
-        feGrid.innerHTML += createCardHTML(`fe-${i}`, `FE Acct ${i}`, 'ACTIVE');
+        feGrid.innerHTML += createCardHTML(`fe-${i}`, `FE Acct ${i}`, 'RECOVERY');
       }
 
       const fnGrid = document.getElementById('grid-fn');
@@ -643,7 +659,6 @@
         parsedGoalMap[targetId] = numGoal;
         parsedProgressMap[targetId] = rawPct;
 
-        // DANGER ZONE EVALUATION (Column J Drawdown)
         let isDanger = false;
         if (numBal > 0 && numDraw > 0) {
           const cushion = numBal - numDraw;
@@ -653,7 +668,6 @@
         }
         parsedDangerMap[targetId] = isDanger;
 
-        // RECOVERY LADDER EVALUATION
         let isRecovery = false;
         let startingBalance = 0;
         let distToBreakeven = 0;
@@ -696,7 +710,6 @@
               badgeEl.innerText = 'RECOVERY MODE';
             }
         } else {
-            // Standard Target Evaluator
             if (heroLabelEl) heroLabelEl.innerText = 'Short-Term Goal';
             if (goalEl) goalEl.innerText = formatCurrency(numGoal);
             if (heroBoxEl) {
@@ -868,7 +881,7 @@
       if (parsedDangerMap[id]) return; 
 
       const rawPct = parsedProgressMap[id] || 0;
-      if (rawPct < 0) return; // Managed by Recovery logic
+      if (rawPct < 0) return;
 
       if (rawPct >= 75) {
         badgeEl.className = 'badge badge-green';
@@ -895,19 +908,24 @@
         const rows = data.table.rows;
         const seenMilestones = getSeenCompletedMilestones();
 
-        let tsActiveHTML = '', trActiveHTML = '', wdActiveHTML = '';
-        let tsTrophyHTML = '', trTrophyHTML = '', wdTrophyHTML = '';
+        let tsActiveHTML = '', trActiveHTML = '';
+        let tsTrophyHTML = '', trTrophyHTML = '';
         
         let tdfyActiveHTML = '', feActiveHTML = '', fnActiveHTML = '';
         let tdfyTrophyHTML = '', feTrophyHTML = '', fnTrophyHTML = '';
+
+        let tsWdActiveHTML = '', trWdActiveHTML = '';
+        let tsWdTrophyHTML = '', trWdTrophyHTML = '';
         
         let tsTotal = 0, tsDone = 0;
         let trTotal = 0, trDone = 0;
-        let wdTotal = 0, wdDone = 0;
         
         let tdfyTotal = 0, tdfyDone = 0;
         let feTotal = 0, feDone = 0;
         let fnTotal = 0, fnDone = 0;
+
+        let tsWdTotal = 0, tsWdDone = 0;
+        let trWdTotal = 0, trWdDone = 0;
 
         let totalMasterGoals = 0;
         let totalMasterDone = 0;
@@ -923,6 +941,7 @@
           if (!acctName && !goalTitle) return;
 
           const cleanName = acctName.toLowerCase().replace(/[^a-z0-9]/g, '');
+          const combinedText = (cleanName + ' ' + goalTitle.toLowerCase()).replace(/[^a-z0-9]/g, '');
           const completed = (isComplete === 'true' || isComplete === 'yes' || isComplete === '1' || isComplete === 'x');
           const mKey = `goal_${cleanName}_${idx}`;
 
@@ -930,8 +949,14 @@
           const tagHTML = `<span class="goal-tag ${tagInfo.class}">${tagInfo.text}</span>`;
 
           let category = 'topstep';
-          if (idx >= 25 || cleanName.includes('withdraw') || cleanName.includes('payout')) {
-            category = 'withdrawal';
+          const isWithdrawalRow = idx >= 25 || cleanName.includes('withdraw') || cleanName.includes('payout') || cleanName.includes('category2');
+
+          if (isWithdrawalRow) {
+            if (combinedText.includes('tradovate') || combinedText.includes('tr')) {
+              category = 'tr-withdrawal';
+            } else {
+              category = 'ts-withdrawal';
+            }
           } else if (cleanName.includes('tradovate')) {
             category = 'tradovate';
           } else if (cleanName.includes('tdfy') || cleanName.includes('tradeify')) {
@@ -954,9 +979,10 @@
           }
 
           let badgeColorClass = 'badge-blue';
-          if (category === 'tradovate') badgeColorClass = 'badge-cyan';
+          if (category === 'tradovate' || category === 'tr-withdrawal') badgeColorClass = 'badge-cyan';
           if (category === 'tdfy') badgeColorClass = 'badge-yellow';
           if (category === 'fe') badgeColorClass = 'badge-red';
+          if (category === 'ts-withdrawal') badgeColorClass = 'badge-green';
 
           const activeNodeHTML = `
             <div class="timeline-node active">
@@ -990,9 +1016,12 @@
           } else if (category === 'fn') {
             fnTotal++;
             if (completed) { fnDone++; fnTrophyHTML += trophyNodeHTML; } else { fnActiveHTML += activeNodeHTML; }
-          } else if (category === 'withdrawal') {
-            wdTotal++;
-            if (completed) { wdDone++; wdTrophyHTML += trophyNodeHTML; } else { wdActiveHTML += activeNodeHTML; }
+          } else if (category === 'ts-withdrawal') {
+            tsWdTotal++;
+            if (completed) { tsWdDone++; tsWdTrophyHTML += trophyNodeHTML; } else { tsWdActiveHTML += activeNodeHTML; }
+          } else if (category === 'tr-withdrawal') {
+            trWdTotal++;
+            if (completed) { trWdDone++; trWdTrophyHTML += trophyNodeHTML; } else { trWdActiveHTML += activeNodeHTML; }
           }
         });
 
@@ -1001,28 +1030,32 @@
         document.getElementById('tdfy-goals-timeline').innerHTML = tdfyActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Tradeify milestones remaining.</div>';
         document.getElementById('fe-goals-timeline').innerHTML = feActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Futures Elite milestones remaining.</div>';
         document.getElementById('fn-goals-timeline').innerHTML = fnActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active FundedNext milestones remaining.</div>';
-        document.getElementById('withdrawal-goals-timeline').innerHTML = wdActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Withdrawal milestones remaining.</div>';
+        document.getElementById('ts-wd-goals-timeline').innerHTML = tsWdActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Topstep Payout milestones remaining.</div>';
+        document.getElementById('tr-wd-goals-timeline').innerHTML = trWdActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Tradovate Payout milestones remaining.</div>';
 
         document.getElementById('topstep-trophy-room').innerHTML = tsTrophyHTML ? `<div class="trophy-cabinet-title">Topstep Trophy Cabinet</div>${tsTrophyHTML}` : '';
         document.getElementById('tradovate-trophy-room').innerHTML = trTrophyHTML ? `<div class="trophy-cabinet-title">Tradovate Trophy Cabinet</div>${trTrophyHTML}` : '';
         document.getElementById('tdfy-trophy-room').innerHTML = tdfyTrophyHTML ? `<div class="trophy-cabinet-title">Tradeify Trophy Cabinet</div>${tdfyTrophyHTML}` : '';
         document.getElementById('fe-trophy-room').innerHTML = feTrophyHTML ? `<div class="trophy-cabinet-title">Futures Elite Trophy Cabinet</div>${feTrophyHTML}` : '';
         document.getElementById('fn-trophy-room').innerHTML = fnTrophyHTML ? `<div class="trophy-cabinet-title">FundedNext Trophy Cabinet</div>${fnTrophyHTML}` : '';
-        document.getElementById('withdrawal-trophy-room').innerHTML = wdTrophyHTML ? `<div class="trophy-cabinet-title">Withdrawal Trophy Cabinet</div>${wdTrophyHTML}` : '';
+        document.getElementById('ts-wd-trophy-room').innerHTML = tsWdTrophyHTML ? `<div class="trophy-cabinet-title">Topstep Payout Trophy Cabinet</div>${tsWdTrophyHTML}` : '';
+        document.getElementById('tr-wd-trophy-room').innerHTML = trWdTrophyHTML ? `<div class="trophy-cabinet-title">Tradovate Payout Trophy Cabinet</div>${trWdTrophyHTML}` : '';
 
         document.getElementById('topstep-completed-badge').innerText = `${tsDone} / ${tsTotal} Unlocked`;
         document.getElementById('tradovate-completed-badge').innerText = `${trDone} / ${trTotal} Unlocked`;
         document.getElementById('tdfy-completed-badge').innerText = `${tdfyDone} / ${tdfyTotal} Unlocked`;
         document.getElementById('fe-completed-badge').innerText = `${feDone} / ${feTotal} Unlocked`;
         document.getElementById('fn-completed-badge').innerText = `${fnDone} / ${fnTotal} Unlocked`;
-        document.getElementById('withdrawal-completed-badge').innerText = `${wdDone} / ${wdTotal} Unlocked`;
+        document.getElementById('ts-wd-completed-badge').innerText = `${tsWdDone} / ${tsWdTotal} Unlocked`;
+        document.getElementById('tr-wd-completed-badge').innerText = `${trWdDone} / ${trWdTotal} Unlocked`;
 
         updateVisualChart('ts', tsDone, tsTotal);
         updateVisualChart('tr', trDone, trTotal);
         updateVisualChart('tdfy', tdfyDone, tdfyTotal);
         updateVisualChart('fe', feDone, feTotal);
         updateVisualChart('fn', fnDone, fnTotal);
-        updateVisualChart('wd', wdDone, wdTotal);
+        updateVisualChart('tswd', tsWdDone, tsWdTotal);
+        updateVisualChart('trwd', trWdDone, trWdTotal);
 
         if (totalMasterGoals > 0) {
           const macroPct = (totalMasterDone / totalMasterGoals) * 100;
