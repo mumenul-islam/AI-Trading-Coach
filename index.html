@@ -28,12 +28,12 @@
 
     .sync-status { font-size: 11px; color: var(--text-muted); text-align: right; margin-bottom: 20px; }
 
-    /* Guardrail Alert Banner */
-    .alert-banner { background: rgba(242, 54, 69, 0.15); border: 1px solid var(--accent-red); border-radius: var(--card-radius); padding: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
-    .alert-banner h3 { color: var(--accent-red); font-size: 15px; margin-bottom: 4px; }
-    .alert-banner p { color: var(--text-main); font-size: 13px; }
-    .alert-stats { text-align: right; }
-    .alert-stats .val { font-size: 18px; font-weight: 700; color: var(--accent-red); }
+    /* RAW DATA INSPECTOR PANEL */
+    .inspector-panel { background: #0d1117; border: 1px solid var(--accent-blue); border-radius: var(--card-radius); padding: 15px; margin-bottom: 25px; font-family: monospace; font-size: 12px; color: #fff; }
+    .inspector-panel h4 { color: var(--accent-blue); font-size: 14px; margin-bottom: 8px; font-family: sans-serif; }
+    .raw-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .raw-table th, .raw-table td { border: 1px solid #30363d; padding: 6px 8px; text-align: left; font-size: 11px; }
+    .raw-table th { background: #161b22; color: var(--accent-yellow); }
 
     /* Grid Layouts */
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 25px; }
@@ -54,21 +54,26 @@
       <h1>Prop Firm Command Center</h1>
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Dashboard</p>
     </div>
-    <span class="status-badge" id="live-indicator">LIVE SYNC ACTIVE</span>
+    <span class="status-badge" id="live-indicator">INSPECTOR ACTIVE</span>
   </header>
 
-  <div class="sync-status" id="sync-time">Parsing live spreadsheet columns...</div>
+  <div class="sync-status" id="sync-time">Reading raw spreadsheet rows...</div>
 
-  <!-- GUARDRAIL ALERT BANNER -->
-  <div class="alert-banner">
-    <div>
-      <h3>CRITICAL GUARDRAIL: Tradeify Account 2</h3>
-      <p>Payout taken. Floor locked at $50,100. Cushion compressed to <strong id="acct2-banner-cushion">$1,025.74</strong>.</p>
-    </div>
-    <div class="alert-stats">
-      <div style="font-size: 11px; color: var(--text-muted);">PROTECTED CUSHION</div>
-      <div class="val" id="acct2-banner-val">$1,025.74</div>
-    </div>
+  <!-- RAW DATA INSPECTOR -->
+  <div class="inspector-panel">
+    <h4>RAW SPREADSHEET FEED INSPECTOR</h4>
+    <p style="color: var(--text-muted); font-size: 11px;">Below is the exact text coming out of your Google Sheet feed right now:</p>
+    <table class="raw-table">
+      <thead>
+        <tr>
+          <th>Row #</th>
+          <th>Raw Cell Contents</th>
+        </tr>
+      </thead>
+      <tbody id="raw-rows-body">
+        <tr><td colspan="2" style="color: var(--accent-yellow);">Fetching raw stream...</td></tr>
+      </tbody>
+    </table>
   </div>
 
   <!-- ACCOUNTS SUMMARY GRID -->
@@ -89,78 +94,30 @@
     const RAW_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTE8cIWj7R35cpEMXXnYB9NLMqmyAD0EhSk3k_cXpe7W6JeCGYPj6-5UBtpTz_qd3JDHRofB4f9TwQH/pub?gid=1057997053&single=true&output=csv';
     const PROXY_URL = 'https://corsproxy.io/?' + encodeURIComponent(RAW_CSV + '&t=' + Date.now());
 
-    // Robust CSV split ignoring commas inside quotes
-    function parseCSVLine(line) {
-      const result = [];
-      let cell = '';
-      let inQuotes = false;
-      for (let i = 0; i < line.length; i++) {
-        let c = line[i];
-        if (c === '"') { inQuotes = !inQuotes; }
-        else if (c === ',' && !inQuotes) {
-          result.push(cell.trim().replace(/^"(.*)"$/, '$1'));
-          cell = '';
-        } else { cell += c; }
-      }
-      result.push(cell.trim().replace(/^"(.*)"$/, '$1'));
-      return result;
-    }
-
-    function cleanNumber(val) {
-      if (!val) return null;
-      let num = parseFloat(val.replace(/[\$,]/g, ''));
-      return isNaN(num) ? null : num;
-    }
-
-    async function syncData() {
+    async function inspectRawFeed() {
+      const tbody = document.getElementById('raw-rows-body');
       try {
         const res = await fetch(PROXY_URL);
-        if(!res.ok) throw new Error('Fetch failed');
+        if(!res.ok) throw new Error('HTTP Status ' + res.status);
         const text = await res.text();
         const lines = text.split(/\r?\n/);
-
-        lines.forEach(line => {
-          const columns = parseCSVLine(line);
-          const rowText = columns.join(' ').toLowerCase();
-
-          // Topstep Row Target
-          if (rowText.includes('topstep')) {
-            columns.forEach(col => {
-              let val = cleanNumber(col);
-              // Target any balance value above $1,000 in the row
-              if (val !== null && val > 1000 && val < 20000) {
-                document.getElementById('topstep-bal').innerText = '$' + val.toLocaleString('en-US', {minimumFractionDigits: 2});
-              }
-            });
-          }
-
-          // Tradeify (TDFY) Row Target
-          if (rowText.includes('tdfy') || rowText.includes('tradeify')) {
-            const balances = [];
-            columns.forEach(col => {
-              let val = cleanNumber(col);
-              if (val !== null && val > 45000 && val < 70000) balances.push(val);
-            });
-
-            if (balances.length >= 1) {
-              document.getElementById('tdfy1-bal').innerText = '$' + balances[0].toLocaleString('en-US', {minimumFractionDigits: 2});
-            }
-            if (balances.length >= 2) {
-              document.getElementById('tdfy2-bal').innerText = '$' + balances[1].toLocaleString('en-US', {minimumFractionDigits: 2});
-              let cushion = (balances[1] - 50100).toFixed(2);
-              document.getElementById('acct2-banner-cushion').innerText = '$' + parseFloat(cushion).toLocaleString('en-US', {minimumFractionDigits: 2});
-              document.getElementById('acct2-banner-val').innerText = '$' + parseFloat(cushion).toLocaleString('en-US', {minimumFractionDigits: 2});
-            }
+        
+        tbody.innerHTML = '';
+        lines.forEach((line, index) => {
+          if (line.trim().length > 0) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${index + 1}</td><td><code>${line.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></td>`;
+            tbody.appendChild(tr);
           }
         });
 
-        document.getElementById('sync-time').innerText = 'Last Synced with Google Sheets: ' + new Date().toLocaleTimeString();
+        document.getElementById('sync-time').innerText = 'Last Synced: ' + new Date().toLocaleTimeString();
       } catch(e) {
-        document.getElementById('sync-time').innerText = 'Last Synced: ' + new Date().toLocaleTimeString() + ' (Baseline Data)';
+        tbody.innerHTML = `<tr><td colspan="2" style="color: var(--accent-red);">Inspection Error: ${e.message}</td></tr>`;
       }
     }
 
-    syncData();
+    inspectRawFeed();
   </script>
 </body>
 </html>
