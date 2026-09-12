@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.3.3</title>
+  <title>2026 Trade Command Center & Roadmap v1.3.4</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -110,6 +110,7 @@
     .badge-yellow { background: rgba(245, 192, 0, 0.25); color: var(--accent-yellow); border: 1px solid var(--accent-yellow); }
     .badge-red { background: rgba(242, 54, 69, 0.25); color: var(--accent-red); border: 1px solid var(--accent-red); }
     .badge-blue { background: rgba(41, 98, 255, 0.2); color: var(--accent-blue); border: 1px solid var(--accent-blue); }
+    .badge-purple { background: rgba(171, 71, 188, 0.2); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
     .badge-cyan { background: rgba(0, 188, 212, 0.2); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
     .badge-paused { background: rgba(120, 123, 134, 0.25); color: var(--text-muted); border: 1px solid var(--text-muted); }
 
@@ -194,7 +195,7 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.3.3</span>
+      <span class="version-badge">v1.3.4</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -232,7 +233,7 @@
     <div class="summary-grid">
       <div class="summary-card">
         <div class="summary-title">Total Portfolio</div>
-        <div class="summary-value" id="summary-active-count">15 / 15</div>
+        <div class="summary-value" id="summary-active-count">16 / 16</div>
       </div>
       <div class="summary-card">
         <div class="summary-title">Today's Focus</div>
@@ -251,7 +252,7 @@
     <!-- DAILY FILTER TABS -->
     <div class="filter-bar">
       <div class="filter-group">
-        <button class="filter-btn active" onclick="filterDailyCategory('all', this)">All Accounts (15)</button>
+        <button class="filter-btn active" onclick="filterDailyCategory('all', this)">All Accounts (16)</button>
         <button class="filter-btn" onclick="filterDailyCategory('topstep', this)">Topstep Live (1)</button>
         <button class="filter-btn" onclick="filterDailyCategory('tdfy', this)">Tradeify (5)</button>
         <button class="filter-btn" onclick="filterDailyCategory('fe', this)">Futures Elite (5)</button>
@@ -272,7 +273,7 @@
           <div class="card-header">
             <div class="card-title-wrap">
               <span class="card-title" id="title-topstep-live">Topstep Live</span>
-              <span class="title-completed-tag" id="tag-completed-topstep-live">COMPLETED</span>
+              <span class="title-completed-tag" id="tag-completed-topstep-live">DONE ✓</span>
             </div>
             <span class="badge badge-blue" id="badge-topstep-live">PRIMARY</span>
           </div>
@@ -335,7 +336,7 @@
           <div class="card-header">
             <div class="card-title-wrap">
               <span class="card-title" id="title-topstep-50k-eval">Topstep 50k Eval</span>
-              <span class="title-completed-tag" id="tag-completed-topstep-50k-eval">COMPLETED</span>
+              <span class="title-completed-tag" id="tag-completed-topstep-50k-eval">DONE ✓</span>
             </div>
             <span class="badge badge-purple" id="badge-topstep-50k-eval">EVALUATION</span>
           </div>
@@ -555,7 +556,7 @@
           <div class="card-header">
             <div class="card-title-wrap">
               <span class="card-title" id="title-${id}">${title}</span>
-              <span class="title-completed-tag" id="tag-completed-${id}">COMPLETED</span>
+              <span class="title-completed-tag" id="tag-completed-${id}">DONE ✓</span>
             </div>
             <span class="badge" id="badge-${id}">${defaultBadge}</span>
           </div>
@@ -831,7 +832,7 @@
         const heroLabelEl = document.getElementById(`label-${targetId}`);
         const lblPctEl = document.getElementById(`lbl-pct-${targetId}`);
 
-        if (titleEl && acctName) titleEl.innerText = acctName;
+        if (titleEl && acctName && targetId === 'topstep-50k-eval') titleEl.innerText = acctName;
 
         const numBal = parseNumericValue(balance);
         const numGoal = parseNumericValue(goalVal);
@@ -1118,13 +1119,6 @@
           plugins: {
             legend: {
               labels: { color: '#d1d4dc', font: { size: 10, weight: 'bold' } }
-            },
-            tooltip: {
-              callbacks: {
-                afterBody: function(context) {
-                  return 'Hover timelines below for unlock dates';
-                }
-              }
             }
           },
           scales: {
@@ -1147,7 +1141,6 @@
       const ctx = document.getElementById('timelineChart');
       if (!ctx) return;
 
-      // Sort dated events chronologically
       datedEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
 
       let runningTotal = 0;
@@ -1424,8 +1417,10 @@
 
           updateCardData(acctName, progPct, balance, goalVal, drawVal);
 
+          // Explicit Row 17 parser for Topstep 50k Eval
           if (index === 16) { 
-            updateCardData('topstep-50k-eval', progPct, balance, goalVal, drawVal);
+            const evalName = acctName || 'Topstep 50k Eval';
+            updateCardData(evalName, progPct, balance, goalVal, drawVal);
           }
         });
 
