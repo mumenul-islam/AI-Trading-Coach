@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.3.2</title>
+  <title>2026 Trade Command Center & Roadmap v1.3.3</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -132,7 +132,8 @@
     .macro-progress-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 15px; }
     .macro-header { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-bottom: 10px; }
     
-    .chart-box-container { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 25px; }
+    .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; margin-bottom: 25px; }
+    .chart-box-container { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; }
     .chart-box-title { font-size: 12px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
 
     .encouragement-card { background: linear-gradient(135deg, rgba(171, 71, 188, 0.15) 0%, rgba(41, 98, 255, 0.1) 100%); border: 1px solid var(--accent-purple); border-radius: var(--card-radius); padding: 18px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; }
@@ -193,7 +194,7 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.3.2</span>
+      <span class="version-badge">v1.3.3</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -377,10 +378,19 @@
     </div>
 
     <!-- VISUAL GRAPH DASHBOARD SECTION -->
-    <div class="chart-box-container">
-      <div class="chart-box-title">📊 Milestone Progression Overview Graph</div>
-      <div style="height: 220px; position: relative;">
-        <canvas id="milestoneChart"></canvas>
+    <div class="charts-grid">
+      <div class="chart-box-container">
+        <div class="chart-box-title">📊 Category Completion Overview</div>
+        <div style="height: 220px; position: relative;">
+          <canvas id="milestoneChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-box-container">
+        <div class="chart-box-title">📈 Milestone Unlock Timeline</div>
+        <div style="height: 220px; position: relative;">
+          <canvas id="timelineChart"></canvas>
+        </div>
       </div>
     </div>
 
@@ -394,7 +404,8 @@
         <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-tdfy', this)">Tradeify</button>
         <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-fe', this)">Futures Elite</button>
         <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-fn', this)">FundedNext</button>
-        <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-withdrawals', this)">Withdrawals</button>
+        <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-ts-wd', this)">Topstep Withdrawals</button>
+        <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-tr-wd', this)">Tradovate Withdrawals</button>
       </div>
     </div>
 
@@ -469,14 +480,24 @@
       <div class="trophy-cabinet" id="fn-trophy-room"></div>
     </div>
 
-    <!-- SECTION 7: WITHDRAWALS -->
-    <div class="roadmap-category-block" id="roadmap-withdrawals">
+    <!-- SECTION 7: TOPSTEP WITHDRAWALS -->
+    <div class="roadmap-category-block" id="roadmap-ts-wd">
       <div class="section-header-wrap">
-        <span class="section-header green">7. Withdrawals & Payouts</span>
-        <span class="badge badge-green" id="withdrawals-completed-badge">0 / 0 Unlocked</span>
+        <span class="section-header green">7. Topstep Withdrawals & Payouts</span>
+        <span class="badge badge-green" id="ts-wd-completed-badge">0 / 0 Unlocked</span>
       </div>
-      <div class="timeline-container" id="withdrawals-goals-timeline"></div>
-      <div class="trophy-cabinet" id="withdrawals-trophy-room"></div>
+      <div class="timeline-container" id="ts-wd-goals-timeline"></div>
+      <div class="trophy-cabinet" id="ts-wd-trophy-room"></div>
+    </div>
+
+    <!-- SECTION 8: TRADOVATE WITHDRAWALS -->
+    <div class="roadmap-category-block" id="roadmap-tr-wd">
+      <div class="section-header-wrap">
+        <span class="section-header green">8. Tradovate Withdrawals & Payouts</span>
+        <span class="badge badge-green" id="tr-wd-completed-badge">0 / 0 Unlocked</span>
+      </div>
+      <div class="timeline-container" id="tr-wd-goals-timeline"></div>
+      <div class="trophy-cabinet" id="tr-wd-trophy-room"></div>
     </div>
 
   </div>
@@ -492,6 +513,7 @@
     let countdownVal = 30;
     let countdownInterval = null;
     let chartInstance = null;
+    let timelineChartInstance = null;
     let forceShowCompleted = false;
 
     const parsedProgressMap = {};
@@ -1055,15 +1077,15 @@
       const ctx = document.getElementById('milestoneChart');
       if (!ctx) return;
 
-      const labels = ['Topstep Live', 'Tradovate Live', 'Topstep Prop', 'Tradeify', 'Futures Elite', 'FundedNext', 'Withdrawals'];
+      const labels = ['Topstep Live', 'Tradovate Live', 'Topstep Prop', 'Tradeify', 'Futures Elite', 'FundedNext', 'TS Withdrawals', 'TR Withdrawals'];
       const completedData = [
-        dataObj.tsDone, dataObj.trDone, dataObj.tsPropDone, dataObj.tdfyDone, dataObj.feDone, dataObj.fnDone, dataObj.wdDone
+        dataObj.tsDone, dataObj.trDone, dataObj.tsPropDone, dataObj.tdfyDone, dataObj.feDone, dataObj.fnDone, dataObj.tsWdDone, dataObj.trWdDone
       ];
       const remainingData = [
         dataObj.tsTotal - dataObj.tsDone, dataObj.trTotal - dataObj.trDone,
         dataObj.tsPropTotal - dataObj.tsPropDone, dataObj.tdfyTotal - dataObj.tdfyDone, 
         dataObj.feTotal - dataObj.feDone, dataObj.fnTotal - dataObj.fnDone, 
-        dataObj.wdTotal - dataObj.wdDone
+        dataObj.tsWdTotal - dataObj.tsWdDone, dataObj.trWdTotal - dataObj.trWdDone
       ];
 
       if (chartInstance) {
@@ -1095,7 +1117,14 @@
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              labels: { color: '#d1d4dc', font: { size: 11, weight: 'bold' } }
+              labels: { color: '#d1d4dc', font: { size: 10, weight: 'bold' } }
+            },
+            tooltip: {
+              callbacks: {
+                afterBody: function(context) {
+                  return 'Hover timelines below for unlock dates';
+                }
+              }
             }
           },
           scales: {
@@ -1107,7 +1136,78 @@
             y: {
               stacked: true,
               grid: { display: false },
-              ticks: { color: '#d1d4dc', font: { size: 11, weight: 'bold' } }
+              ticks: { color: '#d1d4dc', font: { size: 10, weight: 'bold' } }
+            }
+          }
+        }
+      });
+    }
+
+    function renderTimelineChart(datedEvents) {
+      const ctx = document.getElementById('timelineChart');
+      if (!ctx) return;
+
+      // Sort dated events chronologically
+      datedEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      let runningTotal = 0;
+      const labels = [];
+      const dataPoints = [];
+      const goalTitles = [];
+
+      datedEvents.forEach(ev => {
+        runningTotal++;
+        labels.push(ev.date);
+        dataPoints.push(runningTotal);
+        goalTitles.push(ev.title);
+      });
+
+      if (timelineChartInstance) {
+        timelineChartInstance.destroy();
+      }
+
+      timelineChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels.length > 0 ? labels : ['No Unlocks Yet'],
+          datasets: [{
+            label: 'Cumulative Unlocked',
+            data: dataPoints.length > 0 ? dataPoints : [0],
+            borderColor: '#00bcd4',
+            backgroundColor: 'rgba(0, 188, 212, 0.1)',
+            fill: true,
+            tension: 0.3,
+            pointBackgroundColor: '#00bcd4',
+            pointRadius: 5,
+            pointHoverRadius: 7
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                title: function(items) {
+                  return `Unlocked on ${items[0].label}`;
+                },
+                label: function(item) {
+                  const title = goalTitles[item.dataIndex] || 'Milestone';
+                  return `🏆 ${title} (#${item.raw})`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(54, 58, 69, 0.4)' },
+              ticks: { color: '#787b86', font: { size: 9 } }
+            },
+            y: {
+              beginAtZero: true,
+              grid: { color: 'rgba(54, 58, 69, 0.4)' },
+              ticks: { color: '#d1d4dc', stepSize: 1 }
             }
           }
         }
@@ -1119,6 +1219,7 @@
       try {
         const rows = data.table.rows;
         const seenMilestones = getSeenCompletedMilestones();
+        const datedEvents = [];
 
         let tsActiveHTML = '', trActiveHTML = '';
         let tsTrophyHTML = '', trTrophyHTML = '';
@@ -1126,7 +1227,8 @@
         let tsPropActiveHTML = '', tdfyActiveHTML = '', feActiveHTML = '', fnActiveHTML = '';
         let tsPropTrophyHTML = '', tdfyTrophyHTML = '', feTrophyHTML = '', fnTrophyHTML = '';
 
-        let wdActiveHTML = '', wdTrophyHTML = '';
+        let tsWdActiveHTML = '', trWdActiveHTML = '';
+        let tsWdTrophyHTML = '', trWdTrophyHTML = '';
         
         let tsTotal = 0, tsDone = 0;
         let trTotal = 0, trDone = 0;
@@ -1136,7 +1238,8 @@
         let feTotal = 0, feDone = 0;
         let fnTotal = 0, fnDone = 0;
 
-        let wdTotal = 0, wdDone = 0;
+        let tsWdTotal = 0, tsWdDone = 0;
+        let trWdTotal = 0, trWdDone = 0;
 
         let totalMasterGoals = 0;
         let totalMasterDone = 0;
@@ -1183,7 +1286,11 @@
             const isWithdrawalRow = idx >= 25 || cleanName.includes('withdraw') || cleanName.includes('payout') || cleanName.includes('category2') || cleanName.includes('substack');
 
             if (isWithdrawalRow) {
-              category = 'withdrawals';
+              if (combinedText.includes('tradovate') || combinedText.includes('tr')) {
+                category = 'tr-withdrawal';
+              } else {
+                category = 'ts-withdrawal';
+              }
             } else if (cleanName.includes('50k') || cleanName.includes('eval') || cleanName.includes('topstep50k') || (source === 'prop' && cleanName.includes('topstep'))) {
               category = 'topstep-prop';
             } else if (cleanName.includes('tradovate')) {
@@ -1201,6 +1308,9 @@
             totalMasterGoals++;
             if (completed) {
               totalMasterDone++;
+              if (dateVal) {
+                datedEvents.push({ title: goalTitle || acctName, date: dateVal });
+              }
               if (!seenMilestones.includes(mKey)) {
                 saveSeenCompletedMilestone(mKey);
                 triggerCelebrationModal(goalTitle || `${acctName} Goal Completed!`);
@@ -1208,11 +1318,11 @@
             }
 
             let badgeColorClass = 'badge-blue';
-            if (category === 'tradovate-live') badgeColorClass = 'badge-cyan';
+            if (category === 'tradovate-live' || category === 'tr-withdrawal') badgeColorClass = 'badge-cyan';
             if (category === 'topstep-prop') badgeColorClass = 'badge-purple';
             if (category === 'tdfy') badgeColorClass = 'badge-yellow';
             if (category === 'fe') badgeColorClass = 'badge-red';
-            if (category === 'withdrawals') badgeColorClass = 'badge-green';
+            if (category === 'ts-withdrawal') badgeColorClass = 'badge-green';
 
             const activeNodeHTML = `
               <div class="timeline-node active">
@@ -1249,9 +1359,12 @@
             } else if (category === 'fn') {
               fnTotal++;
               if (completed) { fnDone++; fnTrophyHTML += trophyNodeHTML; } else { fnActiveHTML += activeNodeHTML; }
-            } else if (category === 'withdrawals') {
-              wdTotal++;
-              if (completed) { wdDone++; wdTrophyHTML += trophyNodeHTML; } else { wdActiveHTML += activeNodeHTML; }
+            } else if (category === 'ts-withdrawal') {
+              tsWdTotal++;
+              if (completed) { tsWdDone++; tsWdTrophyHTML += trophyNodeHTML; } else { tsWdActiveHTML += activeNodeHTML; }
+            } else if (category === 'tr-withdrawal') {
+              trWdTotal++;
+              if (completed) { trWdDone++; trWdTrophyHTML += trophyNodeHTML; } else { trWdActiveHTML += activeNodeHTML; }
             }
           });
         });
@@ -1262,7 +1375,8 @@
         document.getElementById('tdfy-goals-timeline').innerHTML = tdfyActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Tradeify milestones remaining.</div>';
         document.getElementById('fe-goals-timeline').innerHTML = feActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Futures Elite milestones remaining.</div>';
         document.getElementById('fn-goals-timeline').innerHTML = fnActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active FundedNext milestones remaining.</div>';
-        document.getElementById('withdrawals-goals-timeline').innerHTML = wdActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Withdrawal milestones remaining.</div>';
+        document.getElementById('ts-wd-goals-timeline').innerHTML = tsWdActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Topstep Withdrawal milestones remaining.</div>';
+        document.getElementById('tr-wd-goals-timeline').innerHTML = trWdActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Tradovate Withdrawal milestones remaining.</div>';
 
         document.getElementById('topstep-trophy-room').innerHTML = tsTrophyHTML ? `<div class="trophy-cabinet-title">Topstep Live Trophy Cabinet</div>${tsTrophyHTML}` : '';
         document.getElementById('tradovate-trophy-room').innerHTML = trTrophyHTML ? `<div class="trophy-cabinet-title">Tradovate Live Trophy Cabinet</div>${trTrophyHTML}` : '';
@@ -1270,7 +1384,8 @@
         document.getElementById('tdfy-trophy-room').innerHTML = tdfyTrophyHTML ? `<div class="trophy-cabinet-title">Tradeify Trophy Cabinet</div>${tdfyTrophyHTML}` : '';
         document.getElementById('fe-trophy-room').innerHTML = feTrophyHTML ? `<div class="trophy-cabinet-title">Futures Elite Trophy Cabinet</div>${feTrophyHTML}` : '';
         document.getElementById('fn-trophy-room').innerHTML = fnTrophyHTML ? `<div class="trophy-cabinet-title">FundedNext Trophy Cabinet</div>${fnTrophyHTML}` : '';
-        document.getElementById('withdrawals-trophy-room').innerHTML = wdTrophyHTML ? `<div class="trophy-cabinet-title">Withdrawals Trophy Cabinet</div>${wdTrophyHTML}` : '';
+        document.getElementById('ts-wd-trophy-room').innerHTML = tsWdTrophyHTML ? `<div class="trophy-cabinet-title">Topstep Withdrawals Trophy Cabinet</div>${tsWdTrophyHTML}` : '';
+        document.getElementById('tr-wd-trophy-room').innerHTML = trWdTrophyHTML ? `<div class="trophy-cabinet-title">Tradovate Withdrawals Trophy Cabinet</div>${trWdTrophyHTML}` : '';
 
         document.getElementById('topstep-completed-badge').innerText = `${tsDone} / ${tsTotal} Unlocked`;
         document.getElementById('tradovate-completed-badge').innerText = `${trDone} / ${trTotal} Unlocked`;
@@ -1278,9 +1393,11 @@
         document.getElementById('tdfy-completed-badge').innerText = `${tdfyDone} / ${tdfyTotal} Unlocked`;
         document.getElementById('fe-completed-badge').innerText = `${feDone} / ${feTotal} Unlocked`;
         document.getElementById('fn-completed-badge').innerText = `${fnDone} / ${fnTotal} Unlocked`;
-        document.getElementById('withdrawals-completed-badge').innerText = `${wdDone} / ${wdTotal} Unlocked`;
+        document.getElementById('ts-wd-completed-badge').innerText = `${tsWdDone} / ${tsWdTotal} Unlocked`;
+        document.getElementById('tr-wd-completed-badge').innerText = `${trWdDone} / ${trWdTotal} Unlocked`;
 
-        renderChart({ tsDone, tsTotal, trDone, trTotal, tsPropDone, tsPropTotal, tdfyDone, tdfyTotal, feDone, feTotal, fnDone, fnTotal, wdDone, wdTotal });
+        renderChart({ tsDone, tsTotal, trDone, trTotal, tsPropDone, tsPropTotal, tdfyDone, tdfyTotal, feDone, feTotal, fnDone, fnTotal, tsWdDone, tsWdTotal, trWdDone, trWdTotal });
+        renderTimelineChart(datedEvents);
 
         if (totalMasterGoals > 0) {
           const macroPct = (totalMasterDone / totalMasterGoals) * 100;
