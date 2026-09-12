@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.1.5</title>
+  <title>2026 Trade Command Center & Roadmap v1.1.6</title>
   <style>
     :root {
       --bg-main: #131722;
@@ -95,8 +95,8 @@
     .badge-cyan { background: rgba(0, 188, 212, 0.2); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
     .badge-paused { background: rgba(120, 123, 134, 0.25); color: var(--text-muted); border: 1px solid var(--text-muted); }
 
-    /* Goal Hero Box */
-    .goal-hero-box { background: rgba(41, 98, 255, 0.08); border: 1px solid rgba(41, 98, 255, 0.25); border-radius: 6px; padding: 12px; margin-bottom: 10px; text-align: center; }
+    /* Goal Hero Box & Recovery Mode */
+    .goal-hero-box { background: rgba(41, 98, 255, 0.08); border: 1px solid rgba(41, 98, 255, 0.25); border-radius: 6px; padding: 12px; margin-bottom: 10px; text-align: center; transition: all 0.3s ease; }
     .hero-label { font-size: 10px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
     .hero-val { font-size: 18px; color: #fff; font-weight: 800; margin-top: 2px; letter-spacing: -0.3px; }
     .distance-sub { font-size: 10px; color: var(--accent-blue); font-weight: 600; margin-top: 4px; }
@@ -110,13 +110,10 @@
     .balance-subdued { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border-color); display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); }
     .balance-subdued .stat-val { font-size: 12px; font-weight: 600; color: var(--text-main); }
 
-    /* ==========================================================
-       LONG-TERM GOALS TIMELINE, VISUALS & TROPHY ROOM
-       ========================================================== */
+    /* Long-Term Goals Timeline Styles */
     .macro-progress-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 15px; }
     .macro-header { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-bottom: 10px; }
     
-    /* Visual Stats Grid for Roadmap */
     .visual-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 25px; }
     .visual-stat-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 14px; display: flex; flex-direction: column; gap: 8px; position: relative; overflow: hidden; }
     .vs-header { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #fff; }
@@ -136,19 +133,16 @@
     .milestone-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .milestone-meta { font-size: 11px; color: var(--text-muted); }
 
-    /* Category Tags */
     .goal-tag { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; }
     .tag-green { background: rgba(8, 153, 129, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
     .tag-purple { background: rgba(171, 71, 188, 0.15); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
     .tag-blue { background: rgba(41, 98, 255, 0.15); color: var(--accent-blue); border: 1px solid var(--accent-blue); }
 
-    /* Trophy Room */
     .trophy-cabinet { display: flex; flex-wrap: wrap; gap: 10px; padding: 15px; background: rgba(8, 153, 129, 0.05); border: 1px solid rgba(8, 153, 129, 0.2); border-radius: var(--card-radius); margin-bottom: 35px; }
     .trophy-cabinet-title { width: 100%; font-size: 11px; font-weight: 700; color: var(--accent-green); text-transform: uppercase; margin-bottom: 5px; }
     .trophy-item { font-size: 12px; padding: 8px 14px; background: var(--bg-card); border: 1px solid var(--accent-green); border-radius: 20px; color: #fff; font-weight: 600; display: flex; flex-direction: column; gap: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
     .trophy-time { font-size: 10px; color: var(--accent-green); font-weight: 600; }
 
-    /* Celebration Modal */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(10, 12, 18, 0.85); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(6px); }
     .modal-overlay.active { display: flex; }
     .modal-card { background: var(--bg-card); border: 2px solid var(--accent-green); border-radius: 12px; padding: 32px; max-width: 440px; width: 90%; text-align: center; box-shadow: 0 0 40px rgba(8, 153, 129, 0.35); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -159,7 +153,6 @@
     .modal-msg { font-size: 13px; color: var(--text-main); line-height: 1.5; margin-bottom: 24px; background: rgba(8, 153, 129, 0.08); padding: 12px; border-radius: 6px; border: 1px dashed rgba(8, 153, 129, 0.3); }
     .modal-close-btn { background: var(--accent-green); color: #fff; border: none; padding: 12px 28px; border-radius: 20px; font-weight: 700; cursor: pointer; font-size: 13px; box-shadow: 0 4px 12px rgba(8, 153, 129, 0.3); transition: transform 0.2s ease; }
     .modal-close-btn:hover { transform: scale(1.05); }
-    
     .test-popup-btn { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); font-size: 10px; padding: 4px 8px; border-radius: 12px; cursor: pointer; margin-left: 10px; }
     .test-popup-btn:hover { border-color: var(--accent-purple); color: var(--accent-purple); }
   </style>
@@ -183,7 +176,7 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.1.5</span>
+      <span class="version-badge">v1.1.6</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -249,14 +242,14 @@
             <span class="card-title">Topstep Live</span>
             <span class="badge badge-blue" id="badge-topstep-live">PRIMARY</span>
           </div>
-          <div class="goal-hero-box">
-            <div class="hero-label">Short-Term Goal</div>
+          <div class="goal-hero-box" id="hero-box-topstep-live">
+            <div class="hero-label" id="label-topstep-live">Short-Term Goal</div>
             <div class="hero-val" id="val-topstep-live-goal">$0.00</div>
             <div class="distance-sub" id="dist-topstep-live">Distance: $0.00</div>
           </div>
           <div class="progress-container">
             <div class="stat-row" style="display: flex; justify-content: space-between; font-size: 11px;">
-              <span style="color: var(--text-muted);">Progress (Col D)</span>
+              <span class="stat-label" id="lbl-pct-topstep-live">Progress (Col D)</span>
               <span style="font-weight: 600;" id="val-topstep-live-pct">0%</span>
             </div>
             <div class="progress-bar-bg"><div class="progress-bar-fill" id="bar-topstep-live-pct"></div></div>
@@ -458,7 +451,7 @@
       const feGrid = document.getElementById('grid-fe');
       feGrid.innerHTML = '';
       for (let i = 1; i <= 5; i++) {
-        feGrid.innerHTML += createCardHTML(`fe-${i}`, `FE Acct ${i}`, 'RECOVERY');
+        feGrid.innerHTML += createCardHTML(`fe-${i}`, `FE Acct ${i}`, 'ACTIVE');
       }
 
       const fnGrid = document.getElementById('grid-fn');
@@ -475,14 +468,14 @@
             <span class="card-title">${title}</span>
             <span class="badge" id="badge-${id}">${defaultBadge}</span>
           </div>
-          <div class="goal-hero-box">
-            <div class="hero-label">Short-Term Goal</div>
+          <div class="goal-hero-box" id="hero-box-${id}">
+            <div class="hero-label" id="label-${id}">Short-Term Goal</div>
             <div class="hero-val" id="val-${id}-goal">$0.00</div>
             <div class="distance-sub" id="dist-${id}">Distance: $0.00</div>
           </div>
           <div class="progress-container">
             <div class="stat-row" style="display: flex; justify-content: space-between; font-size: 11px;">
-              <span style="color: var(--text-muted);">Progress (Col D)</span>
+              <span class="stat-label" id="lbl-pct-${id}">Progress (Col D)</span>
               <span style="font-weight: 600;" id="val-${id}-pct">0%</span>
             </div>
             <div class="progress-bar-bg"><div class="progress-bar-fill" id="bar-${id}-pct"></div></div>
@@ -507,7 +500,7 @@
     }
 
     function parseNumericPercent(val) {
-      if (!val) return 0;
+      if (!val && val !== 0) return 0;
       let num = parseFloat(val.toString().replace(/[%]/g, '').trim());
       if (isNaN(num)) return 0;
       if (num > 0 && num <= 1) num = num * 100;
@@ -634,14 +627,23 @@
         const pctEl = document.getElementById(`val-${targetId}-pct`);
         const barEl = document.getElementById(`bar-${targetId}-pct`);
         const distEl = document.getElementById(`dist-${targetId}`);
+        const cardEl = document.getElementById(`card-${targetId}`);
+        const badgeEl = document.getElementById(`badge-${targetId}`);
+        
+        const heroBoxEl = document.getElementById(`hero-box-${targetId}`);
+        const heroLabelEl = document.getElementById(`label-${targetId}`);
+        const lblPctEl = document.getElementById(`lbl-pct-${targetId}`);
 
         const numBal = parseNumericValue(balance);
         const numGoal = parseNumericValue(goalVal);
         const numDraw = parseNumericValue(drawdownVal);
+        const rawPct = progPct ? parseNumericPercent(progPct) : 0;
 
         parsedBalanceMap[targetId] = numBal;
         parsedGoalMap[targetId] = numGoal;
+        parsedProgressMap[targetId] = rawPct;
 
+        // DANGER ZONE EVALUATION (Column J Drawdown)
         let isDanger = false;
         if (numBal > 0 && numDraw > 0) {
           const cushion = numBal - numDraw;
@@ -651,34 +653,75 @@
         }
         parsedDangerMap[targetId] = isDanger;
 
-        if (balEl && balance) balEl.innerText = formatCurrency(balance);
-        if (goalEl && goalVal) goalEl.innerText = formatCurrency(goalVal);
+        // RECOVERY LADDER EVALUATION
+        let isRecovery = false;
+        let startingBalance = 0;
+        let distToBreakeven = 0;
+        let microGoal = 0;
+        let recovPct = 0;
 
-        if (distEl) {
-          if (numGoal > 0 && numBal > 0) {
-            const diff = numGoal - numBal;
-            distEl.innerText = diff > 0 ? `Needed: $${diff.toLocaleString('en-US', {minimumFractionDigits: 2})}` : 'Goal Met!';
-            distEl.className = isDanger ? 'distance-sub distance-danger' : 'distance-sub';
-            if (!isDanger) distEl.style.color = diff > 0 ? 'var(--accent-blue)' : 'var(--accent-green)';
-          } else {
-            distEl.innerText = 'Target Pending';
+        if (rawPct < 0 && numGoal > 0 && rawPct !== 100) {
+          isRecovery = true;
+          startingBalance = (numBal - (rawPct/100) * numGoal) / (1 - (rawPct/100));
+          distToBreakeven = startingBalance - numBal;
+          microGoal = distToBreakeven / 4; 
+          
+          if (numDraw > 0 && startingBalance > numDraw) {
+              recovPct = ((numBal - numDraw) / (startingBalance - numDraw)) * 100;
           }
         }
-        
-        if (progPct !== undefined && progPct !== null) {
-          const rawPct = parseNumericPercent(progPct);
-          parsedProgressMap[targetId] = rawPct;
 
-          const pctString = rawPct.toFixed(1) + '%';
-          if (pctEl) pctEl.innerText = pctString;
-          
-          if (barEl) {
-            barEl.style.width = Math.min(Math.max(rawPct, 0), 100) + '%';
-            if (rawPct >= 75) barEl.style.backgroundColor = 'var(--accent-green)';
-            else if (rawPct >= 30) barEl.style.backgroundColor = 'var(--accent-blue)';
-            else if (rawPct > 0) barEl.style.backgroundColor = 'var(--accent-yellow)';
-            else barEl.style.backgroundColor = 'var(--accent-red)';
-          }
+        if (balEl && balance) balEl.innerText = formatCurrency(balance);
+
+        if (isRecovery) {
+            if (heroLabelEl) heroLabelEl.innerText = 'Recovery Target (Breakeven)';
+            if (goalEl) goalEl.innerText = formatCurrency(startingBalance);
+            if (distEl) {
+              distEl.innerHTML = `Ladder Step: <b>+$${microGoal.toLocaleString('en-US', {maximumFractionDigits:0})}</b> <span style="color:var(--text-muted)">| Total: $${distToBreakeven.toLocaleString('en-US', {maximumFractionDigits:0})}</span>`;
+              distEl.className = 'distance-sub';
+              distEl.style.color = 'var(--accent-yellow)';
+            }
+            if (heroBoxEl) {
+              heroBoxEl.style.background = 'rgba(245, 192, 0, 0.08)';
+              heroBoxEl.style.borderColor = 'rgba(245, 192, 0, 0.25)';
+            }
+            if (lblPctEl) lblPctEl.innerText = 'Safety Padding';
+            if (pctEl) pctEl.innerText = Math.max(0, recovPct).toFixed(1) + '%';
+            if (barEl) {
+              barEl.style.width = Math.max(0, Math.min(100, recovPct)) + '%';
+              barEl.style.backgroundColor = 'var(--accent-yellow)';
+            }
+            if (badgeEl && !isDanger) {
+              badgeEl.className = 'badge badge-yellow';
+              badgeEl.innerText = 'RECOVERY MODE';
+            }
+        } else {
+            // Standard Target Evaluator
+            if (heroLabelEl) heroLabelEl.innerText = 'Short-Term Goal';
+            if (goalEl) goalEl.innerText = formatCurrency(numGoal);
+            if (heroBoxEl) {
+              heroBoxEl.style.background = 'rgba(41, 98, 255, 0.08)';
+              heroBoxEl.style.borderColor = 'rgba(41, 98, 255, 0.25)';
+            }
+            if (distEl) {
+              if (numGoal > 0 && numBal > 0) {
+                const diff = numGoal - numBal;
+                distEl.innerText = diff > 0 ? `Needed: $${diff.toLocaleString('en-US', {minimumFractionDigits: 2})}` : 'Goal Met!';
+                distEl.className = isDanger ? 'distance-sub distance-danger' : 'distance-sub';
+                if (!isDanger) distEl.style.color = diff > 0 ? 'var(--accent-blue)' : 'var(--accent-green)';
+              } else {
+                distEl.innerText = 'Target Pending';
+              }
+            }
+            if (lblPctEl) lblPctEl.innerText = 'Progress (Col D)';
+            if (pctEl) pctEl.innerText = rawPct.toFixed(1) + '%';
+            if (barEl) {
+              barEl.style.width = Math.min(Math.max(rawPct, 0), 100) + '%';
+              if (rawPct >= 75) barEl.style.backgroundColor = 'var(--accent-green)';
+              else if (rawPct >= 30) barEl.style.backgroundColor = 'var(--accent-blue)';
+              else if (rawPct > 0) barEl.style.backgroundColor = 'var(--accent-yellow)';
+              else barEl.style.backgroundColor = 'var(--accent-red)';
+            }
         }
       }
     }
@@ -825,6 +868,8 @@
       if (parsedDangerMap[id]) return; 
 
       const rawPct = parsedProgressMap[id] || 0;
+      if (rawPct < 0) return; // Managed by Recovery logic
+
       if (rawPct >= 75) {
         badgeEl.className = 'badge badge-green';
         badgeEl.innerText = 'ON TRACK';
@@ -837,7 +882,6 @@
       }
     }
 
-    // Visual Chart Update function
     function updateVisualChart(prefix, done, total) {
       const pct = total > 0 ? (done/total)*100 : 0;
       document.getElementById(`vis-pct-${prefix}`).innerText = pct.toFixed(0) + '%';
@@ -952,7 +996,6 @@
           }
         });
 
-        // Inject Active Timelines
         document.getElementById('topstep-goals-timeline').innerHTML = tsActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Topstep milestones remaining.</div>';
         document.getElementById('tradovate-goals-timeline').innerHTML = trActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Tradovate milestones remaining.</div>';
         document.getElementById('tdfy-goals-timeline').innerHTML = tdfyActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Tradeify milestones remaining.</div>';
@@ -960,7 +1003,6 @@
         document.getElementById('fn-goals-timeline').innerHTML = fnActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active FundedNext milestones remaining.</div>';
         document.getElementById('withdrawal-goals-timeline').innerHTML = wdActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Withdrawal milestones remaining.</div>';
 
-        // Inject Trophy Rooms
         document.getElementById('topstep-trophy-room').innerHTML = tsTrophyHTML ? `<div class="trophy-cabinet-title">Topstep Trophy Cabinet</div>${tsTrophyHTML}` : '';
         document.getElementById('tradovate-trophy-room').innerHTML = trTrophyHTML ? `<div class="trophy-cabinet-title">Tradovate Trophy Cabinet</div>${trTrophyHTML}` : '';
         document.getElementById('tdfy-trophy-room').innerHTML = tdfyTrophyHTML ? `<div class="trophy-cabinet-title">Tradeify Trophy Cabinet</div>${tdfyTrophyHTML}` : '';
@@ -968,7 +1010,6 @@
         document.getElementById('fn-trophy-room').innerHTML = fnTrophyHTML ? `<div class="trophy-cabinet-title">FundedNext Trophy Cabinet</div>${fnTrophyHTML}` : '';
         document.getElementById('withdrawal-trophy-room').innerHTML = wdTrophyHTML ? `<div class="trophy-cabinet-title">Withdrawal Trophy Cabinet</div>${wdTrophyHTML}` : '';
 
-        // Header Badges
         document.getElementById('topstep-completed-badge').innerText = `${tsDone} / ${tsTotal} Unlocked`;
         document.getElementById('tradovate-completed-badge').innerText = `${trDone} / ${trTotal} Unlocked`;
         document.getElementById('tdfy-completed-badge').innerText = `${tdfyDone} / ${tdfyTotal} Unlocked`;
@@ -976,7 +1017,6 @@
         document.getElementById('fn-completed-badge').innerText = `${fnDone} / ${fnTotal} Unlocked`;
         document.getElementById('withdrawal-completed-badge').innerText = `${wdDone} / ${wdTotal} Unlocked`;
 
-        // Update Visual Graphs Dashboard
         updateVisualChart('ts', tsDone, tsTotal);
         updateVisualChart('tr', trDone, trTotal);
         updateVisualChart('tdfy', tdfyDone, tdfyTotal);
@@ -984,7 +1024,6 @@
         updateVisualChart('fn', fnDone, fnTotal);
         updateVisualChart('wd', wdDone, wdTotal);
 
-        // Update Macro Master Progression Bar
         if (totalMasterGoals > 0) {
           const macroPct = (totalMasterDone / totalMasterGoals) * 100;
           document.getElementById('macro-pct-val').innerText = macroPct.toFixed(1) + '%';
