@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.1.7</title>
+  <title>2026 Trade Command Center & Roadmap v1.1.9</title>
   <style>
     :root {
       --bg-main: #131722;
@@ -95,7 +95,7 @@
     .badge-cyan { background: rgba(0, 188, 212, 0.2); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
     .badge-paused { background: rgba(120, 123, 134, 0.25); color: var(--text-muted); border: 1px solid var(--text-muted); }
 
-    /* Goal Hero Box & Recovery Mode */
+    /* Goal Hero Box */
     .goal-hero-box { background: rgba(41, 98, 255, 0.08); border: 1px solid rgba(41, 98, 255, 0.25); border-radius: 6px; padding: 12px; margin-bottom: 10px; text-align: center; transition: all 0.3s ease; }
     .hero-label { font-size: 10px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
     .hero-val { font-size: 18px; color: #fff; font-weight: 800; margin-top: 2px; letter-spacing: -0.3px; }
@@ -176,7 +176,7 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.1.7</span>
+      <span class="version-badge">v1.1.9</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -195,9 +195,7 @@
     <button class="nav-tab" onclick="switchMainView('roadmap', this)">🎯 Long-Term Goal Roadmap</button>
   </div>
 
-  <!-- ==========================================
-       MAIN VIEW 1: DAILY COMMAND CENTER 
-       ========================================== -->
+  <!-- MAIN VIEW 1: DAILY COMMAND CENTER -->
   <div id="view-daily">
     
     <div class="action-command-banner">
@@ -287,9 +285,7 @@
     </div>
   </div>
 
-  <!-- ==========================================
-       MAIN VIEW 2: LONG-TERM GOAL ROADMAP 
-       ========================================== -->
+  <!-- MAIN VIEW 2: LONG-TERM GOAL ROADMAP -->
   <div id="view-roadmap" style="display: none;">
     
     <div class="macro-progress-box">
@@ -300,7 +296,6 @@
       <div class="progress-bar-bg"><div class="progress-bar-fill" id="macro-pct-bar" style="background-color: var(--accent-green);"></div></div>
     </div>
 
-    <!-- ROADMAP VISUAL STATS DASHBOARD -->
     <div class="visual-stats-grid">
       <div class="visual-stat-card" style="border-top: 3px solid var(--accent-purple);">
         <div class="vs-header"><span>Topstep Goals</span><span id="vis-pct-ts">0%</span></div>
@@ -339,7 +334,6 @@
       </div>
     </div>
 
-    <!-- ROADMAP FILTER TABS -->
     <div class="filter-bar">
       <button class="filter-btn active" onclick="filterRoadmapCategory('all', this)">All Goals</button>
       <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-topstep', this)">Topstep</button>
@@ -359,7 +353,6 @@
       <div style="font-size: 28px;">🏆</div>
     </div>
 
-    <!-- SECTION 1: TOPSTEP LIVE MILESTONES -->
     <div class="roadmap-category-block" id="roadmap-topstep">
       <div class="section-header-wrap">
         <div>
@@ -372,7 +365,6 @@
       <div class="trophy-cabinet" id="topstep-trophy-room"></div>
     </div>
 
-    <!-- SECTION 2: TRADOVATE LIVE MILESTONES -->
     <div class="roadmap-category-block" id="roadmap-tradovate">
       <div class="section-header-wrap">
         <span class="section-header cyan">2. Tradovate Live — Account Milestones</span>
@@ -382,7 +374,6 @@
       <div class="trophy-cabinet" id="tradovate-trophy-room"></div>
     </div>
 
-    <!-- SECTION 3: TRADEIFY MILESTONES -->
     <div class="roadmap-category-block" id="roadmap-tdfy">
       <div class="section-header-wrap">
         <span class="section-header yellow">3. Tradeify Accounts (TDFY) — Milestones</span>
@@ -392,7 +383,6 @@
       <div class="trophy-cabinet" id="tdfy-trophy-room"></div>
     </div>
 
-    <!-- SECTION 4: FUTURES ELITE MILESTONES -->
     <div class="roadmap-category-block" id="roadmap-fe">
       <div class="section-header-wrap">
         <span class="section-header red">4. Futures Elite Accounts (FE) — Milestones</span>
@@ -402,7 +392,6 @@
       <div class="trophy-cabinet" id="fe-trophy-room"></div>
     </div>
 
-    <!-- SECTION 5: FUNDEDNEXT MILESTONES -->
     <div class="roadmap-category-block" id="roadmap-fn">
       <div class="section-header-wrap">
         <span class="section-header blue">5. FundedNext Accounts (FN) — Milestones</span>
@@ -412,7 +401,6 @@
       <div class="trophy-cabinet" id="fn-trophy-room"></div>
     </div>
 
-    <!-- SECTION 6: TOPSTEP PAYOUTS -->
     <div class="roadmap-category-block" id="roadmap-ts-wd">
       <div class="section-header-wrap">
         <span class="section-header green">6. Topstep Live — Payouts & Withdrawals</span>
@@ -422,7 +410,6 @@
       <div class="trophy-cabinet" id="ts-wd-trophy-room"></div>
     </div>
 
-    <!-- SECTION 7: TRADOVATE PAYOUTS -->
     <div class="roadmap-category-block" id="roadmap-tr-wd">
       <div class="section-header-wrap">
         <span class="section-header green">7. Tradovate Live — Payouts & Withdrawals</span>
@@ -504,22 +491,23 @@
     }
 
     function formatCurrency(val) {
-      if (!val) return '$0.00';
+      if (val === undefined || val === null || val === '') return '$0.00';
       let num = parseFloat(val.toString().replace(/[\$,]/g, '').trim());
-      return isNaN(num) ? val : '$' + num.toLocaleString('en-US', {minimumFractionDigits: 2});
+      return isNaN(num) ? val.toString() : '$' + num.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     }
 
     function parseNumericValue(val) {
-      if (!val) return 0;
+      if (val === undefined || val === null || val === '') return 0;
       let num = parseFloat(val.toString().replace(/[\$,%]/g, '').trim());
       return isNaN(num) ? 0 : num;
     }
 
     function parseNumericPercent(val) {
-      if (!val && val !== 0) return 0;
-      let num = parseFloat(val.toString().replace(/[%]/g, '').trim());
+      if (val === undefined || val === null || val === '') return 0;
+      let str = val.toString().replace(/[%]/g, '').trim();
+      let num = parseFloat(str);
       if (isNaN(num)) return 0;
-      if (num > 0 && num <= 1) num = num * 100;
+      if (num > -1 && num < 1 && num !== 0) num = num * 100;
       return num;
     }
 
@@ -643,7 +631,6 @@
         const pctEl = document.getElementById(`val-${targetId}-pct`);
         const barEl = document.getElementById(`bar-${targetId}-pct`);
         const distEl = document.getElementById(`dist-${targetId}`);
-        const cardEl = document.getElementById(`card-${targetId}`);
         const badgeEl = document.getElementById(`badge-${targetId}`);
         
         const heroBoxEl = document.getElementById(`hero-box-${targetId}`);
@@ -653,12 +640,13 @@
         const numBal = parseNumericValue(balance);
         const numGoal = parseNumericValue(goalVal);
         const numDraw = parseNumericValue(drawdownVal);
-        const rawPct = progPct ? parseNumericPercent(progPct) : 0;
+        const rawPct = parseNumericPercent(progPct);
 
         parsedBalanceMap[targetId] = numBal;
         parsedGoalMap[targetId] = numGoal;
         parsedProgressMap[targetId] = rawPct;
 
+        // DANGER ZONE EVALUATION (Column J Drawdown)
         let isDanger = false;
         if (numBal > 0 && numDraw > 0) {
           const cushion = numBal - numDraw;
@@ -668,73 +656,71 @@
         }
         parsedDangerMap[targetId] = isDanger;
 
-        let isRecovery = false;
-        let startingBalance = 0;
-        let distToBreakeven = 0;
-        let microGoal = 0;
-        let recovPct = 0;
+        // Display current balance from Column E
+        if (balEl) balEl.innerText = formatCurrency(balance);
 
-        if (rawPct < 0 && numGoal > 0 && rawPct !== 100) {
+        // RECOVERY LADDER EVALUATION
+        let isRecovery = false;
+
+        if (rawPct < 0 && numGoal > 0) {
           isRecovery = true;
-          startingBalance = (numBal - (rawPct/100) * numGoal) / (1 - (rawPct/100));
-          distToBreakeven = startingBalance - numBal;
-          microGoal = distToBreakeven / 4; 
+          let startingBalance = (numBal - (rawPct/100) * numGoal) / (1 - (rawPct/100));
+          let distToBreakeven = startingBalance - numBal;
+          let microGoal = distToBreakeven / 4; 
+          let recovPct = 0;
           
           if (numDraw > 0 && startingBalance > numDraw) {
               recovPct = ((numBal - numDraw) / (startingBalance - numDraw)) * 100;
           }
-        }
 
-        if (balEl && balance) balEl.innerText = formatCurrency(balance);
-
-        if (isRecovery) {
-            if (heroLabelEl) heroLabelEl.innerText = 'Recovery Target (Breakeven)';
-            if (goalEl) goalEl.innerText = formatCurrency(startingBalance);
-            if (distEl) {
-              distEl.innerHTML = `Ladder Step: <b>+$${microGoal.toLocaleString('en-US', {maximumFractionDigits:0})}</b> <span style="color:var(--text-muted)">| Total: $${distToBreakeven.toLocaleString('en-US', {maximumFractionDigits:0})}</span>`;
-              distEl.className = 'distance-sub';
-              distEl.style.color = 'var(--accent-yellow)';
-            }
-            if (heroBoxEl) {
-              heroBoxEl.style.background = 'rgba(245, 192, 0, 0.08)';
-              heroBoxEl.style.borderColor = 'rgba(245, 192, 0, 0.25)';
-            }
-            if (lblPctEl) lblPctEl.innerText = 'Safety Padding';
-            if (pctEl) pctEl.innerText = Math.max(0, recovPct).toFixed(1) + '%';
-            if (barEl) {
-              barEl.style.width = Math.max(0, Math.min(100, recovPct)) + '%';
-              barEl.style.backgroundColor = 'var(--accent-yellow)';
-            }
-            if (badgeEl && !isDanger) {
-              badgeEl.className = 'badge badge-yellow';
-              badgeEl.innerText = 'RECOVERY MODE';
-            }
+          if (heroLabelEl) heroLabelEl.innerText = 'Recovery Target (Breakeven)';
+          if (goalEl) goalEl.innerText = formatCurrency(startingBalance);
+          if (distEl) {
+            distEl.innerHTML = `Ladder Step: <b>+$${microGoal.toLocaleString('en-US', {maximumFractionDigits:0})}</b> <span style="color:var(--text-muted)">| Total: $${distToBreakeven.toLocaleString('en-US', {maximumFractionDigits:0})}</span>`;
+            distEl.className = 'distance-sub';
+            distEl.style.color = 'var(--accent-yellow)';
+          }
+          if (heroBoxEl) {
+            heroBoxEl.style.background = 'rgba(245, 192, 0, 0.08)';
+            heroBoxEl.style.borderColor = 'rgba(245, 192, 0, 0.25)';
+          }
+          if (lblPctEl) lblPctEl.innerText = 'Safety Padding';
+          if (pctEl) pctEl.innerText = Math.max(0, recovPct).toFixed(1) + '%';
+          if (barEl) {
+            barEl.style.width = Math.max(0, Math.min(100, recovPct)) + '%';
+            barEl.style.backgroundColor = 'var(--accent-yellow)';
+          }
+          if (badgeEl && !isDanger) {
+            badgeEl.className = 'badge badge-yellow';
+            badgeEl.innerText = 'RECOVERY MODE';
+          }
         } else {
-            if (heroLabelEl) heroLabelEl.innerText = 'Short-Term Goal';
-            if (goalEl) goalEl.innerText = formatCurrency(numGoal);
-            if (heroBoxEl) {
-              heroBoxEl.style.background = 'rgba(41, 98, 255, 0.08)';
-              heroBoxEl.style.borderColor = 'rgba(41, 98, 255, 0.25)';
+          // STANDARD MODE: Directly display Column F short-term goal
+          if (heroLabelEl) heroLabelEl.innerText = 'Short-Term Goal';
+          if (goalEl) goalEl.innerText = formatCurrency(goalVal);
+          if (heroBoxEl) {
+            heroBoxEl.style.background = 'rgba(41, 98, 255, 0.08)';
+            heroBoxEl.style.borderColor = 'rgba(41, 98, 255, 0.25)';
+          }
+          if (distEl) {
+            if (numGoal > 0 && numBal > 0) {
+              const diff = numGoal - numBal;
+              distEl.innerText = diff > 0 ? `Needed: $${diff.toLocaleString('en-US', {minimumFractionDigits: 2})}` : 'Goal Met!';
+              distEl.className = isDanger ? 'distance-sub distance-danger' : 'distance-sub';
+              if (!isDanger) distEl.style.color = diff > 0 ? 'var(--accent-blue)' : 'var(--accent-green)';
+            } else {
+              distEl.innerText = 'Target Pending';
             }
-            if (distEl) {
-              if (numGoal > 0 && numBal > 0) {
-                const diff = numGoal - numBal;
-                distEl.innerText = diff > 0 ? `Needed: $${diff.toLocaleString('en-US', {minimumFractionDigits: 2})}` : 'Goal Met!';
-                distEl.className = isDanger ? 'distance-sub distance-danger' : 'distance-sub';
-                if (!isDanger) distEl.style.color = diff > 0 ? 'var(--accent-blue)' : 'var(--accent-green)';
-              } else {
-                distEl.innerText = 'Target Pending';
-              }
-            }
-            if (lblPctEl) lblPctEl.innerText = 'Progress (Col D)';
-            if (pctEl) pctEl.innerText = rawPct.toFixed(1) + '%';
-            if (barEl) {
-              barEl.style.width = Math.min(Math.max(rawPct, 0), 100) + '%';
-              if (rawPct >= 75) barEl.style.backgroundColor = 'var(--accent-green)';
-              else if (rawPct >= 30) barEl.style.backgroundColor = 'var(--accent-blue)';
-              else if (rawPct > 0) barEl.style.backgroundColor = 'var(--accent-yellow)';
-              else barEl.style.backgroundColor = 'var(--accent-red)';
-            }
+          }
+          if (lblPctEl) lblPctEl.innerText = 'Progress (Col D)';
+          if (pctEl) pctEl.innerText = rawPct.toFixed(1) + '%';
+          if (barEl) {
+            barEl.style.width = Math.min(Math.max(rawPct, 0), 100) + '%';
+            if (rawPct >= 75) barEl.style.backgroundColor = 'var(--accent-green)';
+            else if (rawPct >= 30) barEl.style.backgroundColor = 'var(--accent-blue)';
+            else if (rawPct > 0) barEl.style.backgroundColor = 'var(--accent-yellow)';
+            else barEl.style.backgroundColor = 'var(--accent-red)';
+          }
         }
       }
     }
