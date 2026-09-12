@@ -628,7 +628,7 @@
           <div class="chevron-step" id="step-ts-1">
             <div class="chevron-content">
               <span class="chevron-num">PHASE 1</span>
-              <span class="chevron-text">Grow account balance to $5,000</span>
+              <span class="chevron-text">Grow account balance to $5,000 & deposit funds into Tradovate Live</span>
             </div>
             <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-ts-1" style="display:none;">📍 YOU ARE HERE</span>
@@ -640,7 +640,7 @@
           <div class="chevron-step" id="step-ts-2">
             <div class="chevron-content">
               <span class="chevron-num">PHASE 2</span>
-              <span class="chevron-text">Deposit funds into Tradovate Live</span>
+              <span class="chevron-text">Grow account balance to $10,000</span>
             </div>
             <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-ts-2" style="display:none;">📍 YOU ARE HERE</span>
@@ -652,7 +652,7 @@
           <div class="chevron-step" id="step-ts-3">
             <div class="chevron-content">
               <span class="chevron-num">PHASE 3</span>
-              <span class="chevron-text">Take regular withdrawals until $25,000</span>
+              <span class="chevron-text">Take regular withdrawals until reaching $25,000</span>
             </div>
             <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-ts-3" style="display:none;">📍 YOU ARE HERE</span>
@@ -664,7 +664,7 @@
           <div class="chevron-step" id="step-ts-4">
             <div class="chevron-content">
               <span class="chevron-num">PHASE 4</span>
-              <span class="chevron-text">Establish as Primary Main Account</span>
+              <span class="chevron-text">Establish as Primary Main Trading Account</span>
             </div>
             <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-ts-4" style="display:none;">📍 YOU ARE HERE</span>
@@ -688,7 +688,7 @@
           <div class="chevron-step" id="step-tr-1">
             <div class="chevron-content">
               <span class="chevron-num">PHASE 1</span>
-              <span class="chevron-text">Fund once Topstep Live reaches $5,000</span>
+              <span class="chevron-text">Grow account balance to $2,500</span>
             </div>
             <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-tr-1" style="display:none;">📍 YOU ARE HERE</span>
@@ -712,7 +712,7 @@
           <div class="chevron-step" id="step-tr-3">
             <div class="chevron-content">
               <span class="chevron-num">PHASE 3</span>
-              <span class="chevron-text">Take regular withdrawals while growing to $25k</span>
+              <span class="chevron-text">Grow account balance to $10,000</span>
             </div>
             <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-tr-3" style="display:none;">📍 YOU ARE HERE</span>
@@ -724,12 +724,24 @@
           <div class="chevron-step" id="step-tr-4">
             <div class="chevron-content">
               <span class="chevron-num">PHASE 4</span>
-              <span class="chevron-text">Establish as Secondary Trading Account</span>
+              <span class="chevron-text">Take regular withdrawals while growing to $25,000</span>
             </div>
             <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-tr-4" style="display:none;">📍 YOU ARE HERE</span>
               <span class="step-complete-badge" id="badge-complete-tr-4" style="display:none;">✓ COMPLETE</span>
               <button class="btn-set-chevron-focus" onclick="setStrategyFocus('tr', 4)">Set Focus</button>
+            </div>
+          </div>
+
+          <div class="chevron-step" id="step-tr-5">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 5</span>
+              <span class="chevron-text">Establish as Secondary Trading Account</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-tr-5" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-tr-5" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('tr', 5)">Set Focus</button>
             </div>
           </div>
 
@@ -947,7 +959,7 @@
     function loadStrategyFocusUI() {
       const configs = [
         { type: 'ts', maxSteps: 4 },
-        { type: 'tr', maxSteps: 4 },
+        { type: 'tr', maxSteps: 5 },
         { type: 'tdfy', maxSteps: 5 }
       ];
 
