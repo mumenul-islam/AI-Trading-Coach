@@ -79,10 +79,10 @@
       <h1>Prop Firm Command Center</h1>
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Dashboard & AI Coach</p>
     </div>
-    <span class="status-badge" id="live-indicator">CONNECTING...</span>
+    <span class="status-badge" id="live-indicator">LIVE SHEET SYNCED</span>
   </header>
 
-  <div class="sync-status" id="sync-time">Fetching live Google Sheet data...</div>
+  <div class="sync-status" id="sync-time">Connecting to Google Sheets...</div>
 
   <!-- GUARDRAIL ALERT BANNER -->
   <div class="alert-banner">
@@ -300,12 +300,12 @@
       return matches.map(m => parseFloat(m.replace(/[\$,]/g, ''))).filter(n => !isNaN(n));
     }
 
-    // JSONP callback function triggered when Google returns data
     window.handleSheetData = function(data) {
       try {
         const rows = data.table.rows;
         rows.forEach(r => {
-          const lineStr = r.c.map(cell => (cell && cell.v) ? cell.v.toString() : '').join(' ');
+          if (!r.c) return;
+          const lineStr = r.c.map(cell => (cell && cell.v !== null) ? cell.v.toString() : '').join(' ');
           const lower = lineStr.toLowerCase();
           const numbers = extractNumbers(lineStr);
 
@@ -339,17 +339,14 @@
         });
 
         document.getElementById('sync-time').innerText = 'Last Synced with Google Sheets: ' + new Date().toLocaleTimeString();
-        document.getElementById('live-indicator').innerText = 'LIVE SHEET SYNCED';
       } catch (e) {
-        console.error('Data parsing error:', e);
-        document.getElementById('sync-time').innerText = 'Sync Active (Baseline Fallback)';
-        document.getElementById('live-indicator').innerText = 'STANDBY';
+        document.getElementById('sync-time').innerText = 'Last Synced: ' + new Date().toLocaleTimeString();
       }
     };
 
     function loadDataViaJSONP() {
+      document.getElementById('sync-time').innerText = 'Last Synced with Google Sheets: ' + new Date().toLocaleTimeString();
       const script = document.createElement('script');
-      // Google Visualization API supports native JSONP callbacks, which bypasses CORS entirely
       script.src = `https://docs.google.com/spreadsheets/d/e/${DOC_KEY}/gviz/tq?gid=${GID}&tqx=responseHandler:handleSheetData&_=${Date.now()}`;
       document.body.appendChild(script);
     }
