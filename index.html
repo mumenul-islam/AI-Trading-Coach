@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.1.0</title>
+  <title>2026 Trade Command Center & Roadmap v1.1.1</title>
   <style>
     :root {
       --bg-main: #131722;
@@ -93,32 +93,51 @@
     .balance-subdued { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border-color); display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); }
     .balance-subdued .stat-val { font-size: 12px; font-weight: 600; color: var(--text-main); }
 
-    /* ========================================================
-       LONG-TERM GOALS TIMELINE & ENCOURAGEMENT STYLES
-       ======================================================== */
+    /* Long-Term Goals Timeline Styles */
     .encouragement-card { background: linear-gradient(135deg, rgba(171, 71, 188, 0.15) 0%, rgba(41, 98, 255, 0.1) 100%); border: 1px solid var(--accent-purple); border-radius: var(--card-radius); padding: 18px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; }
     .encouragement-quote { font-size: 14px; font-weight: 600; color: #fff; line-height: 1.4; }
     .encouragement-sub { font-size: 11px; color: var(--accent-purple); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; }
     
     .timeline-container { position: relative; padding: 10px 0 20px 20px; border-left: 2px dashed var(--border-color); margin-left: 15px; }
-    
     .timeline-node { position: relative; margin-bottom: 25px; padding-left: 25px; }
     .timeline-node::before { content: ''; position: absolute; left: -27px; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: var(--bg-main); border: 3px solid var(--text-muted); transition: all 0.3s ease; }
-    
     .timeline-node.completed::before { border-color: var(--accent-green); background: var(--accent-green); box-shadow: 0 0 10px rgba(8, 153, 129, 0.5); }
     .timeline-node.active::before { border-color: var(--accent-purple); background: var(--accent-purple); box-shadow: 0 0 10px rgba(171, 71, 188, 0.6); }
 
     .milestone-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; display: flex; justify-content: space-between; align-items: center; }
     .milestone-card.completed { border-color: rgba(8, 153, 129, 0.4); background: rgba(8, 153, 129, 0.03); }
-    
     .milestone-info { flex: 1; }
     .milestone-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 4px; }
     .milestone-meta { font-size: 11px; color: var(--text-muted); }
 
-    .celebration-banner { background: rgba(8, 153, 129, 0.2); border: 1px solid var(--accent-green); color: var(--accent-green); border-radius: 6px; padding: 10px 14px; font-size: 12px; font-weight: 700; margin-bottom: 15px; display: none; text-align: center; }
+    /* CELEBRATION MODAL POPUP */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(10, 12, 18, 0.85); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(6px); }
+    .modal-overlay.active { display: flex; }
+    .modal-card { background: var(--bg-card); border: 2px solid var(--accent-green); border-radius: 12px; padding: 32px; max-width: 440px; width: 90%; text-align: center; box-shadow: 0 0 40px rgba(8, 153, 129, 0.35); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .modal-overlay.active .modal-card { transform: scale(1); }
+    .modal-icon { font-size: 54px; margin-bottom: 12px; }
+    .modal-title { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+    .modal-subtitle { font-size: 15px; font-weight: 700; color: var(--accent-green); margin-bottom: 14px; }
+    .modal-msg { font-size: 13px; color: var(--text-main); line-height: 1.5; margin-bottom: 24px; background: rgba(8, 153, 129, 0.08); padding: 12px; border-radius: 6px; border: 1px dashed rgba(8, 153, 129, 0.3); }
+    .modal-close-btn { background: var(--accent-green); color: #fff; border: none; padding: 12px 28px; border-radius: 20px; font-weight: 700; cursor: pointer; font-size: 13px; box-shadow: 0 4px 12px rgba(8, 153, 129, 0.3); transition: transform 0.2s ease; }
+    .modal-close-btn:hover { transform: scale(1.05); }
+    
+    .test-popup-btn { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); font-size: 10px; padding: 4px 8px; border-radius: 12px; cursor: pointer; margin-left: 10px; }
+    .test-popup-btn:hover { border-color: var(--accent-purple); color: var(--accent-purple); }
   </style>
 </head>
 <body>
+
+  <!-- CELEBRATION POPUP MODAL -->
+  <div class="modal-overlay" id="celebration-modal">
+    <div class="modal-card">
+      <div class="modal-icon">🎉</div>
+      <div class="modal-title">Milestone Unlocked!</div>
+      <div class="modal-subtitle" id="modal-milestone-title">Topstep Live Target Achieved</div>
+      <div class="modal-msg">Congratulations! Your discipline and rule execution paid off. Another milestone crossed on your 2026 Roadmap!</div>
+      <button class="modal-close-btn" onclick="closeCelebrationModal()">Awesome! Let's Keep Going 🚀</button>
+    </div>
+  </div>
 
   <header>
     <div>
@@ -126,7 +145,7 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.1.0</span>
+      <span class="version-badge">v1.1.1</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -145,12 +164,8 @@
     <button class="nav-tab" onclick="switchMainView('roadmap', this)">🎯 Long-Term Goal Roadmap</button>
   </div>
 
-  <!-- ========================================================
-       MAIN VIEW 1: DAILY COMMAND CENTER
-       ======================================================== -->
+  <!-- MAIN VIEW 1: DAILY COMMAND CENTER -->
   <div id="view-daily">
-    
-    <!-- TODAY'S TRADING ACTION COMMAND BANNER -->
     <div class="action-command-banner">
       <div class="action-icon">🎯</div>
       <div>
@@ -159,7 +174,6 @@
       </div>
     </div>
 
-    <!-- EXECUTIVE SUMMARY PANEL -->
     <div class="summary-grid">
       <div class="summary-card">
         <div class="summary-title">Active Accounts</div>
@@ -175,7 +189,6 @@
       </div>
     </div>
 
-    <!-- CATEGORY 1: TOPSTEP LIVE -->
     <div class="category-block" id="block-topstep">
       <div class="section-header-wrap">
         <div class="section-header">1. Topstep Brokerage</div>
@@ -206,7 +219,6 @@
       </div>
     </div>
 
-    <!-- CATEGORY 2: TRADEIFY (TDFY 1 - 5) -->
     <div class="category-block" id="block-tdfy">
       <div class="section-header-wrap">
         <div class="section-header">2. Tradeify Accounts (TDFY 1 - 5)</div>
@@ -215,7 +227,6 @@
       <div class="grid" id="grid-tdfy"></div>
     </div>
 
-    <!-- CATEGORY 3: FUTURES ELITE (FE 1 - 5) -->
     <div class="category-block" id="block-fe">
       <div class="section-header-wrap">
         <div class="section-header">3. Futures Elite Accounts (FE 1 - 5)</div>
@@ -224,7 +235,6 @@
       <div class="grid" id="grid-fe"></div>
     </div>
 
-    <!-- CATEGORY 4: FUNDEDNEXT (FN 1 - 3) -->
     <div class="category-block" id="block-fn">
       <div class="section-header-wrap">
         <div class="section-header">4. FundedNext Accounts (FN 1 - 3)</div>
@@ -234,12 +244,8 @@
     </div>
   </div>
 
-  <!-- ========================================================
-       MAIN VIEW 2: LONG-TERM GOAL ROADMAP
-       ======================================================== -->
+  <!-- MAIN VIEW 2: LONG-TERM GOAL ROADMAP -->
   <div id="view-roadmap" style="display: none;">
-    
-    <!-- ENCOURAGEMENT BANNER -->
     <div class="encouragement-card">
       <div>
         <div class="encouragement-sub">🌟 Positive Reinforcement Engine</div>
@@ -248,14 +254,11 @@
       <div style="font-size: 28px;">🏆</div>
     </div>
 
-    <!-- CELEBRATION CONGRATS BANNER -->
-    <div class="celebration-banner" id="celebration-box">
-      🎉 CONGRATULATIONS! You completed a new Topstep Live Milestone! Keep dominating!
-    </div>
-
-    <!-- TOPSTEP LIVE ROADMAP SECTION -->
     <div class="section-header-wrap">
-      <div class="section-header purple">Topstep Live — Long-Term Goal Timeline</div>
+      <div>
+        <span class="section-header purple">Topstep Live — Long-Term Goal Timeline</span>
+        <button class="test-popup-btn" onclick="testCelebrationModal()">Test Popup 🔔</button>
+      </div>
       <span class="badge badge-blue" id="topstep-completed-badge">0 / 0 Unlocked</span>
     </div>
 
@@ -369,6 +372,34 @@
       document.getElementById('encouragement-msg').innerText = `"${encouragementQuotes[idx]}"`;
     }
 
+    /* LOCAL STORAGE STATE ENGINE FOR POPUP TRAILING */
+    function getSeenCompletedMilestones() {
+      try {
+        return JSON.parse(localStorage.getItem('seen_topstep_milestones') || '[]');
+      } catch(e) { return []; }
+    }
+
+    function saveSeenCompletedMilestone(milestoneId) {
+      const list = getSeenCompletedMilestones();
+      if (!list.includes(milestoneId)) {
+        list.push(milestoneId);
+        localStorage.setItem('seen_topstep_milestones', JSON.stringify(list));
+      }
+    }
+
+    function triggerCelebrationModal(goalTitle) {
+      document.getElementById('modal-milestone-title').innerText = goalTitle;
+      document.getElementById('celebration-modal').classList.add('active');
+    }
+
+    function closeCelebrationModal() {
+      document.getElementById('celebration-modal').classList.remove('active');
+    }
+
+    function testCelebrationModal() {
+      triggerCelebrationModal("Topstep Milestone: $5,000 Profit Target Passed!");
+    }
+
     function updateCardData(acctName, progPct, balance, goalVal) {
       if (!acctName) return;
 
@@ -447,7 +478,6 @@
       let pausedCount = 0;
       let activeTradeTargets = [];
 
-      // Tradeify Group A
       const b1 = parsedBalanceMap['tdfy-1'] || 0;
       const b2 = parsedBalanceMap['tdfy-2'] || 0;
       let tdfyPairState = 'synced';
@@ -465,7 +495,6 @@
         }
       }
 
-      // Tradeify Group B
       const b3 = parsedBalanceMap['tdfy-3'] || 0;
       const b4 = parsedBalanceMap['tdfy-4'] || 0;
       const b5 = parsedBalanceMap['tdfy-5'] || 0;
@@ -583,9 +612,7 @@
       }
     }
 
-    // ========================================================
-    // GOALS TRACKER SHEET PARSER & ROADMAP RENDERER (GID 1603097852)
-    // ========================================================
+    /* GOALS TRACKER & NEW MILESTONE POPUP DETECTOR */
     window.handleGoalsData = function(data) {
       try {
         const rows = data.table.rows;
@@ -594,12 +621,11 @@
 
         let topstepGoalCount = 0;
         let topstepCompletedCount = 0;
-        let showCongratsBanner = false;
+        const seenMilestones = getSeenCompletedMilestones();
 
         rows.forEach((r, idx) => {
           if (!r.c) return;
 
-          // Mapping: Col A = r.c[0], Col B = r.c[1], Col C = r.c[2], Col D = r.c[3]
           const acctName   = r.c[0] && r.c[0].v !== null ? r.c[0].v.toString().trim() : '';
           const goalTitle  = r.c[1] && r.c[1].v !== null ? r.c[1].v.toString().trim() : '';
           const isComplete = r.c[2] && r.c[2].v !== null ? r.c[2].v.toString().toLowerCase().trim() : '';
@@ -609,14 +635,19 @@
 
           const cleanName = acctName.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-          // Target Topstep Live goals specifically
           if (cleanName.includes('topstep')) {
             topstepGoalCount++;
             const completed = (isComplete === 'true' || isComplete === 'yes' || isComplete === '1' || isComplete === 'x');
+            const milestoneKey = `topstep_goal_${goalTitle}_${idx}`;
 
             if (completed) {
               topstepCompletedCount++;
-              showCongratsBanner = true;
+              
+              // Trigger Popup if this completed milestone was never seen before!
+              if (!seenMilestones.includes(milestoneKey)) {
+                saveSeenCompletedMilestone(milestoneKey);
+                triggerCelebrationModal(goalTitle || `Topstep Milestone #${topstepGoalCount}`);
+              }
             }
 
             timelineEl.innerHTML += `
@@ -637,20 +668,11 @@
         }
 
         document.getElementById('topstep-completed-badge').innerText = `${topstepCompletedCount} / ${topstepGoalCount} Unlocked`;
-        
-        const congratsBox = document.getElementById('celebration-box');
-        if (showCongratsBanner) {
-          congratsBox.style.display = 'block';
-        } else {
-          congratsBox.style.display = 'none';
-        }
-
       } catch (e) {
         console.error("Error parsing Goal Tracker sheet:", e);
       }
     };
 
-    // Handler for Daily Account Tracker
     window.handleSheetData = function(data) {
       try {
         const rows = data.table.rows;
@@ -694,12 +716,10 @@
     }
 
     function loadData() {
-      // Load Daily Tracker Sheet (GID 1057997053)
       const scriptDaily = document.createElement('script');
       scriptDaily.src = `https://docs.google.com/spreadsheets/d/${REAL_DOC_ID}/gviz/tq?gid=${DAILY_GID}&tqx=responseHandler:handleSheetData&_=${Date.now()}`;
       document.body.appendChild(scriptDaily);
 
-      // Load Goals Tracker Sheet (GID 1603097852)
       const scriptGoals = document.createElement('script');
       scriptGoals.src = `https://docs.google.com/spreadsheets/d/${REAL_DOC_ID}/gviz/tq?gid=${GOALS_GID}&tqx=responseHandler:handleGoalsData&_=${Date.now()}`;
       document.body.appendChild(scriptGoals);
