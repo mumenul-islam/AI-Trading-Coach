@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.4.0</title>
+  <title>2026 Trade Command Center & Roadmap v1.3.1</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -147,10 +147,12 @@
     .milestone-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .milestone-meta { font-size: 11px; color: var(--text-muted); }
 
+    /* Category Tags & Sub-Account Pills */
     .goal-tag { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; }
     .tag-green { background: rgba(8, 153, 129, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
     .tag-purple { background: rgba(171, 71, 188, 0.15); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
     .tag-blue { background: rgba(41, 98, 255, 0.15); color: var(--accent-blue); border: 1px solid var(--accent-blue); }
+    .tag-acct { background: rgba(245, 192, 0, 0.15); color: var(--accent-yellow); border: 1px solid var(--accent-yellow); }
 
     .trophy-cabinet { display: flex; flex-wrap: wrap; gap: 10px; padding: 15px; background: rgba(8, 153, 129, 0.05); border: 1px solid rgba(8, 153, 129, 0.2); border-radius: var(--card-radius); margin-bottom: 35px; }
     .trophy-cabinet-title { width: 100%; font-size: 11px; font-weight: 700; color: var(--accent-green); text-transform: uppercase; margin-bottom: 5px; }
@@ -190,7 +192,7 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.4.0</span>
+      <span class="version-badge">v1.3.1</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -570,13 +572,9 @@
       return num;
     }
 
-    /* DAILY EXECUTION TRACKER & 6:00 PM EST AUTO-RESET ENGINE */
     function getESTDateString() {
       const now = new Date();
-      // Format to EST/EDT date string YYYY-MM-DD
       const estString = new Date(now.toLocaleString("en-US", {timeZone: "America/New_York"}));
-      
-      // If past 6:00 PM EST (18:00), treat as next trading session
       if (estString.getHours() >= 18) {
         estString.setDate(estString.getDate() + 1);
       }
@@ -1161,6 +1159,12 @@
 
             const tagInfo = getGoalTag(goalTitle);
             const tagHTML = `<span class="goal-tag ${tagInfo.class}">${tagInfo.text}</span>`;
+            
+            // Generate Sub-Account Tag specifically for Tradeify
+            let acctPillHTML = '';
+            if (cleanName.includes('tdfy') || cleanName.includes('tradeify')) {
+              acctPillHTML = `<span class="goal-tag tag-acct">${acctName || 'TDFY'}</span>`;
+            }
 
             let category = 'topstep-live';
             const isWithdrawalRow = idx >= 25 || cleanName.includes('withdraw') || cleanName.includes('payout') || cleanName.includes('category2') || cleanName.includes('substack');
@@ -1201,7 +1205,7 @@
               <div class="timeline-node active">
                 <div class="milestone-card">
                   <div class="milestone-info">
-                    <div class="milestone-title">${goalTitle || (acctName + ' Milestone')} ${tagHTML}</div>
+                    <div class="milestone-title">${acctPillHTML} ${goalTitle || (acctName + ' Milestone')} ${tagHTML}</div>
                     <div class="milestone-meta">🎯 Target Milestone ${dateVal ? '• Target: ' + dateVal : ''}</div>
                   </div>
                   <span class="badge ${badgeColorClass}">IN PROGRESS</span>
@@ -1210,7 +1214,7 @@
 
             const trophyNodeHTML = `
               <div class="trophy-item">
-                <span>🏆 ${goalTitle || (acctName + ' Milestone')}</span>
+                <span>🏆 ${acctPillHTML ? acctPillHTML + ' ' : ''}${goalTitle || (acctName + ' Milestone')}</span>
                 <span class="trophy-time">⏱️ ${dateVal ? 'Unlocked: ' + dateVal : '✅ Completed'}</span>
               </div>`;
 
