@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.4.3</title>
+  <title>2026 Trade Command Center & Roadmap v1.5.0</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -130,12 +130,26 @@
     .balance-subdued { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border-color); display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); }
     .balance-subdued .stat-val { font-size: 12px; font-weight: 600; color: var(--text-main); }
 
-    /* Long-Term Goals Timeline & Graph Styles */
-    .macro-progress-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 15px; }
+    /* Long-Term Goals Timeline & Strategy Styles */
+    .macro-progress-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 20px; }
     .macro-header { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-bottom: 10px; }
     
     .chart-box-container { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 25px; }
     .chart-box-title { font-size: 12px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+
+    /* High-Level Strategy Cards */
+    .strategy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; margin-bottom: 25px; }
+    .strategy-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 18px; }
+    .strategy-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+    .strategy-title { font-size: 14px; font-weight: 700; color: #fff; }
+
+    .strategy-steps { display: flex; flex-direction: column; gap: 10px; }
+    .strategy-step-item { background: rgba(19, 23, 34, 0.6); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s ease; }
+    .strategy-step-item.is-current-focus { border-color: var(--accent-blue); background: rgba(41, 98, 255, 0.12); box-shadow: 0 0 12px rgba(41, 98, 255, 0.25); }
+    .step-text { font-size: 12px; font-weight: 600; color: #fff; flex: 1; display: flex; align-items: center; gap: 8px; }
+    .step-focus-badge { font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: var(--accent-blue); color: #fff; text-transform: uppercase; letter-spacing: 0.5px; }
+    .btn-set-focus { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; }
+    .btn-set-focus:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
 
     .encouragement-card { background: linear-gradient(135deg, rgba(171, 71, 188, 0.15) 0%, rgba(41, 98, 255, 0.1) 100%); border: 1px solid var(--accent-purple); border-radius: var(--card-radius); padding: 18px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; }
     .encouragement-quote { font-size: 14px; font-weight: 600; color: #fff; line-height: 1.4; }
@@ -198,7 +212,7 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.4.3</span>
+      <span class="version-badge">v1.5.0</span>
       <span class="build-timestamp">Updated: Sep 12, 2026 • 7:15 PM EST</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
@@ -380,6 +394,97 @@
         <span id="macro-pct-val" style="color: var(--accent-green);">0%</span>
       </div>
       <div class="progress-bar-bg"><div class="progress-bar-fill" id="macro-pct-bar" style="background-color: var(--accent-green);"></div></div>
+    </div>
+
+    <!-- HIGH-LEVEL ACCOUNT STRATEGY SECTION -->
+    <div class="strategy-grid">
+      
+      <!-- Topstep Live Strategy Card -->
+      <div class="strategy-card">
+        <div class="strategy-header">
+          <span class="strategy-title">🚀 Topstep Live — Strategic Roadmap</span>
+          <span class="badge badge-purple">PRIMARY LIVE</span>
+        </div>
+        <div class="strategy-steps" id="strategy-steps-ts">
+          
+          <div class="strategy-step-item" id="step-ts-1">
+            <div class="step-text">
+              <span>1. Grow account balance to $5,000</span>
+              <span class="step-focus-badge" id="badge-ts-1" style="display:none;">📍 YOU ARE HERE</span>
+            </div>
+            <button class="btn-set-focus" onclick="setStrategyFocus('ts', 1)">Set Focus</button>
+          </div>
+
+          <div class="strategy-step-item" id="step-ts-2">
+            <div class="step-text">
+              <span>2. Deposit funds into Tradovate Live account</span>
+              <span class="step-focus-badge" id="badge-ts-2" style="display:none;">📍 YOU ARE HERE</span>
+            </div>
+            <button class="btn-set-focus" onclick="setStrategyFocus('ts', 2)">Set Focus</button>
+          </div>
+
+          <div class="strategy-step-item" id="step-ts-3">
+            <div class="step-text">
+              <span>3. Take regular withdrawals until reaching $25,000</span>
+              <span class="step-focus-badge" id="badge-ts-3" style="display:none;">📍 YOU ARE HERE</span>
+            </div>
+            <button class="btn-set-focus" onclick="setStrategyFocus('ts', 3)">Set Focus</button>
+          </div>
+
+          <div class="strategy-step-item" id="step-ts-4">
+            <div class="step-text">
+              <span>4. Establish as Primary Main Trading Account</span>
+              <span class="step-focus-badge" id="badge-ts-4" style="display:none;">📍 YOU ARE HERE</span>
+            </div>
+            <button class="btn-set-focus" onclick="setStrategyFocus('ts', 4)">Set Focus</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Tradovate Live Strategy Card -->
+      <div class="strategy-card">
+        <div class="strategy-header">
+          <span class="strategy-title">🛡️ Tradovate Live — Strategic Roadmap</span>
+          <span class="badge badge-cyan">SECONDARY LIVE</span>
+        </div>
+        <div class="strategy-steps" id="strategy-steps-tr">
+          
+          <div class="strategy-step-item" id="step-tr-1">
+            <div class="step-text">
+              <span>1. Fund account once Topstep Live reaches $5,000</span>
+              <span class="step-focus-badge" id="badge-tr-1" style="display:none;">📍 YOU ARE HERE</span>
+            </div>
+            <button class="btn-set-focus" onclick="setStrategyFocus('tr', 1)">Set Focus</button>
+          </div>
+
+          <div class="strategy-step-item" id="step-tr-2">
+            <div class="step-text">
+              <span>2. Grow account balance to $5,000</span>
+              <span class="step-focus-badge" id="badge-tr-2" style="display:none;">📍 YOU ARE HERE</span>
+            </div>
+            <button class="btn-set-focus" onclick="setStrategyFocus('tr', 2)">Set Focus</button>
+          </div>
+
+          <div class="strategy-step-item" id="step-tr-3">
+            <div class="step-text">
+              <span>3. Take regular withdrawals while growing to $25,000</span>
+              <span class="step-focus-badge" id="badge-tr-3" style="display:none;">📍 YOU ARE HERE</span>
+            </div>
+            <button class="btn-set-focus" onclick="setStrategyFocus('tr', 3)">Set Focus</button>
+          </div>
+
+          <div class="strategy-step-item" id="step-tr-4">
+            <div class="step-text">
+              <span>4. Establish as Secondary Trading Account</span>
+              <span class="step-focus-badge" id="badge-tr-4" style="display:none;">📍 YOU ARE HERE</span>
+            </div>
+            <button class="btn-set-focus" onclick="setStrategyFocus('tr', 4)">Set Focus</button>
+          </div>
+
+        </div>
+      </div>
+
     </div>
 
     <!-- OVERVIEW BAR GRAPH -->
@@ -651,6 +756,32 @@
       return `Target Date: ${str}`;
     }
 
+    /* HIGH-LEVEL STRATEGY FOCUS ENGINE */
+    function setStrategyFocus(type, stepNum) {
+      const key = `strategy_focus_${type}`;
+      localStorage.setItem(key, stepNum.toString());
+      loadStrategyFocusUI();
+    }
+
+    function loadStrategyFocusUI() {
+      ['ts', 'tr'].forEach(type => {
+        const activeStep = localStorage.getItem(`strategy_focus_${type}`) || '1';
+        for (let i = 1; i <= 4; i++) {
+          const stepEl = document.getElementById(`step-${type}-${i}`);
+          const badgeEl = document.getElementById(`badge-${type}-${i}`);
+          if (stepEl && badgeEl) {
+            if (i.toString() === activeStep) {
+              stepEl.classList.add('is-current-focus');
+              badgeEl.style.display = 'inline-block';
+            } else {
+              stepEl.classList.remove('is-current-focus');
+              badgeEl.style.display = 'none';
+            }
+          }
+        }
+      });
+    }
+
     function getESTDateString() {
       const now = new Date();
       const estString = new Date(now.toLocaleString("en-US", {timeZone: "America/New_York"}));
@@ -759,6 +890,7 @@
         document.getElementById('view-daily').style.display = 'none';
         document.getElementById('view-roadmap').style.display = 'block';
         rotateEncouragement();
+        loadStrategyFocusUI();
       }
     }
 
@@ -1357,7 +1489,6 @@
 
             const formattedTarget = formatTargetValue(extraVal || dateVal, (category === 'ts-withdrawal' || category === 'tr-withdrawal'));
 
-            // Percentage Progress Parsing for Line Chart
             let pctProgress = completed ? 100 : 0;
             if (!completed && dateVal) {
               let parsedVal = parseFloat(dateVal.toString().replace(/[%]/g, '').trim());
