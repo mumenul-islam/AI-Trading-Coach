@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.1.9</title>
+  <title>2026 Trade Command Center & Roadmap v1.2.1</title>
+  <!-- Chart.js CDN for Visual Milestone Graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
       --bg-main: #131722;
@@ -95,7 +97,7 @@
     .badge-cyan { background: rgba(0, 188, 212, 0.2); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
     .badge-paused { background: rgba(120, 123, 134, 0.25); color: var(--text-muted); border: 1px solid var(--text-muted); }
 
-    /* Goal Hero Box */
+    /* Goal Hero Box & Recovery Mode */
     .goal-hero-box { background: rgba(41, 98, 255, 0.08); border: 1px solid rgba(41, 98, 255, 0.25); border-radius: 6px; padding: 12px; margin-bottom: 10px; text-align: center; transition: all 0.3s ease; }
     .hero-label { font-size: 10px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
     .hero-val { font-size: 18px; color: #fff; font-weight: 800; margin-top: 2px; letter-spacing: -0.3px; }
@@ -110,14 +112,13 @@
     .balance-subdued { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border-color); display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); }
     .balance-subdued .stat-val { font-size: 12px; font-weight: 600; color: var(--text-main); }
 
-    /* Long-Term Goals Timeline Styles */
+    /* Long-Term Goals Timeline & Graph Styles */
     .macro-progress-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 15px; }
     .macro-header { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-bottom: 10px; }
     
-    .visual-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 25px; }
-    .visual-stat-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 14px; display: flex; flex-direction: column; gap: 8px; position: relative; overflow: hidden; }
-    .vs-header { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #fff; }
-    .vs-footer { font-size: 10px; color: var(--text-muted); text-align: right; font-weight: 600; margin-top: 2px; }
+    /* Visual Chart Container */
+    .chart-box-container { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 25px; }
+    .chart-box-title { font-size: 12px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
 
     .encouragement-card { background: linear-gradient(135deg, rgba(171, 71, 188, 0.15) 0%, rgba(41, 98, 255, 0.1) 100%); border: 1px solid var(--accent-purple); border-radius: var(--card-radius); padding: 18px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; }
     .encouragement-quote { font-size: 14px; font-weight: 600; color: #fff; line-height: 1.4; }
@@ -176,7 +177,7 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.1.9</span>
+      <span class="version-badge">v1.2.1</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -296,44 +297,15 @@
       <div class="progress-bar-bg"><div class="progress-bar-fill" id="macro-pct-bar" style="background-color: var(--accent-green);"></div></div>
     </div>
 
-    <div class="visual-stats-grid">
-      <div class="visual-stat-card" style="border-top: 3px solid var(--accent-purple);">
-        <div class="vs-header"><span>Topstep Goals</span><span id="vis-pct-ts">0%</span></div>
-        <div class="progress-bar-bg"><div class="progress-bar-fill" id="vis-bar-ts" style="background: var(--accent-purple); width: 0%;"></div></div>
-        <div class="vs-footer" id="vis-txt-ts">0/0 Unlocked</div>
-      </div>
-      <div class="visual-stat-card" style="border-top: 3px solid var(--accent-cyan);">
-        <div class="vs-header"><span>Tradovate Goals</span><span id="vis-pct-tr">0%</span></div>
-        <div class="progress-bar-bg"><div class="progress-bar-fill" id="vis-bar-tr" style="background: var(--accent-cyan); width: 0%;"></div></div>
-        <div class="vs-footer" id="vis-txt-tr">0/0 Unlocked</div>
-      </div>
-      <div class="visual-stat-card" style="border-top: 3px solid var(--accent-yellow);">
-        <div class="vs-header"><span>Tradeify Goals</span><span id="vis-pct-tdfy">0%</span></div>
-        <div class="progress-bar-bg"><div class="progress-bar-fill" id="vis-bar-tdfy" style="background: var(--accent-yellow); width: 0%;"></div></div>
-        <div class="vs-footer" id="vis-txt-tdfy">0/0 Unlocked</div>
-      </div>
-      <div class="visual-stat-card" style="border-top: 3px solid var(--accent-red);">
-        <div class="vs-header"><span>Futures Elite</span><span id="vis-pct-fe">0%</span></div>
-        <div class="progress-bar-bg"><div class="progress-bar-fill" id="vis-bar-fe" style="background: var(--accent-red); width: 0%;"></div></div>
-        <div class="vs-footer" id="vis-txt-fe">0/0 Unlocked</div>
-      </div>
-      <div class="visual-stat-card" style="border-top: 3px solid var(--accent-blue);">
-        <div class="vs-header"><span>FundedNext</span><span id="vis-pct-fn">0%</span></div>
-        <div class="progress-bar-bg"><div class="progress-bar-fill" id="vis-bar-fn" style="background: var(--accent-blue); width: 0%;"></div></div>
-        <div class="vs-footer" id="vis-txt-fn">0/0 Unlocked</div>
-      </div>
-      <div class="visual-stat-card" style="border-top: 3px solid var(--accent-green);">
-        <div class="vs-header"><span>Topstep Payouts</span><span id="vis-pct-tswd">0%</span></div>
-        <div class="progress-bar-bg"><div class="progress-bar-fill" id="vis-bar-tswd" style="background: var(--accent-green); width: 0%;"></div></div>
-        <div class="vs-footer" id="vis-txt-tswd">0/0 Unlocked</div>
-      </div>
-      <div class="visual-stat-card" style="border-top: 3px solid var(--accent-green);">
-        <div class="vs-header"><span>Tradovate Payouts</span><span id="vis-pct-trwd">0%</span></div>
-        <div class="progress-bar-bg"><div class="progress-bar-fill" id="vis-bar-trwd" style="background: var(--accent-green); width: 0%;"></div></div>
-        <div class="vs-footer" id="vis-txt-trwd">0/0 Unlocked</div>
+    <!-- VISUAL GRAPH DASHBOARD SECTION -->
+    <div class="chart-box-container">
+      <div class="chart-box-title">📊 Milestone Progression Overview Graph</div>
+      <div style="height: 220px; position: relative;">
+        <canvas id="milestoneChart"></canvas>
       </div>
     </div>
 
+    <!-- ROADMAP FILTER TABS -->
     <div class="filter-bar">
       <button class="filter-btn active" onclick="filterRoadmapCategory('all', this)">All Goals</button>
       <button class="filter-btn" onclick="filterRoadmapCategory('roadmap-topstep', this)">Topstep</button>
@@ -353,6 +325,7 @@
       <div style="font-size: 28px;">🏆</div>
     </div>
 
+    <!-- SECTION 1: TOPSTEP LIVE MILESTONES -->
     <div class="roadmap-category-block" id="roadmap-topstep">
       <div class="section-header-wrap">
         <div>
@@ -365,6 +338,7 @@
       <div class="trophy-cabinet" id="topstep-trophy-room"></div>
     </div>
 
+    <!-- SECTION 2: TRADOVATE LIVE MILESTONES -->
     <div class="roadmap-category-block" id="roadmap-tradovate">
       <div class="section-header-wrap">
         <span class="section-header cyan">2. Tradovate Live — Account Milestones</span>
@@ -374,6 +348,7 @@
       <div class="trophy-cabinet" id="tradovate-trophy-room"></div>
     </div>
 
+    <!-- SECTION 3: TRADEIFY MILESTONES -->
     <div class="roadmap-category-block" id="roadmap-tdfy">
       <div class="section-header-wrap">
         <span class="section-header yellow">3. Tradeify Accounts (TDFY) — Milestones</span>
@@ -383,6 +358,7 @@
       <div class="trophy-cabinet" id="tdfy-trophy-room"></div>
     </div>
 
+    <!-- SECTION 4: FUTURES ELITE MILESTONES -->
     <div class="roadmap-category-block" id="roadmap-fe">
       <div class="section-header-wrap">
         <span class="section-header red">4. Futures Elite Accounts (FE) — Milestones</span>
@@ -392,6 +368,7 @@
       <div class="trophy-cabinet" id="fe-trophy-room"></div>
     </div>
 
+    <!-- SECTION 5: FUNDEDNEXT MILESTONES -->
     <div class="roadmap-category-block" id="roadmap-fn">
       <div class="section-header-wrap">
         <span class="section-header blue">5. FundedNext Accounts (FN) — Milestones</span>
@@ -401,6 +378,7 @@
       <div class="trophy-cabinet" id="fn-trophy-room"></div>
     </div>
 
+    <!-- SECTION 6: TOPSTEP PAYOUTS -->
     <div class="roadmap-category-block" id="roadmap-ts-wd">
       <div class="section-header-wrap">
         <span class="section-header green">6. Topstep Live — Payouts & Withdrawals</span>
@@ -410,6 +388,7 @@
       <div class="trophy-cabinet" id="ts-wd-trophy-room"></div>
     </div>
 
+    <!-- SECTION 7: TRADOVATE PAYOUTS -->
     <div class="roadmap-category-block" id="roadmap-tr-wd">
       <div class="section-header-wrap">
         <span class="section-header green">7. Tradovate Live — Payouts & Withdrawals</span>
@@ -431,6 +410,8 @@
 
     let countdownVal = 30;
     let countdownInterval = null;
+    let chartInstance = null;
+
     const parsedProgressMap = {};
     const parsedBalanceMap = {};
     const parsedGoalMap = {};
@@ -646,7 +627,6 @@
         parsedGoalMap[targetId] = numGoal;
         parsedProgressMap[targetId] = rawPct;
 
-        // DANGER ZONE EVALUATION (Column J Drawdown)
         let isDanger = false;
         if (numBal > 0 && numDraw > 0) {
           const cushion = numBal - numDraw;
@@ -656,10 +636,8 @@
         }
         parsedDangerMap[targetId] = isDanger;
 
-        // Display current balance from Column E
         if (balEl) balEl.innerText = formatCurrency(balance);
 
-        // RECOVERY LADDER EVALUATION
         let isRecovery = false;
 
         if (rawPct < 0 && numGoal > 0) {
@@ -695,7 +673,6 @@
             badgeEl.innerText = 'RECOVERY MODE';
           }
         } else {
-          // STANDARD MODE: Directly display Column F short-term goal
           if (heroLabelEl) heroLabelEl.innerText = 'Short-Term Goal';
           if (goalEl) goalEl.innerText = formatCurrency(goalVal);
           if (heroBoxEl) {
@@ -881,14 +858,70 @@
       }
     }
 
-    function updateVisualChart(prefix, done, total) {
-      const pct = total > 0 ? (done/total)*100 : 0;
-      document.getElementById(`vis-pct-${prefix}`).innerText = pct.toFixed(0) + '%';
-      document.getElementById(`vis-bar-${prefix}`).style.width = pct + '%';
-      document.getElementById(`vis-txt-${prefix}`).innerText = `${done} / ${total} Unlocked`;
+    function renderChart(dataObj) {
+      const ctx = document.getElementById('milestoneChart');
+      if (!ctx) return;
+
+      const labels = ['Topstep', 'Tradovate', 'Tradeify', 'Futures Elite', 'FundedNext', 'TS Payouts', 'TR Payouts'];
+      const completedData = [
+        dataObj.tsDone, dataObj.trDone, dataObj.tdfyDone, dataObj.feDone, dataObj.fnDone, dataObj.tsWdDone, dataObj.trWdDone
+      ];
+      const remainingData = [
+        dataObj.tsTotal - dataObj.tsDone, dataObj.trTotal - dataObj.trDone, 
+        dataObj.tdfyTotal - dataObj.tdfyDone, dataObj.feTotal - dataObj.feDone, 
+        dataObj.fnTotal - dataObj.fnDone, dataObj.tsWdTotal - dataObj.tsWdDone, 
+        dataObj.trWdTotal - dataObj.trWdDone
+      ];
+
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Unlocked Milestones',
+              data: completedData,
+              backgroundColor: '#089981',
+              borderRadius: 4
+            },
+            {
+              label: 'Remaining Target',
+              data: remainingData,
+              backgroundColor: '#363a45',
+              borderRadius: 4
+            }
+          ]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: '#d1d4dc', font: { size: 11, weight: 'bold' } }
+            }
+          },
+          scales: {
+            x: {
+              stacked: true,
+              grid: { color: 'rgba(54, 58, 69, 0.4)' },
+              ticks: { color: '#787b86' }
+            },
+            y: {
+              stacked: true,
+              grid: { display: false },
+              ticks: { color: '#d1d4dc', font: { size: 11, weight: 'bold' } }
+            }
+          }
+        }
+      });
     }
 
-    /* GOALS TRACKER SHEET PARSER (GID 1603097852) */
+    /* DUAL PARSER ENGINE: Columns A-D (Live) & Columns G-I (Prop Accounts) */
     window.handleGoalsData = function(data) {
       try {
         const rows = data.table.rows;
@@ -919,96 +952,113 @@
         rows.forEach((r, idx) => {
           if (!r.c) return;
 
-          const acctName   = r.c[0] && r.c[0].v !== null ? r.c[0].v.toString().trim() : '';
-          const goalTitle  = r.c[1] && r.c[1].v !== null ? r.c[1].v.toString().trim() : '';
-          const isComplete = r.c[2] && r.c[2].v !== null ? r.c[2].v.toString().toLowerCase().trim() : '';
-          const dateOrPct  = r.c[3] && r.c[3].v !== null ? r.c[3].v.toString().trim() : '';
+          // Target dual feeds: Col A/B/C/D AND Col G/H/I
+          const colA_Name = r.c[0] && r.c[0].v !== null ? r.c[0].v.toString().trim() : '';
+          const colB_Goal = r.c[1] && r.c[1].v !== null ? r.c[1].v.toString().trim() : '';
+          const colC_Done = r.c[2] && r.c[2].v !== null ? r.c[2].v.toString().toLowerCase().trim() : '';
+          const colD_Meta = r.c[3] && r.c[3].v !== null ? r.c[3].v.toString().trim() : '';
 
-          if (!acctName && !goalTitle) return;
+          const colG_Name = r.c[6] && r.c[6].v !== null ? r.c[6].v.toString().trim() : '';
+          const colH_Goal = r.c[7] && r.c[7].v !== null ? r.c[7].v.toString().trim() : '';
+          const colI_Done = r.c[8] && r.c[8].v !== null ? r.c[8].v.toString().toLowerCase().trim() : '';
 
-          const cleanName = acctName.toLowerCase().replace(/[^a-z0-9]/g, '');
-          const combinedText = (cleanName + ' ' + goalTitle.toLowerCase()).replace(/[^a-z0-9]/g, '');
-          const completed = (isComplete === 'true' || isComplete === 'yes' || isComplete === '1' || isComplete === 'x');
-          const mKey = `goal_${cleanName}_${idx}`;
+          // Array of targets to evaluate
+          const goalEntries = [];
 
-          const tagInfo = getGoalTag(goalTitle);
-          const tagHTML = `<span class="goal-tag ${tagInfo.class}">${tagInfo.text}</span>`;
-
-          let category = 'topstep';
-          const isWithdrawalRow = idx >= 25 || cleanName.includes('withdraw') || cleanName.includes('payout') || cleanName.includes('category2');
-
-          if (isWithdrawalRow) {
-            if (combinedText.includes('tradovate') || combinedText.includes('tr')) {
-              category = 'tr-withdrawal';
-            } else {
-              category = 'ts-withdrawal';
-            }
-          } else if (cleanName.includes('tradovate')) {
-            category = 'tradovate';
-          } else if (cleanName.includes('tdfy') || cleanName.includes('tradeify')) {
-            category = 'tdfy';
-          } else if (cleanName.includes('fe') || cleanName.includes('futureselite')) {
-            category = 'fe';
-          } else if (cleanName.includes('fn') || cleanName.includes('fundednext')) {
-            category = 'fn';
-          } else if (cleanName.includes('topstep')) {
-            category = 'topstep';
+          if (colA_Name || colB_Goal) {
+            goalEntries.push({ acctName: colA_Name, goalTitle: colB_Goal, isComplete: colC_Done, dateOrPct: colD_Meta, source: 'primary' });
+          }
+          if (colG_Name || colH_Goal) {
+            goalEntries.push({ acctName: colG_Name, goalTitle: colH_Goal, isComplete: colI_Done, dateOrPct: '', source: 'prop' });
           }
 
-          totalMasterGoals++;
-          if (completed) {
-            totalMasterDone++;
-            if (!seenMilestones.includes(mKey)) {
-              saveSeenCompletedMilestone(mKey);
-              triggerCelebrationModal(goalTitle || `${acctName} Goal Completed!`);
+          goalEntries.forEach(entry => {
+            const { acctName, goalTitle, isComplete, dateOrPct, source } = entry;
+            
+            const cleanName = acctName.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const combinedText = (cleanName + ' ' + goalTitle.toLowerCase()).replace(/[^a-z0-9]/g, '');
+            const completed = (isComplete === 'true' || isComplete === 'yes' || isComplete === '1' || isComplete === 'x');
+            const mKey = `goal_${cleanName}_${goalTitle}_${idx}_${source}`;
+
+            const tagInfo = getGoalTag(goalTitle);
+            const tagHTML = `<span class="goal-tag ${tagInfo.class}">${tagInfo.text}</span>`;
+
+            let category = 'topstep';
+            const isWithdrawalRow = idx >= 25 || cleanName.includes('withdraw') || cleanName.includes('payout') || cleanName.includes('category2');
+
+            if (isWithdrawalRow) {
+              if (combinedText.includes('tradovate') || combinedText.includes('tr')) {
+                category = 'tr-withdrawal';
+              } else {
+                category = 'ts-withdrawal';
+              }
+            } else if (cleanName.includes('tradovate')) {
+              category = 'tradovate';
+            } else if (cleanName.includes('tdfy') || cleanName.includes('tradeify')) {
+              category = 'tdfy';
+            } else if (cleanName.includes('fe') || cleanName.includes('futureselite')) {
+              category = 'fe';
+            } else if (cleanName.includes('fn') || cleanName.includes('fundednext')) {
+              category = 'fn';
+            } else if (cleanName.includes('topstep')) {
+              category = 'topstep';
             }
-          }
 
-          let badgeColorClass = 'badge-blue';
-          if (category === 'tradovate' || category === 'tr-withdrawal') badgeColorClass = 'badge-cyan';
-          if (category === 'tdfy') badgeColorClass = 'badge-yellow';
-          if (category === 'fe') badgeColorClass = 'badge-red';
-          if (category === 'ts-withdrawal') badgeColorClass = 'badge-green';
+            totalMasterGoals++;
+            if (completed) {
+              totalMasterDone++;
+              if (!seenMilestones.includes(mKey)) {
+                saveSeenCompletedMilestone(mKey);
+                triggerCelebrationModal(goalTitle || `${acctName} Goal Completed!`);
+              }
+            }
 
-          const activeNodeHTML = `
-            <div class="timeline-node active">
-              <div class="milestone-card">
-                <div class="milestone-info">
-                  <div class="milestone-title">${goalTitle || (acctName + ' Milestone')} ${tagHTML}</div>
-                  <div class="milestone-meta">🎯 Target Milestone ${dateOrPct ? '• ' + dateOrPct : ''}</div>
+            let badgeColorClass = 'badge-blue';
+            if (category === 'tradovate' || category === 'tr-withdrawal') badgeColorClass = 'badge-cyan';
+            if (category === 'tdfy') badgeColorClass = 'badge-yellow';
+            if (category === 'fe') badgeColorClass = 'badge-red';
+            if (category === 'ts-withdrawal') badgeColorClass = 'badge-green';
+
+            const activeNodeHTML = `
+              <div class="timeline-node active">
+                <div class="milestone-card">
+                  <div class="milestone-info">
+                    <div class="milestone-title">${goalTitle || (acctName + ' Milestone')} ${tagHTML}</div>
+                    <div class="milestone-meta">🎯 Target Milestone ${dateOrPct ? '• ' + dateOrPct : ''}</div>
+                  </div>
+                  <span class="badge ${badgeColorClass}">IN PROGRESS</span>
                 </div>
-                <span class="badge ${badgeColorClass}">IN PROGRESS</span>
-              </div>
-            </div>`;
+              </div>`;
 
-          const trophyNodeHTML = `
-            <div class="trophy-item">
-              <span>🏆 ${goalTitle || (acctName + ' Milestone')}</span>
-              ${dateOrPct ? `<span class="trophy-time">⏱️ Phase Time: ${dateOrPct}</span>` : ''}
-            </div>`;
+            const trophyNodeHTML = `
+              <div class="trophy-item">
+                <span>🏆 ${goalTitle || (acctName + ' Milestone')}</span>
+                ${dateOrPct ? `<span class="trophy-time">⏱️ Phase Time: ${dateOrPct}</span>` : ''}
+              </div>`;
 
-          if (category === 'topstep') {
-            tsTotal++;
-            if (completed) { tsDone++; tsTrophyHTML += trophyNodeHTML; } else { tsActiveHTML += activeNodeHTML; }
-          } else if (category === 'tradovate') {
-            trTotal++;
-            if (completed) { trDone++; trTrophyHTML += trophyNodeHTML; } else { trActiveHTML += activeNodeHTML; }
-          } else if (category === 'tdfy') {
-            tdfyTotal++;
-            if (completed) { tdfyDone++; tdfyTrophyHTML += trophyNodeHTML; } else { tdfyActiveHTML += activeNodeHTML; }
-          } else if (category === 'fe') {
-            feTotal++;
-            if (completed) { feDone++; feTrophyHTML += trophyNodeHTML; } else { feActiveHTML += activeNodeHTML; }
-          } else if (category === 'fn') {
-            fnTotal++;
-            if (completed) { fnDone++; fnTrophyHTML += trophyNodeHTML; } else { fnActiveHTML += activeNodeHTML; }
-          } else if (category === 'ts-withdrawal') {
-            tsWdTotal++;
-            if (completed) { tsWdDone++; tsWdTrophyHTML += trophyNodeHTML; } else { tsWdActiveHTML += activeNodeHTML; }
-          } else if (category === 'tr-withdrawal') {
-            trWdTotal++;
-            if (completed) { trWdDone++; trWdTrophyHTML += trophyNodeHTML; } else { trWdActiveHTML += activeNodeHTML; }
-          }
+            if (category === 'topstep') {
+              tsTotal++;
+              if (completed) { tsDone++; tsTrophyHTML += trophyNodeHTML; } else { tsActiveHTML += activeNodeHTML; }
+            } else if (category === 'tradovate') {
+              trTotal++;
+              if (completed) { trDone++; trTrophyHTML += trophyNodeHTML; } else { trActiveHTML += activeNodeHTML; }
+            } else if (category === 'tdfy') {
+              tdfyTotal++;
+              if (completed) { tdfyDone++; tdfyTrophyHTML += trophyNodeHTML; } else { tdfyActiveHTML += activeNodeHTML; }
+            } else if (category === 'fe') {
+              feTotal++;
+              if (completed) { feDone++; feTrophyHTML += trophyNodeHTML; } else { feActiveHTML += activeNodeHTML; }
+            } else if (category === 'fn') {
+              fnTotal++;
+              if (completed) { fnDone++; fnTrophyHTML += trophyNodeHTML; } else { fnActiveHTML += activeNodeHTML; }
+            } else if (category === 'ts-withdrawal') {
+              tsWdTotal++;
+              if (completed) { tsWdDone++; tsWdTrophyHTML += trophyNodeHTML; } else { tsWdActiveHTML += activeNodeHTML; }
+            } else if (category === 'tr-withdrawal') {
+              trWdTotal++;
+              if (completed) { trWdDone++; trWdTrophyHTML += trophyNodeHTML; } else { trWdActiveHTML += activeNodeHTML; }
+            }
+          });
         });
 
         document.getElementById('topstep-goals-timeline').innerHTML = tsActiveHTML || '<div style="color: var(--text-muted); font-size: 12px;">No active Topstep milestones remaining.</div>';
@@ -1035,13 +1085,7 @@
         document.getElementById('ts-wd-completed-badge').innerText = `${tsWdDone} / ${tsWdTotal} Unlocked`;
         document.getElementById('tr-wd-completed-badge').innerText = `${trWdDone} / ${trWdTotal} Unlocked`;
 
-        updateVisualChart('ts', tsDone, tsTotal);
-        updateVisualChart('tr', trDone, trTotal);
-        updateVisualChart('tdfy', tdfyDone, tdfyTotal);
-        updateVisualChart('fe', feDone, feTotal);
-        updateVisualChart('fn', fnDone, fnTotal);
-        updateVisualChart('tswd', tsWdDone, tsWdTotal);
-        updateVisualChart('trwd', trWdDone, trWdTotal);
+        renderChart({ tsDone, tsTotal, trDone, trTotal, tdfyDone, tdfyTotal, feDone, feTotal, fnDone, fnTotal, tsWdDone, tsWdTotal, trWdDone, trWdTotal });
 
         if (totalMasterGoals > 0) {
           const macroPct = (totalMasterDone / totalMasterGoals) * 100;
