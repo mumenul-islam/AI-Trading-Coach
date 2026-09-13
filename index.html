@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v1.8.1</title>
+  <title>2026 Trade Command Center & Roadmap v1.9.1</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -274,8 +274,8 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v1.8.1</span>
-      <span class="build-timestamp">Updated: Sep 12, 2026 • 7:45 PM EST</span>
+      <span class="version-badge">v1.9.1</span>
+      <span class="build-timestamp">Updated: Sep 13, 2026 • 10:50 AM EDT</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -772,7 +772,7 @@
           <div class="chevron-step" id="step-tdfy-2">
             <div class="chevron-content">
               <span class="chevron-num">PHASE 2</span>
-              <span class="chevron-text">Rebuild buffer for Cluster 1 and build initial buffer for Cluster 2</span>
+              <span class="chevron-text">Rebuild buffer for Cluster 1 & build initial buffer for Cluster 2</span>
             </div>
             <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-tdfy-2" style="display:none;">📍 YOU ARE HERE</span>
@@ -784,7 +784,7 @@
           <div class="chevron-step" id="step-tdfy-3">
             <div class="chevron-content">
               <span class="chevron-num">PHASE 3</span>
-              <span class="chevron-text">Take Payout 2 for Cluster 1 and Payout 1 for Cluster 2</span>
+              <span class="chevron-text">Take Payout 2 for Cluster 1 & Payout 1 for Cluster 2</span>
             </div>
             <div class="chevron-badge-bar">
               <span class="step-focus-badge" id="badge-tdfy-3" style="display:none;">📍 YOU ARE HERE</span>
@@ -832,84 +832,156 @@
         </div>
       </div>
 
-      <!-- FundedNext Chevron Strategy Card -->
+      <!-- Futures Elite (FE) Chevron Strategy Card -->
       <div class="strategy-card">
         <div class="strategy-header">
-          <span class="strategy-title">🔷 FundedNext (FN) — Strategic Flow</span>
-          <span class="badge badge-blue">PROP CLUSTERS</span>
+          <span class="strategy-title">🏆 Futures Elite (FE) — Strategic Flow</span>
+          <span class="badge badge-red">PROP CLUSTERS</span>
         </div>
         
-        <div class="chevron-container" id="strategy-steps-fn">
+        <div class="chevron-container" id="strategy-steps-fe">
           
-          <div class="chevron-step" id="step-fn-1">
+          <div class="chevron-step" id="step-fe-1">
             <div class="chevron-content">
               <span class="chevron-num">PHASE 1</span>
-              <span class="chevron-text">Build account buffer</span>
+              <span class="chevron-text">Recover drawdown</span>
             </div>
             <div class="chevron-badge-bar">
-              <span class="step-focus-badge" id="badge-fn-1" style="display:none;">📍 YOU ARE HERE</span>
-              <span class="step-complete-badge" id="badge-complete-fn-1" style="display:none;">✓ COMPLETE</span>
-              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('fn', 1)">Set Focus</button>
+              <span class="step-focus-badge" id="badge-fe-1" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-fe-1" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('fe', 1)">Set Focus</button>
             </div>
           </div>
 
-          <div class="chevron-step" id="step-fn-2">
+          <div class="chevron-step" id="step-fe-2">
             <div class="chevron-content">
               <span class="chevron-num">PHASE 2</span>
+              <span class="chevron-text">Grow account above safety buffer</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-fe-2" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-fe-2" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('fe', 2)">Set Focus</button>
+            </div>
+          </div>
+
+          <div class="chevron-step" id="step-fe-3">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 3</span>
+              <span class="chevron-text">Take first payout</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-fe-3" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-fe-3" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('fe', 3)">Set Focus</button>
+            </div>
+          </div>
+
+          <div class="chevron-step" id="step-fe-4">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 4</span>
+              <span class="chevron-text">Take payouts until reaching Live Accounts</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-fe-4" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-fe-4" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('fe', 4)">Set Focus</button>
+            </div>
+          </div>
+
+          <div class="chevron-step" id="step-fe-5">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 5</span>
+              <span class="chevron-text">Trade Live Accounts with base hits</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-fe-5" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-fe-5" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('fe', 5)">Set Focus</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Topstep Evals Chevron Strategy Card -->
+      <div class="strategy-card">
+        <div class="strategy-header">
+          <span class="strategy-title">🎯 Topstep Evals — Strategic Flow</span>
+          <span class="badge badge-purple">EVALUATION PATH</span>
+        </div>
+        
+        <div class="chevron-container" id="strategy-steps-tseval">
+          
+          <div class="chevron-step" id="step-tseval-1">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 1</span>
+              <span class="chevron-text">Pass Eval 1 slowly</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-tseval-1" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-tseval-1" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('tseval', 1)">Set Focus</button>
+            </div>
+          </div>
+
+          <div class="chevron-step" id="step-tseval-2">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 2</span>
+              <span class="chevron-text">Once completed, purchase 4 more and slowly pass those</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-tseval-2" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-tseval-2" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('tseval', 2)">Set Focus</button>
+            </div>
+          </div>
+
+          <div class="chevron-step" id="step-tseval-3">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 3</span>
+              <span class="chevron-text">Copy-trade accounts with base hits once holding 5 accounts & build buffer</span>
+            </div>
+            <div class="chevron-badge-bar">
+              <span class="step-focus-badge" id="badge-tseval-3" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-tseval-3" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('tseval', 3)">Set Focus</button>
+            </div>
+          </div>
+
+          <div class="chevron-step" id="step-tseval-4">
+            <div class="chevron-content">
+              <span class="chevron-num">PHASE 4</span>
               <span class="chevron-text">Take Payout 1</span>
             </div>
             <div class="chevron-badge-bar">
-              <span class="step-focus-badge" id="badge-fn-2" style="display:none;">📍 YOU ARE HERE</span>
-              <span class="step-complete-badge" id="badge-complete-fn-2" style="display:none;">✓ COMPLETE</span>
-              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('fn', 2)">Set Focus</button>
+              <span class="step-focus-badge" id="badge-tseval-4" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-tseval-4" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('tseval', 4)">Set Focus</button>
             </div>
           </div>
 
-          <div class="chevron-step" id="step-fn-3">
-            <div class="chevron-content">
-              <span class="chevron-num">PHASE 3</span>
-              <span class="chevron-text">Take Payout 2</span>
-            </div>
-            <div class="chevron-badge-bar">
-              <span class="step-focus-badge" id="badge-fn-3" style="display:none;">📍 YOU ARE HERE</span>
-              <span class="step-complete-badge" id="badge-complete-fn-3" style="display:none;">✓ COMPLETE</span>
-              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('fn', 3)">Set Focus</button>
-            </div>
-          </div>
-
-          <div class="chevron-step" id="step-fn-4">
-            <div class="chevron-content">
-              <span class="chevron-num">PHASE 4</span>
-              <span class="chevron-text">Take as many payouts until reaching Live Accounts</span>
-            </div>
-            <div class="chevron-badge-bar">
-              <span class="step-focus-badge" id="badge-fn-4" style="display:none;">📍 YOU ARE HERE</span>
-              <span class="step-complete-badge" id="badge-complete-fn-4" style="display:none;">✓ COMPLETE</span>
-              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('fn', 4)">Set Focus</button>
-            </div>
-          </div>
-
-          <div class="chevron-step" id="step-fn-5">
+          <div class="chevron-step" id="step-tseval-5">
             <div class="chevron-content">
               <span class="chevron-num">PHASE 5</span>
-              <span class="chevron-text">Build safety buffer in Live Accounts</span>
+              <span class="chevron-text">Take payouts until reaching Live Accounts</span>
             </div>
             <div class="chevron-badge-bar">
-              <span class="step-focus-badge" id="badge-fn-5" style="display:none;">📍 YOU ARE HERE</span>
-              <span class="step-complete-badge" id="badge-complete-fn-5" style="display:none;">✓ COMPLETE</span>
-              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('fn', 5)">Set Focus</button>
+              <span class="step-focus-badge" id="badge-tseval-5" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-tseval-5" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('tseval', 5)">Set Focus</button>
             </div>
           </div>
 
-          <div class="chevron-step" id="step-fn-6">
+          <div class="chevron-step" id="step-tseval-6">
             <div class="chevron-content">
               <span class="chevron-num">PHASE 6</span>
-              <span class="chevron-text">Use Live Accounts as ATM machines</span>
+              <span class="chevron-text">Trade Live Accounts with base hits</span>
             </div>
             <div class="chevron-badge-bar">
-              <span class="step-focus-badge" id="badge-fn-6" style="display:none;">📍 YOU ARE HERE</span>
-              <span class="step-complete-badge" id="badge-complete-fn-6" style="display:none;">✓ COMPLETE</span>
-              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('fn', 6)">Set Focus</button>
+              <span class="step-focus-badge" id="badge-tseval-6" style="display:none;">📍 YOU ARE HERE</span>
+              <span class="step-complete-badge" id="badge-complete-tseval-6" style="display:none;">✓ COMPLETE</span>
+              <button class="btn-set-chevron-focus" onclick="setStrategyFocus('tseval', 6)">Set Focus</button>
             </div>
           </div>
 
@@ -1057,7 +1129,8 @@
         { type: 'ts', maxSteps: 4 },
         { type: 'tr', maxSteps: 5 },
         { type: 'tdfy', maxSteps: 6 },
-        { type: 'fn', maxSteps: 6 }
+        { type: 'fe', maxSteps: 5 },
+        { type: 'tseval', maxSteps: 6 }
       ];
 
       configs.forEach(cfg => {
