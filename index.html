@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v2.3.7</title>
+  <title>2026 Trade Command Center & Roadmap v2.3.8</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -309,8 +309,8 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v2.3.7</span>
-      <span class="build-timestamp">Updated: Sep 13, 2026 • 12:30 PM EDT</span>
+      <span class="version-badge">v2.3.8</span>
+      <span class="build-timestamp">Updated: Sep 13, 2026 • 12:35 PM EDT</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -522,7 +522,7 @@
         <div style="height: 220px; position: relative;"><canvas id="timeSpentChart"></canvas></div>
       </div>
 
-      <!-- BOTTOM CHART: EFFORT VS GOAL VELOCITY (DUAL AXIS) -->
+      <!-- BOTTOM CHART: EFFORT VS GOAL VELOCITY (DUAL AXIS + EFFORT TRENDLINE) -->
       <div class="chart-box-container">
         <div class="chart-box-title">📈 Effort vs. Goal Velocity (Development ROI)</div>
         <div style="height: 220px; position: relative;"><canvas id="effortVsVelocityChart"></canvas></div>
@@ -1783,19 +1783,70 @@
       // Bucket-match goals unlocked per week tag
       const weeklyUnlockedGoals = labels.map(label => parsedWeeklyGoalMap[label] || 0);
 
+      // Compute 4-Week Moving Average for Development Hours
+      const movingAvgHours = hoursData.map((val, idx, arr) => {
+        const start = Math.max(0, idx - 3);
+        const subset = arr.slice(start, idx + 1);
+        const sum = subset.reduce((a, b) => a + b, 0);
+        return parseFloat((sum / subset.length).toFixed(2));
+      });
+
       effortVelocityChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
           labels: labels,
           datasets: [
-            { label: 'Development Hours', data: hoursData, backgroundColor: 'rgba(171, 71, 188, 0.35)', borderColor: '#ab47bc', borderWidth: 1, borderRadius: 4, yAxisID: 'yHours', order: 2 },
-            { label: 'Milestones Unlocked This Week', data: weeklyUnlockedGoals, type: 'line', borderColor: '#089981', backgroundColor: '#089981', pointRadius: 5, tension: 0.2, yAxisID: 'yGoals', order: 1 }
+            { 
+              label: 'Milestones Unlocked This Week', 
+              data: weeklyUnlockedGoals, 
+              type: 'line', 
+              borderColor: '#089981', 
+              backgroundColor: '#089981', 
+              pointRadius: 5, 
+              tension: 0.2, 
+              yAxisID: 'yGoals', 
+              order: 1 
+            },
+            {
+              label: 'Effort Trend (4-Wk Moving Avg)',
+              data: movingAvgHours,
+              type: 'line',
+              borderColor: '#ab47bc',
+              borderWidth: 2,
+              borderDash: [4, 4],
+              pointRadius: 2,
+              pointBackgroundColor: '#ab47bc',
+              fill: false,
+              yAxisID: 'yHours',
+              order: 2
+            },
+            { 
+              label: 'Development Hours', 
+              data: hoursData, 
+              backgroundColor: 'rgba(171, 71, 188, 0.35)', 
+              borderColor: '#ab47bc', 
+              borderWidth: 1, 
+              borderRadius: 4, 
+              yAxisID: 'yHours', 
+              order: 3 
+            }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { labels: { color: '#d1d4dc', font: { size: 10, weight: 'bold' } } } },
+          plugins: { 
+            legend: { labels: { color: '#d1d4dc', font: { size: 10, weight: 'bold' } } },
+            tooltip: {
+              callbacks: {
+                label: function(item) {
+                  if (item.dataset.label.includes('Effort Trend')) return ` 📈 Effort 4-Wk Avg: ${item.raw} hrs`;
+                  if (item.dataset.label.includes('Milestones')) return ` 🎯 Milestones Unlocked: ${item.raw}`;
+                  return ` ⏱️ Logged Effort: ${item.raw} hrs`;
+                }
+              }
+            }
+          },
           scales: {
             x: { grid: { color: 'rgba(54, 58, 69, 0.4)' }, ticks: { color: '#787b86', font: { size: 10 } } },
             yHours: { type: 'linear', position: 'left', title: { display: true, text: 'Hours Worked', color: '#ab47bc' }, grid: { color: 'rgba(54, 58, 69, 0.4)' }, ticks: { color: '#d1d4dc' }, beginAtZero: true },
