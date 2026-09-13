@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v2.3.5</title>
-  <!-- Chart.js CDN for Visual Milestone Graphs -->
+  <title>2026 Trade Command Center & Roadmap v2.3.6</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
@@ -309,8 +308,8 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v2.3.5</span>
-      <span class="build-timestamp">Updated: Sep 13, 2026 • 12:20 PM EDT</span>
+      <span class="version-badge">v2.3.6</span>
+      <span class="build-timestamp">Updated: Sep 13, 2026 • 12:25 PM EDT</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -855,7 +854,7 @@
     const parsedBalanceMap = {};
     const parsedGoalMap = {};
     const parsedDangerMap = {}; 
-    let parsedWeeklyGoalMap = {}; // Maps week tags (e.g. W37) to goal counts
+    let parsedWeeklyGoalMap = {}; 
     let lastParsedWeekLabels = [];
     let lastParsedWeeklyHours = [];
 
@@ -867,7 +866,6 @@
       "Withdrawals are the ultimate report card. Stay focused on taking profits out systematically."
     ];
 
-    // Helper: Convert MM/DD/YY dates or Week tags to standard Week ID (e.g. W37)
     function getWeekTagFromDate(dateStr) {
       if (!dateStr || dateStr.includes('%')) return null;
       let str = dateStr.toString().trim();
@@ -1810,20 +1808,21 @@
           const colA_Name = r.c[0] && r.c[0].v !== null ? r.c[0].v.toString().trim() : '';
           const colB_Goal = r.c[1] && r.c[1].v !== null ? r.c[1].v.toString().trim() : '';
           const colC_Done = r.c[2] && r.c[2].v !== null ? r.c[2].v.toString().toLowerCase().trim() : '';
-          const colD_Date = r.c[3] && r.c[3].v !== null ? r.c[3].v.toString().trim() : '';
-          const colE_Val  = r.c[4] && r.c[4].v !== null ? r.c[4].v.toString().trim() : '';
+          const colD_Pct  = r.c[3] && r.c[3].v !== null ? r.c[3].v.toString().trim() : '';
+          const colE_Date = r.c[4] && r.c[4].v !== null ? r.c[4].v.toString().trim() : '';
 
           const colG_Name = r.c[6] && r.c[6].v !== null ? r.c[6].v.toString().trim() : '';
           const colH_Goal = r.c[7] && r.c[7].v !== null ? r.c[7].v.toString().trim() : '';
           const colI_Done = r.c[8] && r.c[8].v !== null ? r.c[8].v.toString().toLowerCase().trim() : '';
-          const colJ_Date = r.c[9] && r.c[9].v !== null ? r.c[9].v.toString().trim() : '';
+          const colJ_Pct  = r.c[9] && r.c[9].v !== null ? r.c[9].v.toString().trim() : '';
+          const colK_Date = r.c[10] && r.c[10].v !== null ? r.c[10].v.toString().trim() : '';
 
           const goalEntries = [];
-          if (colA_Name || colB_Goal) goalEntries.push({ acctName: colA_Name, goalTitle: colB_Goal, isComplete: colC_Done, dateVal: colD_Date, extraVal: colE_Val, source: 'primary' });
-          if (colG_Name || colH_Goal) goalEntries.push({ acctName: colG_Name, goalTitle: colH_Goal, isComplete: colI_Done, dateVal: colJ_Date, extraVal: '', source: 'prop' });
+          if (colA_Name || colB_Goal) goalEntries.push({ acctName: colA_Name, goalTitle: colB_Goal, isComplete: colC_Done, pctVal: colD_Pct, dateVal: colE_Date, source: 'primary' });
+          if (colG_Name || colH_Goal) goalEntries.push({ acctName: colG_Name, goalTitle: colH_Goal, isComplete: colI_Done, pctVal: colJ_Pct, dateVal: colK_Date, source: 'prop' });
 
           goalEntries.forEach(entry => {
-            const { acctName, goalTitle, isComplete, dateVal, extraVal, source } = entry;
+            const { acctName, goalTitle, isComplete, pctVal, dateVal, source } = entry;
             const cleanName = acctName.toLowerCase().replace(/[^a-z0-9]/g, '');
             const combinedText = (cleanName + ' ' + goalTitle.toLowerCase()).replace(/[^a-z0-9]/g, '');
             const completed = (isComplete === 'true' || isComplete === 'yes' || isComplete === '1' || isComplete === 'x');
@@ -1852,11 +1851,11 @@
             const tagInfo = getGoalTag(displayGoalTitle);
             const tagHTML = `<span class="goal-tag ${tagInfo.class}">${tagInfo.text}</span>`;
             const isWdCat = (category === 'ts-withdrawal' || category === 'tr-withdrawal');
-            const formattedTarget = formatTargetValue(dateVal, extraVal, isWdCat);
+            const formattedTarget = formatTargetValue(pctVal, dateVal, isWdCat);
 
             let pctProgress = completed ? 100 : 0;
-            if (!completed && dateVal) {
-              let parsedVal = parseFloat(dateVal.toString().replace(/[%]/g, '').trim());
+            if (!completed && pctVal) {
+              let parsedVal = parseFloat(pctVal.toString().replace(/[%]/g, '').trim());
               if (!isNaN(parsedVal)) pctProgress = (parsedVal > -1 && parsedVal < 1 && parsedVal !== 0) ? parsedVal * 100 : parsedVal;
             }
 
@@ -1871,7 +1870,7 @@
             if (completed) {
               totalMasterDone++;
               
-              // Increment week bucket for Velocity chart
+              // Increment week bucket for Velocity chart reading Column E (or Col K)
               const weekTag = getWeekTagFromDate(dateVal);
               if (weekTag) {
                 parsedWeeklyGoalMap[weekTag] = (parsedWeeklyGoalMap[weekTag] || 0) + 1;
@@ -1904,7 +1903,7 @@
             const trophyNodeHTML = `
               <div class="trophy-item">
                 <span>🏆 ${acctPillHTML ? acctPillHTML + ' ' : ''}${displayGoalTitle}</span>
-                <span class="trophy-time">⏱️ ${formattedTarget || 'Completed'}</span>
+                <span class="trophy-time">⏱️ ${dateVal || 'Completed'}</span>
               </div>`;
 
             if (category === 'topstep-live') { tsTotal++; if (completed) { tsDone++; tsTrophyHTML += trophyNodeHTML; } else { tsActiveHTML += activeNodeHTML; } }
@@ -1962,7 +1961,6 @@
           document.getElementById('macro-pct-bar').style.width = macroPct + '%';
         }
 
-        // Re-render Velocity chart if time logs are already parsed
         if (lastParsedWeekLabels.length > 0) {
           renderEffortVsVelocityChart(lastParsedWeekLabels, lastParsedWeeklyHours);
         }
