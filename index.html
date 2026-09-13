@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v2.3.8</title>
+  <title>2026 Trade Command Center & Roadmap v2.3.9</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -309,8 +309,8 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v2.3.8</span>
-      <span class="build-timestamp">Updated: Sep 13, 2026 • 12:35 PM EDT</span>
+      <span class="version-badge">v2.3.9</span>
+      <span class="build-timestamp" id="dashboard-load-time">Updating timestamp...</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -866,6 +866,14 @@
       "You have a structured plan for every single account. Stick to the system!",
       "Withdrawals are the ultimate report card. Stay focused on taking profits out systematically."
     ];
+
+    function updateLiveHeaderTime() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const dateStr = now.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+      const el = document.getElementById('dashboard-load-time');
+      if (el) el.innerText = `Updated: ${dateStr} • ${timeStr} EDT`;
+    }
 
     // Robust Date & Week Tag Parser Engine
     function getWeekTagFromDate(dateVal) {
@@ -2096,6 +2104,8 @@
     }
 
     function loadData() {
+      updateLiveHeaderTime();
+
       const scriptDaily = document.createElement('script');
       scriptDaily.src = `https://docs.google.com/spreadsheets/d/${REAL_DOC_ID}/gviz/tq?gid=${DAILY_GID}&tqx=responseHandler:handleSheetData&_=${Date.now()}`;
       document.body.appendChild(scriptDaily);
