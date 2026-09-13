@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v2.3.1</title>
+  <title>2026 Trade Command Center & Roadmap v2.3.2</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -309,8 +309,8 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v2.3.1</span>
-      <span class="build-timestamp">Updated: Sep 13, 2026 • 11:55 AM EDT</span>
+      <span class="version-badge">v2.3.2</span>
+      <span class="build-timestamp">Updated: Sep 13, 2026 • 12:05 PM EDT</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -1663,25 +1663,55 @@
 
       if (timeSpentChartInstance) timeSpentChartInstance.destroy();
 
+      // Calculate 4-Week Moving Average Trendline
+      const movingAvgData = hoursData.map((val, idx, arr) => {
+        const start = Math.max(0, idx - 3);
+        const subset = arr.slice(start, idx + 1);
+        const sum = subset.reduce((a, b) => a + b, 0);
+        return parseFloat((sum / subset.length).toFixed(2));
+      });
+
       timeSpentChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
           labels: labels,
-          datasets: [{
-            label: 'System Development Hours Worked',
-            data: hoursData,
-            backgroundColor: 'rgba(41, 98, 255, 0.6)',
-            borderColor: '#2962ff',
-            borderWidth: 1.5,
-            borderRadius: 4
-          }]
+          datasets: [
+            {
+              label: '4-Week Moving Average Trend',
+              data: movingAvgData,
+              type: 'line',
+              borderColor: '#00bcd4',
+              borderWidth: 2,
+              borderDash: [5, 5],
+              pointRadius: 3,
+              pointBackgroundColor: '#00bcd4',
+              fill: false,
+              order: 1
+            },
+            {
+              label: 'Development Hours Worked',
+              data: hoursData,
+              backgroundColor: 'rgba(41, 98, 255, 0.6)',
+              borderColor: '#2962ff',
+              borderWidth: 1.5,
+              borderRadius: 4,
+              order: 2
+            }
+          ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { display: false },
-            tooltip: { callbacks: { label: function(item) { return ` ⏱️ Time Worked: ${item.raw} hrs`; } } }
+            legend: { labels: { color: '#d1d4dc', font: { size: 10, weight: 'bold' } } },
+            tooltip: {
+              callbacks: {
+                label: function(item) {
+                  if (item.dataset.type === 'line') return ` 📈 4-Wk Moving Avg: ${item.raw} hrs`;
+                  return ` ⏱️ Logged Hours: ${item.raw} hrs`;
+                }
+              }
+            }
           },
           scales: {
             x: { grid: { color: 'rgba(54, 58, 69, 0.4)' }, ticks: { color: '#787b86', font: { size: 10 } } },
