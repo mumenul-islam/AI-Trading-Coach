@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v2.3.4</title>
+  <title>2026 Trade Command Center & Roadmap v2.3.5</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -142,7 +142,6 @@
     .chart-box-container { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 25px; }
     .chart-box-title { font-size: 12px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
 
-    /* STACKED VERTICAL CHARTS WRAPPER */
     .charts-vertical-stack { display: flex; flex-direction: column; gap: 20px; margin-bottom: 25px; }
 
     /* High-Level Strategy CHEVRON Flow Layout */
@@ -310,8 +309,8 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v2.3.4</span>
-      <span class="build-timestamp">Updated: Sep 13, 2026 • 12:15 PM EDT</span>
+      <span class="version-badge">v2.3.5</span>
+      <span class="build-timestamp">Updated: Sep 13, 2026 • 12:20 PM EDT</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -855,8 +854,10 @@
     const parsedProgressMap = {};
     const parsedBalanceMap = {};
     const parsedGoalMap = {};
-    const parsedDangerMap = {};
-    let totalMasterDone = 0; // Globally tracked for velocity line
+    const parsedDangerMap = {}; 
+    let parsedWeeklyGoalMap = {}; // Maps week tags (e.g. W37) to goal counts
+    let lastParsedWeekLabels = [];
+    let lastParsedWeeklyHours = [];
 
     const encouragementQuotes = [
       "Every single rule-following trade compounds into long-term wealth. You are building real discipline!",
@@ -865,6 +866,29 @@
       "You have a structured plan for every single account. Stick to the system!",
       "Withdrawals are the ultimate report card. Stay focused on taking profits out systematically."
     ];
+
+    // Helper: Convert MM/DD/YY dates or Week tags to standard Week ID (e.g. W37)
+    function getWeekTagFromDate(dateStr) {
+      if (!dateStr || dateStr.includes('%')) return null;
+      let str = dateStr.toString().trim();
+      
+      if (str.toUpperCase().startsWith('W')) return str.toUpperCase();
+
+      const parts = str.split('/');
+      if (parts.length < 2) return null;
+      
+      const month = parseInt(parts[0], 10) - 1;
+      const day = parseInt(parts[1], 10);
+      const year = parts[2] ? (parts[2].length === 2 ? 2000 + parseInt(parts[2], 10) : parseInt(parts[2], 10)) : 2026;
+
+      const d = new Date(year, month, day);
+      if (isNaN(d.getTime())) return null;
+
+      d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+      const yearStart = new Date(d.getFullYear(), 0, 1);
+      const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+      return `W${weekNo}`;
+    }
 
     function saveCardRiskAmount(id) {
       const riskEl = document.getElementById(`risk-select-${id}`);
@@ -1648,6 +1672,9 @@
           }
         });
 
+        lastParsedWeekLabels = weekLabels;
+        lastParsedWeeklyHours = weeklyHours;
+
         if (weeklyHours.length > 0) {
           const currentWeekHours = weeklyHours[weeklyHours.length - 1];
           const timeSummaryEl = document.getElementById('summary-weekly-time');
@@ -1730,13 +1757,8 @@
 
       if (effortVelocityChartInstance) effortVelocityChartInstance.destroy();
 
-      // Dynamic mapping reading real unlocked goals count
-      const actualWeeklyGoals = labels.map((label, idx) => {
-        if (idx === labels.length - 1) {
-          return typeof totalMasterDone !== 'undefined' ? totalMasterDone : 0;
-        }
-        return 0; // Baseline for prior weeks
-      });
+      // Bucket-match goals unlocked per week tag
+      const weeklyUnlockedGoals = labels.map(label => parsedWeeklyGoalMap[label] || 0);
 
       effortVelocityChartInstance = new Chart(ctx, {
         type: 'bar',
@@ -1744,7 +1766,7 @@
           labels: labels,
           datasets: [
             { label: 'Development Hours', data: hoursData, backgroundColor: 'rgba(171, 71, 188, 0.35)', borderColor: '#ab47bc', borderWidth: 1, borderRadius: 4, yAxisID: 'yHours', order: 2 },
-            { label: 'Milestones Unlocked', data: actualWeeklyGoals, type: 'line', borderColor: '#089981', backgroundColor: '#089981', pointRadius: 5, tension: 0.3, yAxisID: 'yGoals', order: 1 }
+            { label: 'Milestones Unlocked This Week', data: weeklyUnlockedGoals, type: 'line', borderColor: '#089981', backgroundColor: '#089981', pointRadius: 5, tension: 0.2, yAxisID: 'yGoals', order: 1 }
           ]
         },
         options: {
@@ -1766,6 +1788,8 @@
         const rows = data.table.rows;
         const seenMilestones = getSeenCompletedMilestones();
         
+        parsedWeeklyGoalMap = {}; // Reset weekly bucket counts
+
         const categoryItems = { 'topstep-live': [], 'tradovate-live': [], 'topstep-prop': [], 'tdfy': [], 'fe': [], 'fn': [], 'ts-wd': [], 'tr-wd': [] };
 
         let tsActiveHTML = '', trActiveHTML = '';
@@ -1778,8 +1802,7 @@
         let tsTotal = 0, tsDone = 0, trTotal = 0, trDone = 0, tsPropTotal = 0, tsPropDone = 0;
         let tdfyTotal = 0, tdfyDone = 0, feTotal = 0, feDone = 0, fnTotal = 0, fnDone = 0;
         let tsWdTotal = 0, tsWdDone = 0, trWdTotal = 0, trWdDone = 0;
-        let totalMasterGoals = 0;
-        totalMasterDone = 0; // Assign to global scope for chart access
+        let totalMasterGoals = 0, totalMasterDone = 0;
 
         rows.forEach((r, idx) => {
           if (!r.c) return;
@@ -1847,6 +1870,13 @@
             totalMasterGoals++;
             if (completed) {
               totalMasterDone++;
+              
+              // Increment week bucket for Velocity chart
+              const weekTag = getWeekTagFromDate(dateVal);
+              if (weekTag) {
+                parsedWeeklyGoalMap[weekTag] = (parsedWeeklyGoalMap[weekTag] || 0) + 1;
+              }
+
               if (!seenMilestones.includes(mKey)) {
                 saveSeenCompletedMilestone(mKey);
                 triggerCelebrationModal(displayGoalTitle);
@@ -1930,6 +1960,11 @@
           const macroPct = (totalMasterDone / totalMasterGoals) * 100;
           document.getElementById('macro-pct-val').innerText = macroPct.toFixed(1) + '%';
           document.getElementById('macro-pct-bar').style.width = macroPct + '%';
+        }
+
+        // Re-render Velocity chart if time logs are already parsed
+        if (lastParsedWeekLabels.length > 0) {
+          renderEffortVsVelocityChart(lastParsedWeekLabels, lastParsedWeeklyHours);
         }
 
       } catch (e) {
