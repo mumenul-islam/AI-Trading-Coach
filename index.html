@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v2.1.0</title>
+  <title>2026 Trade Command Center & Roadmap v2.1.1</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -81,7 +81,7 @@
     .group-alert.synced { background: rgba(8, 153, 129, 0.15); border-color: var(--accent-green); color: var(--accent-green); }
 
     /* Cards & Grids */
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 25px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 15px; margin-bottom: 25px; }
     .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; transition: all 0.3s ease; position: relative; }
     .card.hidden-completed { display: none !important; }
     
@@ -105,12 +105,11 @@
     .exec-btn.state-in-progress.active { background: var(--accent-blue); color: #fff; }
     .exec-btn.state-complete.active { background: var(--accent-green); color: #fff; }
 
-    /* CARD-SPECIFIC POSITION SIZER STYLING */
-    .card-sizer-box { background: rgba(19, 23, 34, 0.7); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; margin-bottom: 12px; }
-    .card-sizer-header { display: flex; justify-content: space-between; align-items: center; font-size: 10px; font-weight: 800; color: var(--accent-yellow); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
-    .card-sizer-inputs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-    .card-sizer-select, .card-sizer-input { background: var(--bg-card); border: 1px solid var(--border-color); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 6px; border-radius: 4px; outline: none; width: 100%; }
-    .card-sizer-output { font-size: 12px; font-weight: 900; color: #fff; background: rgba(245, 192, 0, 0.15); border: 1px solid var(--accent-yellow); padding: 2px 6px; border-radius: 4px; text-align: center; }
+    /* CARD-SPECIFIC RISK AMOUNT STYLING */
+    .card-risk-box { background: rgba(19, 23, 34, 0.7); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+    .card-risk-label { font-size: 11px; font-weight: 800; color: var(--accent-yellow); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; }
+    .card-risk-select { background: var(--bg-card); border: 1px solid var(--border-color); color: #fff; font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 6px; outline: none; cursor: pointer; }
+    .card-risk-select:focus { border-color: var(--accent-yellow); }
 
     /* Badges */
     .badge { font-size: 10px; padding: 3px 8px; border-radius: 12px; font-weight: 700; text-transform: uppercase; background: var(--bg-header); color: var(--text-muted); }
@@ -295,8 +294,8 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v2.1.0</span>
-      <span class="build-timestamp">Updated: Sep 13, 2026 • 11:28 AM EDT</span>
+      <span class="version-badge">v2.1.1</span>
+      <span class="build-timestamp">Updated: Sep 13, 2026 • 11:35 AM EDT</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -378,30 +377,17 @@
             <span class="badge badge-blue" id="badge-topstep-live">PRIMARY</span>
           </div>
 
-          <!-- CARD-LEVEL POSITION SIZING CALCULATOR -->
-          <div class="card-sizer-box">
-            <div class="card-sizer-header">
-              <span>📐 Risk & Sizing</span>
-              <span class="card-sizer-output" id="sizer-out-topstep-live">5 MNQ</span>
-            </div>
-            <div class="card-sizer-inputs">
-              <select class="card-sizer-select" id="sizer-risk-topstep-live" onchange="calculateCardSizing('topstep-live')">
-                <option value="100">$100</option>
-                <option value="150" selected>$150</option>
-                <option value="200">$200</option>
-                <option value="250">$250</option>
-                <option value="300">$300</option>
-                <option value="500">$500</option>
-              </select>
-              <select class="card-sizer-select" id="sizer-inst-topstep-live" onchange="calculateCardSizing('topstep-live')">
-                <option value="MNQ" selected>MNQ</option>
-                <option value="NQ">NQ</option>
-                <option value="MES">MES</option>
-                <option value="ES">ES</option>
-                <option value="MCL">MCL</option>
-              </select>
-              <input type="number" class="card-sizer-input" id="sizer-stop-topstep-live" value="15" step="0.25" min="1" oninput="calculateCardSizing('topstep-live')" placeholder="Stop Pt">
-            </div>
+          <!-- SIMPLIFIED CARD-LEVEL RISK AMOUNT SELECTOR -->
+          <div class="card-risk-box">
+            <span class="card-risk-label">⚠️ Risk Allocation</span>
+            <select class="card-risk-select" id="risk-select-topstep-live" onchange="saveCardRiskAmount('topstep-live')">
+              <option value="100">$100 Risk</option>
+              <option value="150" selected>$150 Risk</option>
+              <option value="200">$200 Risk</option>
+              <option value="250">$250 Risk</option>
+              <option value="300">$300 Risk</option>
+              <option value="500">$500 Risk</option>
+            </select>
           </div>
 
           <div class="exec-status-bar" id="exec-bar-topstep-live">
@@ -468,30 +454,17 @@
             <span class="badge badge-purple" id="badge-topstep-50k-eval">EVALUATION</span>
           </div>
 
-          <!-- CARD-LEVEL POSITION SIZING CALCULATOR -->
-          <div class="card-sizer-box">
-            <div class="card-sizer-header">
-              <span>📐 Risk & Sizing</span>
-              <span class="card-sizer-output" id="sizer-out-topstep-50k-eval">5 MNQ</span>
-            </div>
-            <div class="card-sizer-inputs">
-              <select class="card-sizer-select" id="sizer-risk-topstep-50k-eval" onchange="calculateCardSizing('topstep-50k-eval')">
-                <option value="100">$100</option>
-                <option value="150" selected>$150</option>
-                <option value="200">$200</option>
-                <option value="250">$250</option>
-                <option value="300">$300</option>
-                <option value="500">$500</option>
-              </select>
-              <select class="card-sizer-select" id="sizer-inst-topstep-50k-eval" onchange="calculateCardSizing('topstep-50k-eval')">
-                <option value="MNQ" selected>MNQ</option>
-                <option value="NQ">NQ</option>
-                <option value="MES">MES</option>
-                <option value="ES">ES</option>
-                <option value="MCL">MCL</option>
-              </select>
-              <input type="number" class="card-sizer-input" id="sizer-stop-topstep-50k-eval" value="15" step="0.25" min="1" oninput="calculateCardSizing('topstep-50k-eval')" placeholder="Stop Pt">
-            </div>
+          <!-- SIMPLIFIED CARD-LEVEL RISK AMOUNT SELECTOR -->
+          <div class="card-risk-box">
+            <span class="card-risk-label">⚠️ Risk Allocation</span>
+            <select class="card-risk-select" id="risk-select-topstep-50k-eval" onchange="saveCardRiskAmount('topstep-50k-eval')">
+              <option value="100">$100 Risk</option>
+              <option value="150" selected>$150 Risk</option>
+              <option value="200">$200 Risk</option>
+              <option value="250">$250 Risk</option>
+              <option value="300">$300 Risk</option>
+              <option value="500">$500 Risk</option>
+            </select>
           </div>
 
           <div class="exec-status-bar" id="exec-bar-topstep-50k-eval">
@@ -611,7 +584,7 @@
     </div>
   </div>
 
-  <!-- MAIN VIEW 3: LONG-TERM ROADMAP -->
+  <!-- MAIN VIEW 3: LONG-TERM ROADMAP (EXACT REQUESTED ORDER) -->
   <div id="view-roadmap" style="display: none;">
     <div class="section-header-wrap" style="margin-top:0;">
       <span class="section-header purple">High-Level Strategic Account Roadmap</span>
@@ -620,10 +593,10 @@
 
     <div class="strategy-block-wrapper">
       
-      <!-- Topstep Live Chevron Strategy Card -->
+      <!-- 1. Topstep Live Strategic Flow -->
       <div class="strategy-card">
         <div class="strategy-header">
-          <span class="strategy-title">🚀 Topstep Live — Strategic Flow</span>
+          <span class="strategy-title">🚀 1. Topstep Live — Strategic Flow</span>
           <span class="badge badge-purple">PRIMARY LIVE</span>
         </div>
         <div class="chevron-container" id="strategy-steps-ts">
@@ -646,10 +619,10 @@
         </div>
       </div>
 
-      <!-- Tradeify Chevron Strategy Card -->
+      <!-- 2. Tradeify Strategic Flow -->
       <div class="strategy-card">
         <div class="strategy-header">
-          <span class="strategy-title">⚡ Tradeify — Strategic Flow</span>
+          <span class="strategy-title">⚡ 2. Tradeify — Strategic Flow</span>
           <span class="badge badge-yellow">PROP CLUSTERS</span>
         </div>
         <div class="chevron-container" id="strategy-steps-tdfy">
@@ -680,6 +653,134 @@
         </div>
       </div>
 
+      <!-- 3. FundedNext (FN) Strategic Flow -->
+      <div class="strategy-card">
+        <div class="strategy-header">
+          <span class="strategy-title">🔷 3. FundedNext (FN) — Strategic Flow</span>
+          <span class="badge badge-blue">PROP CLUSTERS</span>
+        </div>
+        <div class="chevron-container" id="strategy-steps-fn">
+          <div class="chevron-step" id="step-fn-1">
+            <div class="chevron-content"><span class="chevron-num">PHASE 1</span><span class="chevron-text">Build account buffer</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-fn-1" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-fn-1" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('fn', 1)">Set Focus</button></div>
+          </div>
+          <div class="chevron-step" id="step-fn-2">
+            <div class="chevron-content"><span class="chevron-num">PHASE 2</span><span class="chevron-text">Take Payout 1</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-fn-2" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-fn-2" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('fn', 2)">Set Focus</button></div>
+          </div>
+          <div class="chevron-step" id="step-fn-3">
+            <div class="chevron-content"><span class="chevron-num">PHASE 3</span><span class="chevron-text">Take Payout 2</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-fn-3" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-fn-3" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('fn', 3)">Set Focus</button></div>
+          </div>
+          <div class="chevron-step" id="step-fn-4">
+            <div class="chevron-content"><span class="chevron-num">PHASE 4</span><span class="chevron-text">Take as many payouts until reaching Live Accounts</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-fn-4" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-fn-4" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('fn', 4)">Set Focus</button></div>
+          </div>
+          <div class="chevron-step" id="step-fn-5">
+            <div class="chevron-content"><span class="chevron-num">PHASE 5</span><span class="chevron-text">Build safety buffer in Live Accounts</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-fn-5" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-fn-5" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('fn', 5)">Set Focus</button></div>
+          </div>
+          <div class="chevron-step" id="step-fn-6">
+            <div class="chevron-content"><span class="chevron-num">PHASE 6</span><span class="chevron-text">Use Live Accounts as ATM machines</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-fn-6" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-fn-6" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('fn', 6)">Set Focus</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Futures Elite (FE) Strategic Flow -->
+      <div class="strategy-card">
+        <div class="strategy-header">
+          <span class="strategy-title">🏆 4. Futures Elite (FE) — Strategic Flow</span>
+          <span class="badge badge-red">PROP CLUSTERS</span>
+        </div>
+        <div class="chevron-container" id="strategy-steps-fe">
+          <div class="chevron-step" id="step-fe-1">
+            <div class="chevron-content"><span class="chevron-num">PHASE 1</span><span class="chevron-text">Recover drawdown</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-fe-1" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-fe-1" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('fe', 1)">Set Focus</button></div>
+          </div>
+          <div class="chevron-step" id="step-fe-2">
+            <div class="chevron-content"><span class="chevron-num">PHASE 2</span><span class="chevron-text">Grow account above safety buffer</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-fe-2" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-fe-2" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('fe', 2)">Set Focus</button></div>
+          </div>
+          <div class="chevron-step" id="step-fe-3">
+            <div class="chevron-content"><span class="chevron-num">PHASE 3</span><span class="chevron-text">Take first payout</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-fe-3" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-fe-3" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('fe', 3)">Set Focus</button></div>
+          </div>
+          <div class="chevron-step" id="step-fe-4">
+            <div class="chevron-content"><span class="chevron-num">PHASE 4</span><span class="chevron-text">Take payouts until reaching Live Accounts</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-fe-4" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-fe-4" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('fe', 4)">Set Focus</button></div>
+          </div>
+          <div class="chevron-step" id="step-fe-5">
+            <div class="chevron-content"><span class="chevron-num">PHASE 5</span><span class="chevron-text">Trade Live Accounts with base hits</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-fe-5" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-fe-5" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('fe', 5)">Set Focus</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Topstep Evals Strategic Flow -->
+      <div class="strategy-card">
+        <div class="strategy-header">
+          <span class="strategy-title">🎯 5. Topstep Evals — Strategic Flow</span>
+          <span class="badge badge-purple">EVALUATION PATH</span>
+        </div>
+        <div class="chevron-container" id="strategy-steps-tseval">
+          <div class="chevron-step" id="step-tseval-1">
+            <div class="chevron-content"><span class="chevron-num">PHASE 1</span><span class="chevron-text">Pass Eval 1 slowly</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-tseval-1" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-tseval-1" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('tseval', 1)">Set Focus</button></div>
+          </div>
+          <div class="chevron-step" id="step-tseval-2">
+            <div class="chevron-content"><span class="chevron-num">PHASE 2</span><span class="chevron-text">Once completed, purchase 4 more and slowly pass those</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-tseval-2" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-tseval-2" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('tseval', 2)">Set Focus</button></div>
+          </div>
+          <div class="chevron-step" id="step-tseval-3">
+            <div class="chevron-content"><span class="chevron-num">PHASE 3</span><span class="chevron-text">Copy-trade accounts with base hits once holding 5 accounts & build buffer</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-tseval-3" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-tseval-3" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('tseval', 3)">Set Focus</button></div>
+          </div>
+          <div class="chevron-step" id="step-tseval-4">
+            <div class="chevron-content"><span class="chevron-num">PHASE 4</span><span class="chevron-text">Take Payout 1</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-tseval-4" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-tseval-4" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('tseval', 4)">Set Focus</button></div>
+          </div>
+          <div class="chevron-step" id="step-tseval-5">
+            <div class="chevron-content"><span class="chevron-num">PHASE 5</span><span class="chevron-text">Take payouts until reaching Live Accounts</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-tseval-5" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-tseval-5" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('tseval', 5)">Set Focus</button></div>
+          </div>
+          <div class="chevron-step" id="step-tseval-6">
+            <div class="chevron-content"><span class="chevron-num">PHASE 6</span><span class="chevron-text">Trade Live Accounts with base hits</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-tseval-6" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-tseval-6" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('tseval', 6)">Set Focus</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Tradovate Live Strategic Flow -->
+      <div class="strategy-card">
+        <div class="strategy-header">
+          <span class="strategy-title">🛡️ 6. Tradovate Live — Strategic Flow</span>
+          <span class="badge badge-cyan">SECONDARY LIVE</span>
+        </div>
+        <div class="chevron-container" id="strategy-steps-tr">
+          <div class="chevron-step" id="step-tr-1">
+            <div class="chevron-content"><span class="chevron-num">PHASE 1</span><span class="chevron-text">Grow account balance to $2,500</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-tr-1" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-tr-1" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('tr', 1)">Set Focus</button></div>
+          </div>
+          <div class="chevron-step" id="step-tr-2">
+            <div class="chevron-content"><span class="chevron-num">PHASE 2</span><span class="chevron-text">Grow account balance to $5,000</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-tr-2" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-tr-2" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('tr', 2)">Set Focus</button></div>
+          </div>
+          <div class="chevron-step" id="step-tr-3">
+            <div class="chevron-content"><span class="chevron-num">PHASE 3</span><span class="chevron-text">Grow account balance to $10,000</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-tr-3" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-tr-3" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('tr', 3)">Set Focus</button></div>
+          </div>
+          <div class="chevron-step" id="step-tr-4">
+            <div class="chevron-content"><span class="chevron-num">PHASE 4</span><span class="chevron-text">Take regular withdrawals while growing to $25,000</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-tr-4" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-tr-4" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('tr', 4)">Set Focus</button></div>
+          </div>
+          <div class="chevron-step" id="step-tr-5">
+            <div class="chevron-content"><span class="chevron-num">PHASE 5</span><span class="chevron-text">Establish as Secondary Trading Account</span></div>
+            <div class="chevron-badge-bar"><span class="step-focus-badge" id="badge-tr-5" style="display:none;">📍 YOU ARE HERE</span><span class="step-complete-badge" id="badge-complete-tr-5" style="display:none;">✓ COMPLETE</span><button class="btn-set-chevron-focus" onclick="setStrategyFocus('tr', 5)">Set Focus</button></div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -696,7 +797,7 @@
     <div class="coach-quick-prompts">
       <button class="chip-btn" onclick="sendCoachQuickPrompt('What is my main focus right now?')">🎯 Current Focus?</button>
       <button class="chip-btn" onclick="sendCoachQuickPrompt('Remind me of my Tradeify strategy')">⚡ Tradeify Plan</button>
-      <button class="chip-btn" onclick="sendCoachQuickPrompt('What is my position sizing rule?')">📐 Sizing Rule</button>
+      <button class="chip-btn" onclick="sendCoachQuickPrompt('What is my position sizing rule?')">⚠️ Risk Allocation</button>
     </div>
     <div class="coach-input-bar">
       <input type="text" class="coach-input" id="coach-input-field" placeholder="Ask your coach..." onkeydown="if(event.key==='Enter') sendCoachMessage()">
@@ -711,8 +812,6 @@
 
     const VARIANCE_TOLERANCE = 50; 
     const DANGER_ZONE_THRESHOLD = 250; 
-
-    const POINT_VALUES = { 'NQ': 20, 'MNQ': 2, 'ES': 50, 'MES': 5, 'CL': 1000, 'MCL': 100 };
 
     let countdownVal = 30;
     let countdownInterval = null;
@@ -733,25 +832,19 @@
       "Withdrawals are the ultimate report card. Stay focused on taking profits out systematically."
     ];
 
-    function calculateCardSizing(id) {
-      const riskEl = document.getElementById(`sizer-risk-${id}`);
-      const instEl = document.getElementById(`sizer-inst-${id}`);
-      const stopEl = document.getElementById(`sizer-stop-${id}`);
-      const outEl = document.getElementById(`sizer-out-${id}`);
+    function saveCardRiskAmount(id) {
+      const riskEl = document.getElementById(`risk-select-${id}`);
+      if (riskEl) {
+        localStorage.setItem(`card_risk_${id}`, riskEl.value);
+      }
+    }
 
-      if (!riskEl || !instEl || !stopEl || !outEl) return;
-
-      const riskAmt = parseFloat(riskEl.value) || 150;
-      const instrument = instEl.value || 'MNQ';
-      const stopPoints = parseFloat(stopEl.value) || 15;
-
-      const pointVal = POINT_VALUES[instrument] || 2;
-      const riskPerContract = stopPoints * pointVal;
-      
-      let maxContracts = Math.floor(riskAmt / riskPerContract);
-      if (maxContracts < 1) maxContracts = 1;
-
-      outEl.innerText = `${maxContracts} ${instrument}`;
+    function loadCardRiskAmount(id) {
+      const saved = localStorage.getItem(`card_risk_${id}`);
+      const riskEl = document.getElementById(`risk-select-${id}`);
+      if (saved && riskEl) {
+        riskEl.value = saved;
+      }
     }
 
     function buildCards() {
@@ -772,6 +865,12 @@
       for (let i = 1; i <= 3; i++) {
         fnGrid.innerHTML += createCardHTML(`fn-${i}`, `FN Acct ${i}`, 'BUFFERING');
       }
+
+      // Restore saved card risk allocations
+      ['topstep-live', 'topstep-50k-eval'].forEach(id => loadCardRiskAmount(id));
+      for (let i = 1; i <= 5; i++) loadCardRiskAmount(`tdfy-${i}`);
+      for (let i = 1; i <= 5; i++) loadCardRiskAmount(`fe-${i}`);
+      for (let i = 1; i <= 3; i++) loadCardRiskAmount(`fn-${i}`);
     }
 
     function createCardHTML(id, title, defaultBadge) {
@@ -785,29 +884,16 @@
             <span class="badge" id="badge-${id}">${defaultBadge}</span>
           </div>
 
-          <div class="card-sizer-box">
-            <div class="card-sizer-header">
-              <span>📐 Risk & Sizing</span>
-              <span class="card-sizer-output" id="sizer-out-${id}">5 MNQ</span>
-            </div>
-            <div class="card-sizer-inputs">
-              <select class="card-sizer-select" id="sizer-risk-${id}" onchange="calculateCardSizing('${id}')">
-                <option value="100">$100</option>
-                <option value="150" selected>$150</option>
-                <option value="200">$200</option>
-                <option value="250">$250</option>
-                <option value="300">$300</option>
-                <option value="500">$500</option>
-              </select>
-              <select class="card-sizer-select" id="sizer-inst-${id}" onchange="calculateCardSizing('${id}')">
-                <option value="MNQ" selected>MNQ</option>
-                <option value="NQ">NQ</option>
-                <option value="MES">MES</option>
-                <option value="ES">ES</option>
-                <option value="MCL">MCL</option>
-              </select>
-              <input type="number" class="card-sizer-input" id="sizer-stop-${id}" value="15" step="0.25" min="1" oninput="calculateCardSizing('${id}')" placeholder="Stop Pt">
-            </div>
+          <div class="card-risk-box">
+            <span class="card-risk-label">⚠️ Risk Allocation</span>
+            <select class="card-risk-select" id="risk-select-${id}" onchange="saveCardRiskAmount('${id}')">
+              <option value="100">$100 Risk</option>
+              <option value="150" selected>$150 Risk</option>
+              <option value="200">$200 Risk</option>
+              <option value="250">$250 Risk</option>
+              <option value="300">$300 Risk</option>
+              <option value="500">$500 Risk</option>
+            </select>
           </div>
 
           <div class="exec-status-bar" id="exec-bar-${id}">
@@ -951,7 +1037,7 @@
         } else if (lower.includes('tradeify')) {
           reply = "⚡ **Tradeify Strategy:** Take Payout 1 on Cluster 1, build buffer on Cluster 2, and copy-trade disciplined base hits!";
         } else if (lower.includes('sizing') || lower.includes('risk')) {
-          reply = "📐 **Sizing Rule:** Use the position sizer embedded in each account card to adjust contract counts based on your stop points!";
+          reply = "⚠️ **Risk Allocation:** Select your target risk per account ($100–$500) right inside each account card on the Daily Command Center!";
         }
 
         historyEl.innerHTML += `<div class="chat-msg bot">${reply}</div>`;
@@ -1275,7 +1361,7 @@
           }
         }
 
-        calculateCardSizing(targetId);
+        loadCardRiskAmount(targetId);
       }
     }
 
