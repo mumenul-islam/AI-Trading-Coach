@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v2.3.3</title>
+  <title>2026 Trade Command Center & Roadmap v2.3.4</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -310,8 +310,8 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v2.3.3</span>
-      <span class="build-timestamp">Updated: Sep 13, 2026 • 12:10 PM EDT</span>
+      <span class="version-badge">v2.3.4</span>
+      <span class="build-timestamp">Updated: Sep 13, 2026 • 12:15 PM EDT</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -855,7 +855,8 @@
     const parsedProgressMap = {};
     const parsedBalanceMap = {};
     const parsedGoalMap = {};
-    const parsedDangerMap = {}; 
+    const parsedDangerMap = {};
+    let totalMasterDone = 0; // Globally tracked for velocity line
 
     const encouragementQuotes = [
       "Every single rule-following trade compounds into long-term wealth. You are building real discipline!",
@@ -1729,7 +1730,13 @@
 
       if (effortVelocityChartInstance) effortVelocityChartInstance.destroy();
 
-      const milestoneTally = hoursData.map(h => h > 5 ? 3 : (h > 0 ? 1 : 0));
+      // Dynamic mapping reading real unlocked goals count
+      const actualWeeklyGoals = labels.map((label, idx) => {
+        if (idx === labels.length - 1) {
+          return typeof totalMasterDone !== 'undefined' ? totalMasterDone : 0;
+        }
+        return 0; // Baseline for prior weeks
+      });
 
       effortVelocityChartInstance = new Chart(ctx, {
         type: 'bar',
@@ -1737,7 +1744,7 @@
           labels: labels,
           datasets: [
             { label: 'Development Hours', data: hoursData, backgroundColor: 'rgba(171, 71, 188, 0.35)', borderColor: '#ab47bc', borderWidth: 1, borderRadius: 4, yAxisID: 'yHours', order: 2 },
-            { label: 'Milestones Unlocked', data: milestoneTally, type: 'line', borderColor: '#089981', backgroundColor: '#089981', pointRadius: 5, tension: 0.3, yAxisID: 'yGoals', order: 1 }
+            { label: 'Milestones Unlocked', data: actualWeeklyGoals, type: 'line', borderColor: '#089981', backgroundColor: '#089981', pointRadius: 5, tension: 0.3, yAxisID: 'yGoals', order: 1 }
           ]
         },
         options: {
@@ -1771,7 +1778,8 @@
         let tsTotal = 0, tsDone = 0, trTotal = 0, trDone = 0, tsPropTotal = 0, tsPropDone = 0;
         let tdfyTotal = 0, tdfyDone = 0, feTotal = 0, feDone = 0, fnTotal = 0, fnDone = 0;
         let tsWdTotal = 0, tsWdDone = 0, trWdTotal = 0, trWdDone = 0;
-        let totalMasterGoals = 0, totalMasterDone = 0;
+        let totalMasterGoals = 0;
+        totalMasterDone = 0; // Assign to global scope for chart access
 
         rows.forEach((r, idx) => {
           if (!r.c) return;
