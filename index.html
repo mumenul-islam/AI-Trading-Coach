@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v2.3.2</title>
+  <title>2026 Trade Command Center & Roadmap v2.3.3</title>
   <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -142,7 +142,8 @@
     .chart-box-container { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 25px; }
     .chart-box-title { font-size: 12px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
 
-    .charts-grid-two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; margin-bottom: 25px; }
+    /* STACKED VERTICAL CHARTS WRAPPER */
+    .charts-vertical-stack { display: flex; flex-direction: column; gap: 20px; margin-bottom: 25px; }
 
     /* High-Level Strategy CHEVRON Flow Layout */
     .strategy-block-wrapper { display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px; }
@@ -309,8 +310,8 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v2.3.2</span>
-      <span class="build-timestamp">Updated: Sep 13, 2026 • 12:05 PM EDT</span>
+      <span class="version-badge">v2.3.3</span>
+      <span class="build-timestamp">Updated: Sep 13, 2026 • 12:10 PM EDT</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -514,12 +515,15 @@
       <div class="progress-bar-bg"><div class="progress-bar-fill" id="macro-pct-bar" style="background-color: var(--accent-green);"></div></div>
     </div>
 
-    <!-- TIME TRACKING CHARTS ROW -->
-    <div class="charts-grid-two-col">
+    <!-- STACKED VERTICAL TIME TRACKING CHARTS -->
+    <div class="charts-vertical-stack">
+      <!-- TOP CHART: TIME SPENT BAR CHART + MOVING AVERAGE -->
       <div class="chart-box-container">
         <div class="chart-box-title">⏱️ Weekly Time Spent on Trading System</div>
         <div style="height: 220px; position: relative;"><canvas id="timeSpentChart"></canvas></div>
       </div>
+
+      <!-- BOTTOM CHART: EFFORT VS GOAL VELOCITY (DUAL AXIS) -->
       <div class="chart-box-container">
         <div class="chart-box-title">📈 Effort vs. Goal Velocity (Development ROI)</div>
         <div style="height: 220px; position: relative;"><canvas id="effortVsVelocityChart"></canvas></div>
@@ -1131,7 +1135,6 @@
           toggleBtn.classList.add('active');
           toggleBtn.innerHTML = '👁️ Showing All (Completed Visible)';
         } else {
-          toggleBtn.classList.remove('active');
           toggleBtn.innerHTML = `👁️ Show Completed (<span id="hidden-completed-counter">0</span>)`;
         }
       }
@@ -1663,7 +1666,6 @@
 
       if (timeSpentChartInstance) timeSpentChartInstance.destroy();
 
-      // Calculate 4-Week Moving Average Trendline
       const movingAvgData = hoursData.map((val, idx, arr) => {
         const start = Math.max(0, idx - 3);
         const subset = arr.slice(start, idx + 1);
