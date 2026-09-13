@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Trade Command Center & Roadmap v2.3.6</title>
+  <title>2026 Trade Command Center & Roadmap v2.3.7</title>
+  <!-- Chart.js CDN for Visual Milestone Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
@@ -308,8 +309,8 @@
       <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Live Auto-Synced Dual-Feed Command Center</p>
     </div>
     <div class="header-badges">
-      <span class="version-badge">v2.3.6</span>
-      <span class="build-timestamp">Updated: Sep 13, 2026 • 12:25 PM EDT</span>
+      <span class="version-badge">v2.3.7</span>
+      <span class="build-timestamp">Updated: Sep 13, 2026 • 12:30 PM EDT</span>
       <span class="status-badge" id="live-indicator">SYNCING...</span>
     </div>
   </header>
@@ -866,26 +867,50 @@
       "Withdrawals are the ultimate report card. Stay focused on taking profits out systematically."
     ];
 
-    function getWeekTagFromDate(dateStr) {
-      if (!dateStr || dateStr.includes('%')) return null;
-      let str = dateStr.toString().trim();
-      
-      if (str.toUpperCase().startsWith('W')) return str.toUpperCase();
+    // Robust Date & Week Tag Parser Engine
+    function getWeekTagFromDate(dateVal) {
+      if (dateVal === null || dateVal === undefined) return null;
+      let str = dateVal.toString().trim();
+      if (str === '' || str.includes('%')) return null;
 
-      const parts = str.split('/');
-      if (parts.length < 2) return null;
-      
-      const month = parseInt(parts[0], 10) - 1;
-      const day = parseInt(parts[1], 10);
-      const year = parts[2] ? (parts[2].length === 2 ? 2000 + parseInt(parts[2], 10) : parseInt(parts[2], 10)) : 2026;
+      // 1. Direct Week Tag Match (e.g., "W37", "w37")
+      if (str.toUpperCase().startsWith('W')) {
+        return str.toUpperCase();
+      }
 
-      const d = new Date(year, month, day);
-      if (isNaN(d.getTime())) return null;
+      let parsedDate = null;
 
-      d.setDate(d.getDate() + 4 - (d.getDay() || 7));
-      const yearStart = new Date(d.getFullYear(), 0, 1);
-      const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-      return `W${weekNo}`;
+      // 2. Handle Google Sheets GViz Date Object Strings "Date(YYYY,M,D)"
+      if (str.includes('Date(')) {
+        const matches = str.match(/\d+/g);
+        if (matches && matches.length >= 3) {
+          const year = parseInt(matches[0], 10);
+          const month = parseInt(matches[1], 10); // GViz months are 0-indexed
+          const day = parseInt(matches[2], 10);
+          parsedDate = new Date(year, month, day);
+        }
+      } 
+      // 3. Handle Standard Date Strings (MM/DD, MM/DD/YY, MM/DD/YYYY)
+      else if (str.includes('/')) {
+        const parts = str.split('/');
+        if (parts.length >= 2) {
+          const month = parseInt(parts[0], 10) - 1; // JS months are 0-indexed
+          const day = parseInt(parts[1], 10);
+          let year = parts[2] ? parseInt(parts[2], 10) : 2026;
+          if (year < 100) year += 2000;
+          parsedDate = new Date(year, month, day);
+        }
+      }
+
+      // 4. Calculate ISO Week Number from Valid Date
+      if (parsedDate && !isNaN(parsedDate.getTime())) {
+        parsedDate.setDate(parsedDate.getDate() + 4 - (parsedDate.getDay() || 7));
+        const yearStart = new Date(parsedDate.getFullYear(), 0, 1);
+        const weekNo = Math.ceil((((parsedDate - yearStart) / 86400000) + 1) / 7);
+        return `W${weekNo}`;
+      }
+
+      return null;
     }
 
     function saveCardRiskAmount(id) {
